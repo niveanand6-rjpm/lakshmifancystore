@@ -1,193 +1,269 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Lakshmi Bridal Jewellery - Rental & Inventory Portal</title>
   <style>
-    /* General Styles */
+    /* Reset & Core Styles */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
     body {
-      font-family: Arial, sans-serif;
-      margin: 20px;
-      background-color: #f8f9fa;
-      color: #333;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: #f4f6f8;
+      color: #2c3e50;
+      line-height: 1.5;
+      padding: 20px;
     }
-    h2 {
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 25px;
+      padding-bottom: 15px;
+      border-bottom: 3px solid #d4af37;
+    }
+
+    header h1 {
       color: #8b0000;
-      border-bottom: 2px solid #d4af37;
-      padding-bottom: 5px;
+      font-size: 1.8rem;
     }
+
     section {
       background: #ffffff;
-      padding: 20px;
+      padding: 24px;
       margin-bottom: 25px;
-      border-radius: 8px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     }
+
+    h2 {
+      color: #8b0000;
+      font-size: 1.3rem;
+      margin-bottom: 18px;
+    }
+
+    /* Form Layout */
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
+
     .form-group {
-      margin-bottom: 15px;
+      display: flex;
+      flex-direction: column;
     }
+
+    .form-group.full-width {
+      grid-column: 1 / -1;
+    }
+
     label {
-      display: block;
-      font-weight: bold;
-      margin-bottom: 5px;
+      font-weight: 600;
+      font-size: 0.88rem;
+      margin-bottom: 6px;
+      color: #444;
     }
-    input, select, button {
-      width: 100%;
-      max-width: 400px;
-      padding: 8px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      box-sizing: border-box;
+
+    input, select {
+      padding: 10px;
+      border: 1px solid #cccccc;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s;
     }
+
+    input:focus, select:focus {
+      border-color: #d4af37;
+    }
+
+    input[readonly] {
+      background-color: #f8f9fa;
+      color: #666;
+    }
+
     button {
       background-color: #d4af37;
-      color: #fff;
+      color: #ffffff;
       font-weight: bold;
+      font-size: 1rem;
       border: none;
+      border-radius: 6px;
+      padding: 12px 20px;
       cursor: pointer;
+      transition: background-color 0.2s;
       margin-top: 10px;
     }
+
     button:hover {
       background-color: #b89528;
     }
 
     /* Catalog Grid Layout */
     .catalog-grid {
-      display: flex;
-      flex-wrap: wrap;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
       gap: 20px;
     }
+
     .catalog-card {
-      border: 1px solid #e0e0e0;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
       padding: 15px;
-      border-radius: 8px;
-      width: 250px;
-      background: #fff;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-      text-align: center;
-    }
-
-    /* Hover Image Preview Popover */
-    .image-preview-popover {
-      display: none;
-      position: absolute;
-      z-index: 10000;
       background: #ffffff;
-      border: 3px solid #d4af37;
-      border-radius: 8px;
-      box-shadow: 0px 10px 25px rgba(0,0,0,0.3);
-      padding: 5px;
-      pointer-events: none;
-    }
-    .image-preview-popover img {
-      max-width: 320px;
-      max-height: 320px;
-      border-radius: 6px;
-      display: block;
+      text-align: center;
+      transition: box-shadow 0.2s;
     }
 
-    /* Status Badges & Return Notice */
-    .badge-rented {
-      background-color: #d9534f;
-      color: #fff;
-      padding: 4px 8px;
-      border-radius: 4px;
-      font-size: 0.8rem;
-      font-weight: bold;
-      display: inline-block;
+    .catalog-card:hover {
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
     }
-    .badge-available {
-      background-color: #28a745;
-      color: #fff;
-      padding: 4px 8px;
-      border-radius: 4px;
-      font-size: 0.8rem;
-      font-weight: bold;
-      display: inline-block;
-    }
-    .return-info {
-      margin-top: 8px;
-      color: #c0392b;
-      font-size: 0.85rem;
-      background-color: #fdf2e9;
-      padding: 6px;
-      border-radius: 4px;
-      border: 1px solid #f5c6cb;
-      font-weight: 600;
-    }
+
     .jewellery-thumb {
       width: 130px;
       height: 130px;
       object-fit: cover;
       border-radius: 6px;
       cursor: pointer;
+      margin-bottom: 10px;
       transition: transform 0.2s;
     }
+
     .jewellery-thumb:hover {
-      transform: scale(1.04);
+      transform: scale(1.05);
+    }
+
+    /* Status Badges */
+    .badge-rented {
+      background-color: #e53e3e;
+      color: #ffffff;
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 0.78rem;
+      font-weight: bold;
+      display: inline-block;
+    }
+
+    .badge-available {
+      background-color: #38a169;
+      color: #ffffff;
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 0.78rem;
+      font-weight: bold;
+      display: inline-block;
+    }
+
+    .return-info {
+      margin-top: 8px;
+      color: #c53030;
+      font-size: 0.82rem;
+      background-color: #fff5f5;
+      padding: 6px;
+      border-radius: 4px;
+      border: 1px solid #feb2b2;
+      font-weight: 600;
+    }
+
+    /* Floating Image Preview Popover */
+    .image-preview-popover {
+      display: none;
+      position: absolute;
+      z-index: 9999;
+      background: #ffffff;
+      border: 2px solid #d4af37;
+      border-radius: 8px;
+      box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.25);
+      padding: 6px;
+      pointer-events: none;
+    }
+
+    .image-preview-popover img {
+      max-width: 280px;
+      max-height: 280px;
+      border-radius: 6px;
+      display: block;
     }
   </style>
 </head>
 <body>
 
-  <!-- ==================== NEW RENTAL ENTRY FORM ==================== -->
-  <section id="rental-entry-section">
-    <h2>New Bridal Jewellery Rental Entry</h2>
-    <form id="rentalForm">
-      
-      <div class="form-group">
-        <label for="jewellerySelect">Select Jewellery Item:</label>
-        <select id="jewellerySelect" onchange="updateRentalPrice()">
-          <option value="">-- Loading Inventory... --</option>
-        </select>
+  <div class="container">
+    <header>
+      <h1>Lakshmi Bridal Jewellery</h1>
+      <p style="font-size: 0.9rem; color: #666; margin-top: 4px;">Rental & Inventory Management Portal</p>
+    </header>
+
+    <!-- NEW RENTAL FORM -->
+    <section id="rental-entry-section">
+      <h2>New Rental Entry</h2>
+      <form id="rentalForm">
+        <div class="form-grid">
+          
+          <div class="form-group full-width">
+            <label for="jewellerySelect">Select Jewellery Item:</label>
+            <select id="jewellerySelect" onchange="updateRentalPrice()">
+              <option value="">-- Select Item --</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="rentalPrice">Rental Price (₹):</label>
+            <input type="number" id="rentalPrice" value="0" readonly />
+          </div>
+
+          <div class="form-group">
+            <label for="discountAmount">Discount Amount (₹):</label>
+            <input 
+              type="number" 
+              id="discountAmount" 
+              placeholder="0" 
+              min="0" 
+              oninput="calculateNetTotal()" 
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="netTotal">Net Total Amount (₹):</label>
+            <input type="number" id="netTotal" value="0" readonly />
+          </div>
+
+          <div class="form-group">
+            <label for="expectedReturnDateInput">Expected Return Date:</label>
+            <input type="date" id="expectedReturnDateInput" required />
+          </div>
+
+        </div>
+
+        <button type="submit">Save Rental Entry</button>
+      </form>
+    </section>
+
+    <!-- CATALOG & STATUS -->
+    <section id="catalog-section">
+      <h2>Jewellery Catalog & Status</h2>
+      <div id="catalogGrid" class="catalog-grid">
+        <p>Loading catalog...</p>
       </div>
-
-      <div class="form-group">
-        <label for="rentalPrice">Rental Price (₹):</label>
-        <input type="number" id="rentalPrice" value="0" readonly />
-      </div>
-
-      <!-- DISCOUNT AMOUNT FIELD -->
-      <div class="form-group">
-        <label for="discountAmount">Discount Amount (₹):</label>
-        <input 
-          type="number" 
-          id="discountAmount" 
-          placeholder="Enter discount amount" 
-          min="0" 
-          oninput="calculateNetTotal()" 
-        />
-      </div>
-
-      <div class="form-group">
-        <label for="netTotal">Net Total Amount (₹):</label>
-        <input type="number" id="netTotal" readonly />
-      </div>
-
-      <div class="form-group">
-        <label for="expectedReturnDateInput">Expected Return Date:</label>
-        <input type="date" id="expectedReturnDateInput" required />
-      </div>
-
-      <button type="submit">Save Rental Entry</button>
-    </form>
-  </section>
-
-  <!-- ==================== JEWELLERY STATUS & CATALOG ==================== -->
-  <section id="catalog-section">
-    <h2>Jewellery Status & Catalog</h2>
-    <div id="catalogGrid" class="catalog-grid">
-      <!-- Dynamic Items Rendered Here -->
-    </div>
-  </section>
+    </section>
+  </div>
 
   <!-- Image Preview Floating Container -->
   <div id="imagePreviewContainer" class="image-preview-popover">
     <img id="imagePreviewTag" src="" alt="Jewellery Preview" />
   </div>
 
-  <!-- ==================== INLINE JAVASCRIPT ==================== -->
+  <!-- JAVASCRIPT LOGIC -->
   <script>
     let inventoryData = [];
 
@@ -202,11 +278,11 @@
         renderCatalog();
       } catch (error) {
         console.error("Error loading inventory:", error);
-        document.getElementById('catalogGrid').innerHTML = '<p style="color:red;">Failed to load inventory data.</p>';
+        document.getElementById('catalogGrid').innerHTML = '<p style="color:red; font-weight:bold;">Failed to load inventory.json. Please check if the file exists and has valid JSON syntax.</p>';
       }
     }
 
-    // Populate the dropdown list from inventory.json items
+    // Populate Dropdown
     function populateDropdown() {
       const select = document.getElementById('jewellerySelect');
       if (!select) return;
@@ -215,13 +291,14 @@
       inventoryData.forEach(item => {
         const option = document.createElement('option');
         option.value = item.id;
-        option.setAttribute('data-price', item.rentalPrice || item.price || 0);
+        const price = item.rentalPrice !== undefined ? item.rentalPrice : (item.price || 0);
+        option.setAttribute('data-price', price);
         option.textContent = `${item.id} - ${item.name}`;
         select.appendChild(option);
       });
     }
 
-    // 1. Discount & Automatic Net Total Calculation
+    // Discount & Net Total Calculation
     function updateRentalPrice() {
       const select = document.getElementById('jewellerySelect');
       const selectedOption = select.options[select.selectedIndex];
@@ -242,71 +319,81 @@
       document.getElementById('netTotal').value = netTotal.toFixed(2);
     }
 
-    // 2. Mouse-Over Image Preview Logic
+    // Mouse-Over Image Preview Logic
     const previewContainer = document.getElementById('imagePreviewContainer');
     const previewTag = document.getElementById('imagePreviewTag');
 
     function showImagePreview(src, event) {
-      if (!src) return;
+      if (!src || !previewTag || !previewContainer) return;
       previewTag.src = src;
       previewContainer.style.display = 'block';
       moveImagePreview(event);
     }
 
     function moveImagePreview(event) {
+      if (!previewContainer) return;
       const offsetX = 20;
       const offsetY = 20;
-      previewContainer.style.top = (event.pageY + offsetY) + 'px';
-      previewContainer.style.left = (event.pageX + offsetX) + 'px';
+      
+      // Keep inside viewport bounds
+      let x = event.pageX + offsetX;
+      let y = event.pageY + offsetY;
+
+      previewContainer.style.top = y + 'px';
+      previewContainer.style.left = x + 'px';
     }
 
     function hideImagePreview() {
+      if (!previewContainer || !previewTag) return;
       previewContainer.style.display = 'none';
       previewTag.src = '';
     }
 
-    // 3. Catalog Render & Expected Return Date
+    // Catalog Rendering Logic
     function renderCatalog() {
       const grid = document.getElementById('catalogGrid');
       if (!grid) return;
 
-      if (inventoryData.length === 0) {
-        grid.innerHTML = '<p>No items found in catalogue.</p>';
+      if (!inventoryData || inventoryData.length === 0) {
+        grid.innerHTML = '<p>No items found in catalog.</p>';
         return;
       }
 
       grid.innerHTML = inventoryData.map(item => {
-        const isRented = item.status === 'RENTED';
+        const isRented = String(item.status).toUpperCase() === 'RENTED';
+        const itemPrice = item.rentalPrice !== undefined ? item.rentalPrice : (item.price || 0);
         
         let returnDateFormatted = 'N/A';
         if (isRented && item.expectedReturnDate) {
           const dateObj = new Date(item.expectedReturnDate);
-          returnDateFormatted = dateObj.toLocaleDateString('en-IN', {
-            day: '2-digit',
-            month: 'short',
-            year: 'numeric'
-          });
+          if (!isNaN(dateObj)) {
+            returnDateFormatted = dateObj.toLocaleDateString('en-IN', {
+              day: '2-digit',
+              month: 'short',
+              year: 'numeric'
+            });
+          }
         }
 
         return `
           <div class="catalog-card">
             <img 
-              src="${item.imageUrl}" 
+              src="${item.imageUrl || 'images/placeholder.jpg'}" 
               alt="${item.name}" 
               class="jewellery-thumb" 
-              onmouseover="showImagePreview('${item.imageUrl}', event)" 
+              onmouseover="showImagePreview('${item.imageUrl || ''}', event)" 
               onmousemove="moveImagePreview(event)" 
               onmouseout="hideImagePreview()"
             />
-            <h3 style="font-size: 1rem; margin: 10px 0 5px 0;">${item.name}</h3>
-            <p style="font-size: 0.85rem; color: #555; margin: 3px 0;"><strong>Code:</strong> ${item.id}</p>
-            <p style="font-size: 0.85rem; color: #555; margin: 3px 0;"><strong>Price:</strong> ₹${item.rentalPrice || item.price || 0}</p>
+            <h3 style="font-size: 0.95rem; margin-bottom: 4px; color: #2d3748;">${item.name}</h3>
+            <p style="font-size: 0.82rem; color: #718096; margin-bottom: 2px;"><strong>Code:</strong> ${item.id}</p>
+            <p style="font-size: 0.82rem; color: #718096; margin-bottom: 8px;"><strong>Rental Price:</strong> ₹${item.rentalPrice || item.price || 0}</p>
             
-            <div style="margin-top: 10px;">
+            <div>
               ${isRented ? `
                 <span class="badge-rented">Rented Out</span>
                 <div class="return-info">
-                  📅 Expected Return:<br/><strong>${returnDateFormatted}</strong>
+                  📅 Return Date:<br/><strong>${returnDateFormatted}</strong>
                 </div>
               ` : `
                 <span class="badge-available">Available</span>
@@ -317,7 +404,7 @@
       }).join('');
     }
 
-    // Handle Form Submission
+    // Form Submit Handler
     document.getElementById('rentalForm').addEventListener('submit', function(event) {
       event.preventDefault();
 
@@ -330,22 +417,20 @@
         return;
       }
 
-      // Update in-memory item status
       const itemIndex = inventoryData.findIndex(item => item.id === selectedId);
       if (itemIndex !== -1) {
         inventoryData[itemIndex].status = 'RENTED';
         inventoryData[itemIndex].expectedReturnDate = returnDate;
       }
 
-      alert(`Rental recorded!\nNet Total: ₹${netTotal}\nExpected Return Date: ${returnDate}`);
+      alert(`Rental recorded successfully!\nNet Total: ₹${netTotal}\nExpected Return Date: ${returnDate}`);
       
-      // Re-render catalog to reflect changes immediately
       renderCatalog();
       this.reset();
       calculateNetTotal();
     });
 
-    // Run on initial load
+    // Initialize Page
     document.addEventListener('DOMContentLoaded', loadInventory);
   </script>
 </body>
