@@ -104,7 +104,7 @@
         <input type="number" id="rentalPrice" value="0" readonly />
       </div>
 
-      <!-- ADDED DISCOUNT FIELD -->
+      <!-- DISCOUNT AMOUNT FIELD -->
       <div class="form-group">
         <label for="discountAmount">Discount Amount (₹):</label>
         <input 
@@ -116,7 +116,7 @@
         />
       </div>
 
-      <!-- ADDED NET TOTAL (CALCULATED PRICE) FIELD -->
+      <!-- CALCULATED ACTUAL / NET PRICE FIELD -->
       <div class="form-group">
         <label for="netTotal">Net Total Amount (₹):</label>
         <input type="number" id="netTotal" value="0" readonly />
@@ -147,7 +147,7 @@
   <script>
     let inventoryData = [];
 
-    // Fetch original inventory JSON from data/inventory.json
+    // Fetch inventory JSON from data/inventory.json
     async function loadInventory() {
       try {
         const response = await fetch('data/inventory.json');
@@ -193,13 +193,11 @@
       const rentalPrice = parseFloat(document.getElementById('rentalPrice').value) || 0;
       let discountAmount = parseFloat(document.getElementById('discountAmount').value) || 0;
 
-      // Prevent negative discount
       if (discountAmount < 0) {
         discountAmount = 0;
         document.getElementById('discountAmount').value = 0;
       }
 
-      // Prevent discount from exceeding rental price
       if (discountAmount > rentalPrice) {
         discountAmount = rentalPrice;
         document.getElementById('discountAmount').value = rentalPrice;
@@ -209,7 +207,7 @@
       document.getElementById('netTotal').value = netTotal.toFixed(2);
     }
 
-    // Render Original Catalog Grid
+    // Render Catalog Grid
     function renderCatalog() {
       const grid = document.getElementById('catalogGrid');
       if (!grid) return;
@@ -242,6 +240,8 @@
       event.preventDefault();
 
       const selectedId = document.getElementById('jewellerySelect').value;
+      const rentalPrice = document.getElementById('rentalPrice').value;
+      const discountAmount = document.getElementById('discountAmount').value || 0;
       const netTotal = document.getElementById('netTotal').value;
 
       if (!selectedId) {
@@ -249,7 +249,7 @@
         return;
       }
 
-      alert(`Rental Entry Saved!\nNet Payable Amount: ₹${netTotal}`);
+      alert(`Rental Entry Saved!\nOriginal Price: ₹${rentalPrice}\nDiscount: ₹${discountAmount}\nNet Total Amount: ₹${netTotal}`);
       this.reset();
       calculateNetTotal();
     });
