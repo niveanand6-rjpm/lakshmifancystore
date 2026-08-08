@@ -267,18 +267,18 @@
   <script>
     let inventoryData = [];
 
-    // Fetch Inventory Data from inventory.json
+    // Fetch Inventory Data from data/inventory.json
     async function loadInventory() {
       try {
-        const response = await fetch('inventory.json');
-        if (!response.ok) throw new Error('Could not load inventory.json');
+        const response = await fetch('data/inventory.json');
+        if (!response.ok) throw new Error('Could not load data/inventory.json');
         inventoryData = await response.json();
         
         populateDropdown();
         renderCatalog();
       } catch (error) {
         console.error("Error loading inventory:", error);
-        document.getElementById('catalogGrid').innerHTML = '<p style="color:red; font-weight:bold;">Failed to load inventory.json. Please check if the file exists and has valid JSON syntax.</p>';
+        document.getElementById('catalogGrid').innerHTML = '<p style="color:red; font-weight:bold;">Failed to load data/inventory.json. Please check if the file exists in the "data" folder and has valid JSON syntax.</p>';
       }
     }
 
@@ -335,7 +335,6 @@
       const offsetX = 20;
       const offsetY = 20;
       
-      // Keep inside viewport bounds
       let x = event.pageX + offsetX;
       let y = event.pageY + offsetY;
 
@@ -387,7 +386,7 @@
             />
             <h3 style="font-size: 0.95rem; margin-bottom: 4px; color: #2d3748;">${item.name}</h3>
             <p style="font-size: 0.82rem; color: #718096; margin-bottom: 2px;"><strong>Code:</strong> ${item.id}</p>
-            <p style="font-size: 0.82rem; color: #718096; margin-bottom: 8px;"><strong>Rental Price:</strong> ₹${item.rentalPrice || item.price || 0}</p>
+            <p style="font-size: 0.82rem; color: #718096; margin-bottom: 8px;"><strong>Rental Price:</strong> ₹${itemPrice}</p>
             
             <div>
               ${isRented ? `
