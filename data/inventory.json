@@ -1,26 +1,25 @@
-[
-  {
-    "id": "JWL001",
-    "name": "Kundan Royal Bridal Set",
-    "imageUrl": "images/jwl001.jpg",
-    "rentalPrice": 5000,
-    "status": "AVAILABLE",
-    "expectedReturnDate": null
-  },
-  {
-    "id": "JWL002",
-    "name": "Antique Temple Gold Haram",
-    "imageUrl": "images/jwl002.jpg",
-    "rentalPrice": 7500,
-    "status": "AVAILABLE",
-    "expectedReturnDate": null
-  },
-  {
-    "id": "JWL003",
-    "name": "American Diamond Bridal Choker",
-    "imageUrl": "images/jwl003.jpg",
-    "rentalPrice": 6000,
-    "status": "RENTED",
-    "expectedReturnDate": "2026-08-20"
-  }
-]
+{
+  "items": [
+    {
+      "id": "JWL-101",
+      "name": "Grand Antique Lakshmi Bridal Haram",
+      "category": "Haram / Necklace Set",
+      "price": 2500,
+      "deposit": 5000,
+      "image": "https://images.unsplash.com/photo-1601121141461-9d6647bca1ed?auto=format&fit=crop&w=400&q=80",
+      "description": "Heavy antique gold finish Lakshmi haram with matching earrings.",
+      "status": "Available"
+    },
+    {
+      "id": "JWL-102",
+      "name": "Kundan Pearl Bridal Choker Set",
+      "category": "Antique Bridal Choker",
+      "price": 1800,
+      "deposit": 3500,
+      "image": "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=400&q=80",
+      "description": "Elegant Kundan stone studded choker set suited for marriage receptions.",
+      "status": "Available"
+    }
+  ],
+  "rentals": []
+}
