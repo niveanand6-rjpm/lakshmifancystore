@@ -1,436 +1,857 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Lakshmi Bridal Jewellery - Rental & Inventory Portal</title>
-  <style>
-    /* Reset & Core Styles */
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background-color: #f4f6f8;
-      color: #2c3e50;
-      line-height: 1.5;
-      padding: 20px;
-    }
-
-    .container {
-      max-width: 1100px;
-      margin: 0 auto;
-    }
-
-    header {
-      text-align: center;
-      margin-bottom: 25px;
-      padding-bottom: 15px;
-      border-bottom: 3px solid #d4af37;
-    }
-
-    header h1 {
-      color: #8b0000;
-      font-size: 1.8rem;
-    }
-
-    section {
-      background: #ffffff;
-      padding: 24px;
-      margin-bottom: 25px;
-      border-radius: 10px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    }
-
-    h2 {
-      color: #8b0000;
-      font-size: 1.3rem;
-      margin-bottom: 18px;
-    }
-
-    /* Form Layout */
-    .form-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 16px;
-    }
-
-    .form-group {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .form-group.full-width {
-      grid-column: 1 / -1;
-    }
-
-    label {
-      font-weight: 600;
-      font-size: 0.88rem;
-      margin-bottom: 6px;
-      color: #444;
-    }
-
-    input, select {
-      padding: 10px;
-      border: 1px solid #cccccc;
-      border-radius: 6px;
-      font-size: 0.95rem;
-      outline: none;
-      transition: border-color 0.2s;
-    }
-
-    input:focus, select:focus {
-      border-color: #d4af37;
-    }
-
-    input[readonly] {
-      background-color: #f8f9fa;
-      color: #666;
-    }
-
-    button {
-      background-color: #d4af37;
-      color: #ffffff;
-      font-weight: bold;
-      font-size: 1rem;
-      border: none;
-      border-radius: 6px;
-      padding: 12px 20px;
-      cursor: pointer;
-      transition: background-color 0.2s;
-      margin-top: 10px;
-    }
-
-    button:hover {
-      background-color: #b89528;
-    }
-
-    /* Catalog Grid Layout */
-    .catalog-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
-      gap: 20px;
-    }
-
-    .catalog-card {
-      border: 1px solid #e2e8f0;
-      border-radius: 8px;
-      padding: 15px;
-      background: #ffffff;
-      text-align: center;
-      transition: box-shadow 0.2s;
-    }
-
-    .catalog-card:hover {
-      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
-    }
-
-    .jewellery-thumb {
-      width: 130px;
-      height: 130px;
-      object-fit: cover;
-      border-radius: 6px;
-      cursor: pointer;
-      margin-bottom: 10px;
-      transition: transform 0.2s;
-    }
-
-    .jewellery-thumb:hover {
-      transform: scale(1.05);
-    }
-
-    /* Status Badges */
-    .badge-rented {
-      background-color: #e53e3e;
-      color: #ffffff;
-      padding: 4px 10px;
-      border-radius: 4px;
-      font-size: 0.78rem;
-      font-weight: bold;
-      display: inline-block;
-    }
-
-    .badge-available {
-      background-color: #38a169;
-      color: #ffffff;
-      padding: 4px 10px;
-      border-radius: 4px;
-      font-size: 0.78rem;
-      font-weight: bold;
-      display: inline-block;
-    }
-
-    .return-info {
-      margin-top: 8px;
-      color: #c53030;
-      font-size: 0.82rem;
-      background-color: #fff5f5;
-      padding: 6px;
-      border-radius: 4px;
-      border: 1px solid #feb2b2;
-      font-weight: 600;
-    }
-
-    /* Floating Image Preview Popover */
-    .image-preview-popover {
-      display: none;
-      position: absolute;
-      z-index: 9999;
-      background: #ffffff;
-      border: 2px solid #d4af37;
-      border-radius: 8px;
-      box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.25);
-      padding: 6px;
-      pointer-events: none;
-    }
-
-    .image-preview-popover img {
-      max-width: 280px;
-      max-height: 280px;
-      border-radius: 6px;
-      display: block;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lakshmi Fancy Store - Bridal Jewellery Rentals</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { background-color: #faf8f5; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .tab-btn.active { border-bottom: 3px solid #b91c1c; color: #b91c1c; font-weight: bold; }
+        .glass-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border: 1px solid #f3e8ff; }
+    </style>
 </head>
-<body>
+<body class="min-h-screen flex flex-col text-gray-800">
 
-  <div class="container">
-    <header>
-      <h1>Lakshmi Bridal Jewellery</h1>
-      <p style="font-size: 0.9rem; color: #666; margin-top: 4px;">Rental & Inventory Management Portal</p>
+    <!-- Top Navigation Header -->
+    <header class="bg-gradient-to-r from-red-900 via-rose-900 to-amber-900 text-amber-100 shadow-xl">
+        <div class="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-3">
+                <div class="bg-amber-400 text-red-950 p-3 rounded-full shadow-lg">
+                    <i class="fa-solid fa-crown text-2xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-3xl font-extrabold tracking-wide font-serif text-amber-300">LAKSHMI FANCY STORE</h1>
+                    <p class="text-xs tracking-widest text-amber-200 uppercase">Premium Bridal Imitation Jewellery Rentals</p>
+                </div>
+            </div>
+            <div class="text-right flex items-center gap-3 bg-red-950/40 px-4 py-2 rounded-lg border border-amber-500/30">
+                <i class="fa-solid fa-store text-amber-400"></i>
+                <div class="text-xs text-amber-200">
+                    <p class="font-semibold text-amber-100">Store Management Portal</p>
+                    <p id="api-status-badge" class="text-amber-400 flex items-center gap-1">
+                        <span class="w-2 h-2 rounded-full bg-amber-400 inline-block animate-pulse"></span> Initializing...
+                    </p>
+                </div>
+            </div>
+        </div>
     </header>
 
-    <!-- NEW RENTAL FORM -->
-    <section id="rental-entry-section">
-      <h2>New Rental Entry</h2>
-      <form id="rentalForm">
-        <div class="form-grid">
-          
-          <div class="form-group full-width">
-            <label for="jewellerySelect">Select Jewellery Item:</label>
-            <select id="jewellerySelect" onchange="updateRentalPrice()">
-              <option value="">-- Select Item --</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label for="rentalPrice">Rental Price (₹):</label>
-            <input type="number" id="rentalPrice" value="0" readonly />
-          </div>
-
-          <div class="form-group">
-            <label for="discountAmount">Discount Amount (₹):</label>
-            <input 
-              type="number" 
-              id="discountAmount" 
-              placeholder="0" 
-              min="0" 
-              oninput="calculateNetTotal()" 
-            />
-          </div>
-
-          <div class="form-group">
-            <label for="netTotal">Net Total Amount (₹):</label>
-            <input type="number" id="netTotal" value="0" readonly />
-          </div>
-
-          <div class="form-group">
-            <label for="expectedReturnDateInput">Expected Return Date:</label>
-            <input type="date" id="expectedReturnDateInput" required />
-          </div>
-
+    <!-- Navigation Tabs & Token Config -->
+    <nav class="bg-white border-b border-amber-200 shadow-sm sticky top-0 z-30">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
+            <div class="flex space-x-8 overflow-x-auto">
+                <button onclick="switchTab('rental')" id="tab-btn-rental" class="tab-btn active py-4 px-3 flex items-center gap-2 text-gray-600 hover:text-red-800 font-medium transition">
+                    <i class="fa-solid fa-receipt"></i> Rental Entry
+                </button>
+                <button onclick="switchTab('status')" id="tab-btn-status" class="tab-btn py-4 px-3 flex items-center gap-2 text-gray-600 hover:text-red-800 font-medium transition">
+                    <i class="fa-solid fa-boxes-stacked"></i> Jewellery Status & Catalog
+                </button>
+                <button onclick="switchTab('admin')" id="tab-btn-admin" class="tab-btn py-4 px-3 flex items-center gap-2 text-gray-600 hover:text-red-800 font-medium transition">
+                    <i class="fa-solid fa-user-shield"></i> Admin Inventory Management
+                </button>
+            </div>
+            <div>
+                <button onclick="toggleConfigModal()" class="text-xs bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-300 px-3 py-1.5 rounded-md font-semibold transition flex items-center gap-1">
+                    <i class="fa-solid fa-gear"></i> Setup Token / Repo
+                </button>
+            </div>
         </div>
+    </nav>
 
-        <button type="submit">Save Rental Entry</button>
-      </form>
-    </section>
+    <!-- Main Content Area -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
-    <!-- CATALOG & STATUS -->
-    <section id="catalog-section">
-      <h2>Jewellery Catalog & Status</h2>
-      <div id="catalogGrid" class="catalog-grid">
-        <p>Loading catalog...</p>
-      </div>
-    </section>
-  </div>
+        <!-- TAB 1: RENTAL ENTRY FORM (Sales Person) -->
+        <section id="tab-rental" class="tab-content space-y-6">
+            <div class="bg-white rounded-xl shadow-md p-6 border-l-4 border-red-800">
+                <h2 class="text-2xl font-bold text-red-950 mb-1 flex items-center gap-2">
+                    <i class="fa-solid fa-file-signature text-red-700"></i> New Bridal Jewellery Rental Entry
+                </h2>
+                <p class="text-sm text-gray-600 mb-6">Enter customer booking details and select jewellery items to issue rentals.</p>
 
-  <!-- Image Preview Floating Container -->
-  <div id="imagePreviewContainer" class="image-preview-popover">
-    <img id="imagePreviewTag" src="" alt="Jewellery Preview" />
-  </div>
+                <form id="rental-form" onsubmit="handleRentalSubmit(event)" class="space-y-6">
+                    <!-- Jewellery Selection Section -->
+                    <div class="bg-amber-50/50 p-4 rounded-lg border border-amber-200/60 space-y-4">
+                        <h3 class="text-md font-bold text-amber-900 flex items-center gap-2">
+                            <i class="fa-solid fa-gem text-amber-600"></i> Select Jewellery Item
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-700 mb-1">Search/Select Item ID or Name *</label>
+                                <select id="rental-item-select" onchange="autoPopulateItemDetails()" required class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-800 bg-white">
+                                    <option value="">-- Choose Available Jewellery --</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-700 mb-1">Set Daily Rental Price (₹)</label>
+                                <input type="number" id="rental-price-display" readonly class="w-full p-2.5 bg-gray-100 border border-gray-300 rounded-lg font-bold text-red-800" placeholder="0">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-700 mb-1">Security Deposit Required (₹)</label>
+                                <input type="number" id="rental-deposit-display" readonly class="w-full p-2.5 bg-gray-100 border border-gray-300 rounded-lg font-bold text-amber-800" placeholder="0">
+                            </div>
+                        </div>
 
-  <!-- JAVASCRIPT LOGIC -->
-  <script>
-    let inventoryData = [];
+                        <!-- Item Preview Card -->
+                        <div id="rental-item-preview" class="hidden flex items-center gap-4 bg-white p-3 rounded border border-amber-200 mt-2">
+                            <img id="preview-img" src="" class="w-16 h-16 object-cover rounded-md border border-gray-200">
+                            <div>
+                                <h4 id="preview-title" class="font-bold text-sm text-gray-900"></h4>
+                                <p id="preview-category" class="text-xs text-gray-500"></p>
+                                <p id="preview-desc" class="text-xs text-gray-600 mt-1"></p>
+                            </div>
+                        </div>
+                    </div>
 
-    // Fetch Inventory Data from data/inventory.json
-    async function loadInventory() {
-      try {
-        const response = await fetch('data/inventory.json');
-        if (!response.ok) throw new Error('Could not load data/inventory.json');
-        inventoryData = await response.json();
-        
-        populateDropdown();
-        renderCatalog();
-      } catch (error) {
-        console.error("Error loading inventory:", error);
-        document.getElementById('catalogGrid').innerHTML = '<p style="color:red; font-weight:bold;">Failed to load data/inventory.json. Please check if the file exists in the "data" folder and has valid JSON syntax.</p>';
-      }
-    }
+                    <!-- Customer & Function Info -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-700 mb-1">Customer Full Name *</label>
+                            <input type="text" id="cust-name" required class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-800" placeholder="e.g. S. Meenakshi">
+                        </div>
 
-    // Populate Dropdown
-    function populateDropdown() {
-      const select = document.getElementById('jewellerySelect');
-      if (!select) return;
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-700 mb-1">Customer Phone Number (10 Digits) *</label>
+                            <input type="tel" id="cust-phone" required pattern="[0-9]{10}" maxlength="10" title="Must be exactly 10 numeric digits" class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-800" placeholder="e.g. 9876543210">
+                        </div>
 
-      select.innerHTML = '<option value="">-- Select Item --</option>';
-      inventoryData.forEach(item => {
-        const option = document.createElement('option');
-        option.value = item.id;
-        const price = item.rentalPrice !== undefined ? item.rentalPrice : (item.price || 0);
-        option.setAttribute('data-price', price);
-        option.textContent = `${item.id} - ${item.name}`;
-        select.appendChild(option);
-      });
-    }
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-700 mb-1">Customer Area *</label>
+                            <select id="cust-area" required class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-800 bg-white">
+                                <option value="">-- Select Area --</option>
+                                <option value="Rajapalayam">Rajapalayam</option>
+                                <option value="Seithur">Seithur</option>
+                                <option value="Muhavur">Muhavur</option>
+                                <option value="Srivilliputhoor">Srivilliputhoor</option>
+                                <option value="Other Area">Other Surrounding Area</option>
+                            </select>
+                        </div>
 
-    // Discount & Net Total Calculation
-    function updateRentalPrice() {
-      const select = document.getElementById('jewellerySelect');
-      const selectedOption = select.options[select.selectedIndex];
-      const price = selectedOption ? parseFloat(selectedOption.getAttribute('data-price')) || 0 : 0;
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-700 mb-1">Function / Event Category *</label>
+                            <select id="rental-function" required class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-800 bg-white">
+                                <option value="">-- Select Function --</option>
+                                <option value="Marriage">Marriage</option>
+                                <option value="Baby Shower">Baby Shower</option>
+                                <option value="Reception">Reception</option>
+                                <option value="Engagement">Engagement</option>
+                                <option value="Naming Ceremony">Naming Ceremony</option>
+                                <option value="Puberty Ceremony">Puberty Ceremony</option>
+                                <option value="Other">Other Occasion</option>
+                            </select>
+                        </div>
 
-      document.getElementById('rentalPrice').value = price;
-      calculateNetTotal();
-    }
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-700 mb-1">Rental Booked Date *</label>
+                            <input type="date" id="rental-booked-date" required class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-800">
+                        </div>
 
-    function calculateNetTotal() {
-      const rentalPrice = parseFloat(document.getElementById('rentalPrice').value) || 0;
-      let discountAmount = parseFloat(document.getElementById('discountAmount').value) || 0;
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-700 mb-1">Expected Return Date *</label>
+                            <input type="date" id="rental-return-date" required class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-800">
+                        </div>
+                    </div>
 
-      if (discountAmount < 0) discountAmount = 0;
-      if (discountAmount > rentalPrice) discountAmount = rentalPrice;
+                    <!-- Payment Calculations -->
+                    <div class="bg-stone-100 p-4 rounded-lg border border-stone-300 grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-700 mb-1">Advance Amount Paid (₹) *</label>
+                            <input type="number" id="rental-advance-paid" oninput="calculateRemaining()" required min="0" class="w-full p-2.5 border border-gray-300 rounded-lg font-bold text-emerald-800" placeholder="0">
+                        </div>
 
-      const netTotal = rentalPrice - discountAmount;
-      document.getElementById('netTotal').value = netTotal.toFixed(2);
-    }
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-700 mb-1">Remaining Balance Due (₹)</label>
+                            <input type="number" id="rental-remaining-balance" readonly class="w-full p-2.5 bg-gray-200 border border-gray-300 rounded-lg font-bold text-red-800" placeholder="0">
+                        </div>
 
-    // Mouse-Over Image Preview Logic
-    const previewContainer = document.getElementById('imagePreviewContainer');
-    const previewTag = document.getElementById('imagePreviewTag');
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-700 mb-1">Payment Status</label>
+                            <select id="rental-pay-status" class="w-full p-2.5 border border-gray-300 rounded-lg bg-white">
+                                <option value="Advance Paid">Advance Paid</option>
+                                <option value="Fully Paid">Fully Paid</option>
+                                <option value="Pending">Pending</option>
+                            </select>
+                        </div>
+                    </div>
 
-    function showImagePreview(src, event) {
-      if (!src || !previewTag || !previewContainer) return;
-      previewTag.src = src;
-      previewContainer.style.display = 'block';
-      moveImagePreview(event);
-    }
+                    <div class="flex justify-end gap-3">
+                        <button type="reset" class="px-5 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 transition">Reset Form</button>
+                        <button type="submit" id="btn-save-rental" class="px-6 py-2.5 bg-red-800 hover:bg-red-900 text-white font-semibold rounded-lg shadow-md transition flex items-center gap-2">
+                            <i class="fa-solid fa-paper-plane"></i> Submit Rental Booking
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
 
-    function moveImagePreview(event) {
-      if (!previewContainer) return;
-      const offsetX = 20;
-      const offsetY = 20;
-      
-      let x = event.pageX + offsetX;
-      let y = event.pageY + offsetY;
+        <!-- TAB 2: ITEM STATUS & CATALOG -->
+        <section id="tab-status" class="tab-content hidden space-y-6">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-900 font-serif">Jewellery Inventory & Status Tracking</h2>
+                    <p class="text-sm text-gray-600">Track available items, active rentals, and record returns.</p>
+                </div>
+                <div class="flex gap-2 w-full md:w-auto">
+                    <input type="text" id="status-search" onkeyup="filterStatusCatalog()" placeholder="Search jewellery by Name or ID..." class="p-2 border border-gray-300 rounded-lg text-sm w-full md:w-64">
+                    <select id="status-filter" onchange="filterStatusCatalog()" class="p-2 border border-gray-300 rounded-lg text-sm bg-white">
+                        <option value="ALL">All Items</option>
+                        <option value="Available">Available Only</option>
+                        <option value="Rented">Currently Rented</option>
+                    </select>
+                </div>
+            </div>
 
-      previewContainer.style.top = y + 'px';
-      previewContainer.style.left = x + 'px';
-    }
+            <!-- Grid Display -->
+            <div id="catalog-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <!-- Cards injected via JS -->
+            </div>
 
-    function hideImagePreview() {
-      if (!previewContainer || !previewTag) return;
-      previewContainer.style.display = 'none';
-      previewTag.src = '';
-    }
+            <!-- Active Rentals Log Table -->
+            <div class="bg-white rounded-xl shadow p-6 border border-gray-200 mt-8">
+                <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-clock-rotate-left text-amber-700"></i> Active Rental Ledger
+                </h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs border-collapse">
+                        <thead>
+                            <tr class="bg-stone-100 text-stone-700 border-b">
+                                <th class="p-3">Rental ID</th>
+                                <th class="p-3">Item Details</th>
+                                <th class="p-3">Customer Info</th>
+                                <th class="p-3">Function / Area</th>
+                                <th class="p-3">Booked / Return Date</th>
+                                <th class="p-3">Financials</th>
+                                <th class="p-3">Status</th>
+                                <th class="p-3 text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="active-rentals-table-body" class="divide-y divide-gray-200">
+                            <!-- Injected dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
 
-    // Catalog Rendering Logic
-    function renderCatalog() {
-      const grid = document.getElementById('catalogGrid');
-      if (!grid) return;
+        <!-- TAB 3: ADMIN INVENTORY MANAGEMENT -->
+        <section id="tab-admin" class="tab-content hidden space-y-6">
+            <div class="bg-white rounded-xl shadow-md p-6 border-t-4 border-amber-600">
+                <div class="flex justify-between items-center mb-4">
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-900 flex items-center gap-2">
+                            <i class="fa-solid fa-folder-plus text-amber-600"></i> Admin - Jewellery Inventory Controller
+                        </h2>
+                        <p class="text-sm text-gray-600">Add new rental sets, edit pricing, or remove old inventory items.</p>
+                    </div>
+                    <span class="bg-amber-100 text-amber-900 text-xs font-semibold px-3 py-1 rounded-full border border-amber-300">
+                        <i class="fa-solid fa-lock text-amber-700"></i> Admin Authenticated
+                    </span>
+                </div>
 
-      if (!inventoryData || inventoryData.length === 0) {
-        grid.innerHTML = '<p>No items found in catalog.</p>';
-        return;
-      }
+                <!-- Add / Edit Form -->
+                <form id="admin-item-form" onsubmit="handleAdminItemSubmit(event)" class="space-y-4 bg-amber-50/40 p-5 rounded-xl border border-amber-200">
+                    <input type="hidden" id="admin-edit-id" value="">
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-700 mb-1">Jewellery ID Code *</label>
+                            <input type="text" id="admin-item-id" required class="w-full p-2.5 border border-gray-300 rounded-lg uppercase" placeholder="e.g. JWL-101">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-700 mb-1">Jewellery Item Title *</label>
+                            <input type="text" id="admin-item-name" required class="w-full p-2.5 border border-gray-300 rounded-lg" placeholder="e.g. Heavy Bridal Temple Antique Haram Set">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-700 mb-1">Category *</label>
+                            <select id="admin-item-category" required class="w-full p-2.5 border border-gray-300 rounded-lg bg-white">
+                                <option value="Haram / Necklace Set">Haram / Necklace Set</option>
+                                <option value="Antique Bridal Choker">Antique Bridal Choker</option>
+                                <option value="Oddiyanam / Waist Belt">Oddiyanam / Waist Belt</option>
+                                <option value="Nethi Chutti / Maang Tikka">Nethi Chutti / Maang Tikka</option>
+                                <option value="Full Bridal Combo Set">Full Bridal Combo Set</option>
+                                <option value="Bangles & Accessories">Bangles & Accessories</option>
+                            </select>
+                        </div>
+                    </div>
 
-      grid.innerHTML = inventoryData.map(item => {
-        const isRented = String(item.status).toUpperCase() === 'RENTED';
-        const itemPrice = item.rentalPrice !== undefined ? item.rentalPrice : (item.price || 0);
-        
-        let returnDateFormatted = 'N/A';
-        if (isRented && item.expectedReturnDate) {
-          const dateObj = new Date(item.expectedReturnDate);
-          if (!isNaN(dateObj)) {
-            returnDateFormatted = dateObj.toLocaleDateString('en-IN', {
-              day: '2-digit',
-              month: 'short',
-              year: 'numeric'
-            });
-          }
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-700 mb-1">Daily Rental Price (₹) *</label>
+                            <input type="number" id="admin-item-price" required min="0" class="w-full p-2.5 border border-gray-300 rounded-lg" placeholder="1500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-700 mb-1">Deposit Amount (₹) *</label>
+                            <input type="number" id="admin-item-deposit" required min="0" class="w-full p-2.5 border border-gray-300 rounded-lg" placeholder="3000">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-700 mb-1">Upload Jewellery Photo *</label>
+                            <input type="file" id="admin-item-image" accept="image/*" class="w-full text-xs text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-amber-100 file:text-amber-800 hover:file:bg-amber-200">
+                            <input type="hidden" id="admin-item-img-base64" value="">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-700 mb-1">Description / Set Includes</label>
+                        <textarea id="admin-item-desc" rows="2" class="w-full p-2 border border-gray-300 rounded-lg text-xs" placeholder="Includes Haram, Choker, Earrings, and Nethi Chutti..."></textarea>
+                    </div>
+
+                    <div class="flex justify-end gap-2">
+                        <button type="button" onclick="resetAdminForm()" class="px-4 py-2 text-xs border border-gray-300 rounded-lg hover:bg-gray-100">Cancel / Reset</button>
+                        <button type="submit" class="px-6 py-2 bg-amber-700 hover:bg-amber-800 text-white text-xs font-bold rounded-lg shadow transition">
+                            <i class="fa-solid fa-save"></i> Save Jewellery Item
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Current Inventory Manage Table -->
+                <div class="mt-8">
+                    <h3 class="text-md font-bold text-gray-800 mb-3">Manage Existing Inventory Items</h3>
+                    <div class="overflow-x-auto border border-gray-200 rounded-lg">
+                        <table class="w-full text-left text-xs">
+                            <thead class="bg-gray-100 text-gray-700 border-b">
+                                <tr>
+                                    <th class="p-3">Image</th>
+                                    <th class="p-3">Item ID</th>
+                                    <th class="p-3">Name</th>
+                                    <th class="p-3">Category</th>
+                                    <th class="p-3">Rental Fee</th>
+                                    <th class="p-3">Deposit</th>
+                                    <th class="p-3">Status</th>
+                                    <th class="p-3 text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-inventory-table" class="divide-y divide-gray-200 bg-white">
+                                <!-- Injected dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Modal: GitHub API & Password Configuration -->
+    <div id="config-modal" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-xl shadow-2xl max-w-lg w-full p-6 space-y-4">
+            <div class="flex justify-between items-center border-b pb-3">
+                <h3 class="text-lg font-bold text-red-950 flex items-center gap-2">
+                    <i class="fa-solid fa-sliders text-amber-600"></i> Store GitHub Backend Config
+                </h3>
+                <button onclick="toggleConfigModal()" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+            
+            <p class="text-xs text-gray-600">
+                To sync data directly to GitHub repository (for persistence without server), enter your GitHub Token and Repo details below.
+            </p>
+
+            <div class="space-y-3 text-xs">
+                <div>
+                    <label class="block font-semibold mb-1">GitHub Owner / Username</label>
+                    <input type="text" id="cfg-owner" class="w-full p-2 border rounded" placeholder="e.g. myusername">
+                </div>
+                <div>
+                    <label class="block font-semibold mb-1">GitHub Repository Name</label>
+                    <input type="text" id="cfg-repo" class="w-full p-2 border rounded" placeholder="e.g. lakshmi-fancy-store">
+                </div>
+                <div>
+                    <label class="block font-semibold mb-1">GitHub Fine-Grained Personal Access Token (PAT)</label>
+                    <input type="password" id="cfg-token" class="w-full p-2 border rounded" placeholder="ghp_xxxxxxxxxxxx">
+                    <span class="text-[10px] text-gray-500">Requires Contents: Read & Write permission.</span>
+                </div>
+                <div>
+                    <label class="block font-semibold mb-1">Admin Access Password</label>
+                    <input type="password" id="cfg-admin-pass" class="w-full p-2 border rounded" value="admin123">
+                </div>
+            </div>
+
+            <div class="flex justify-end gap-2 pt-2 border-t">
+                <button onclick="saveConfiguration()" class="px-4 py-2 bg-red-800 text-white rounded text-xs font-semibold hover:bg-red-900">
+                    Save Configuration
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-stone-900 text-stone-400 text-xs py-6 mt-12 border-t border-stone-800">
+        <div class="max-w-7xl mx-auto px-4 text-center space-y-2">
+            <p class="font-serif text-amber-200 text-sm">Lakshmi Fancy Store - Bridal Jewellery Rentals</p>
+            <p>Serving Rajapalayam | Seithur | Muhavur | Srivilliputhoor</p>
+            <p class="text-stone-500 text-[11px]">Static GitHub Pages Web App • Free Cloud Persistence Engine</p>
+        </div>
+    </footer>
+
+    <!-- App Logic Script -->
+    <script>
+        const DEFAULT_CONFIG = {
+            owner: '',
+            repo: '',
+            branch: 'main',
+            filePath: 'data/inventory.json',
+            token: '',
+            adminPassword: 'admin123'
+        };
+
+        let appConfig = JSON.parse(localStorage.getItem('lfs_config')) || DEFAULT_CONFIG;
+        let dbData = { items: [], rentals: [] };
+        let currentSha = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('rental-booked-date').value = today;
+            
+            document.getElementById('cfg-owner').value = appConfig.owner || '';
+            document.getElementById('cfg-repo').value = appConfig.repo || '';
+            document.getElementById('cfg-token').value = appConfig.token || '';
+            document.getElementById('cfg-admin-pass').value = appConfig.adminPassword || 'admin123';
+
+            document.getElementById('admin-item-image').addEventListener('change', handleImageUpload);
+
+            fetchDataFromGitHub();
+        });
+
+        function switchTab(tabName) {
+            if (tabName === 'admin') {
+                const enteredPass = prompt("Admin Password Required:");
+                if (enteredPass !== appConfig.adminPassword) {
+                    alert("Incorrect Admin Password!");
+                    return;
+                }
+            }
+
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(sec => sec.classList.add('hidden'));
+
+            document.getElementById(`tab-btn-${tabName}`).classList.add('active');
+            document.getElementById(`tab-${tabName}`).classList.remove('hidden');
+
+            if (tabName === 'status') renderCatalogAndStatus();
+            if (tabName === 'admin') renderAdminTable();
         }
 
-        return `
-          <div class="catalog-card">
-            <img 
-              src="${item.imageUrl || 'images/placeholder.jpg'}" 
-              alt="${item.name}" 
-              class="jewellery-thumb" 
-              onmouseover="showImagePreview('${item.imageUrl || ''}', event)" 
-              onmousemove="moveImagePreview(event)" 
-              onmouseout="hideImagePreview()"
-            />
-            <h3 style="font-size: 0.95rem; margin-bottom: 4px; color: #2d3748;">${item.name}</h3>
-            <p style="font-size: 0.82rem; color: #718096; margin-bottom: 2px;"><strong>Code:</strong> ${item.id}</p>
-            <p style="font-size: 0.82rem; color: #718096; margin-bottom: 8px;"><strong>Rental Price:</strong> ₹${itemPrice}</p>
-            
-            <div>
-              ${isRented ? `
-                <span class="badge-rented">Rented Out</span>
-                <div class="return-info">
-                  📅 Return Date:<br/><strong>${returnDateFormatted}</strong>
-                </div>
-              ` : `
-                <span class="badge-available">Available</span>
-              `}
-            </div>
-          </div>
-        `;
-      }).join('');
-    }
+        function toggleConfigModal() {
+            document.getElementById('config-modal').classList.toggle('hidden');
+        }
 
-    // Form Submit Handler
-    document.getElementById('rentalForm').addEventListener('submit', function(event) {
-      event.preventDefault();
+        function saveConfiguration() {
+            appConfig.owner = document.getElementById('cfg-owner').value.trim();
+            appConfig.repo = document.getElementById('cfg-repo').value.trim();
+            appConfig.token = document.getElementById('cfg-token').value.trim();
+            appConfig.adminPassword = document.getElementById('cfg-admin-pass').value.trim() || 'admin123';
 
-      const selectedId = document.getElementById('jewellerySelect').value;
-      const netTotal = document.getElementById('netTotal').value;
-      const returnDate = document.getElementById('expectedReturnDateInput').value;
+            localStorage.setItem('lfs_config', JSON.stringify(appConfig));
+            toggleConfigModal();
+            alert('Saved! Syncing with GitHub...');
+            fetchDataFromGitHub();
+        }
 
-      if (!selectedId) {
-        alert('Please select a jewellery item.');
-        return;
-      }
+        async function fetchDataFromGitHub() {
+            const badge = document.getElementById('api-status-badge');
+            badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-amber-400 inline-block animate-ping"></span> Syncing...';
 
-      const itemIndex = inventoryData.findIndex(item => item.id === selectedId);
-      if (itemIndex !== -1) {
-        inventoryData[itemIndex].status = 'RENTED';
-        inventoryData[itemIndex].expectedReturnDate = returnDate;
-      }
+            if (!appConfig.owner || !appConfig.repo) {
+                badge.className = 'text-amber-400 flex items-center gap-1';
+                badge.innerHTML = '⚠️ Setup Required (Click Gear icon)';
+                loadLocalFallback();
+                return;
+            }
 
-      alert(`Rental recorded successfully!\nNet Total: ₹${netTotal}\nExpected Return Date: ${returnDate}`);
-      
-      renderCatalog();
-      this.reset();
-      calculateNetTotal();
-    });
+            const url = `https://api.github.com/repos/${appConfig.owner}/${appConfig.repo}/contents/${appConfig.filePath}`;
+            const headers = {};
+            if (appConfig.token) headers['Authorization'] = `token ${appConfig.token}`;
 
-    // Initialize Page
-    document.addEventListener('DOMContentLoaded', loadInventory);
-  </script>
+            try {
+                const response = await fetch(url, { headers });
+                if (response.ok) {
+                    const data = await response.json();
+                    currentSha = data.sha;
+                    const decodedData = JSON.parse(decodeURIComponent(escape(atob(data.content))));
+                    dbData = decodedData;
+                    
+                    badge.className = 'text-emerald-400 flex items-center gap-1';
+                    badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-400 inline-block"></span> GitHub Connected';
+                    populateRentalDropdown();
+                } else {
+                    throw new Error(`GitHub HTTP ${response.status}`);
+                }
+            } catch (err) {
+                console.warn('GitHub API sync failed, falling back to local memory:', err);
+                badge.className = 'text-red-400 flex items-center gap-1';
+                badge.innerHTML = '⚠️ Sync Error / Offline';
+                loadLocalFallback();
+            }
+        }
+
+        async function saveDataToGitHub() {
+            localStorage.setItem('lfs_fallback_db', JSON.stringify(dbData));
+
+            if (!appConfig.owner || !appConfig.repo || !appConfig.token) {
+                console.warn('GitHub details missing. Saved to local storage only.');
+                return;
+            }
+
+            const url = `https://api.github.com/repos/${appConfig.owner}/${appConfig.repo}/contents/${appConfig.filePath}`;
+            const contentJson = JSON.stringify(dbData, null, 2);
+            const encodedContent = btoa(unescape(encodeURIComponent(contentJson)));
+
+            const payload = {
+                message: `Update inventory database - ${new Date().toLocaleString()}`,
+                content: encodedContent,
+                sha: currentSha,
+                branch: appConfig.branch || 'main'
+            };
+
+            try {
+                const response = await fetch(url, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `token ${appConfig.token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                if (response.ok) {
+                    const resData = await response.json();
+                    currentSha = resData.content.sha;
+                } else {
+                    console.error('Failed to commit to GitHub:', await response.text());
+                }
+            } catch (e) {
+                console.error('Error committing to GitHub:', e);
+            }
+        }
+
+        function loadLocalFallback() {
+            const saved = localStorage.getItem('lfs_fallback_db');
+            if (saved) {
+                dbData = JSON.parse(saved);
+            } else {
+                dbData = {
+                    items: [
+                        {
+                            id: 'JWL-101',
+                            name: 'Grand Antique Lakshmi Bridal Haram',
+                            category: 'Haram / Necklace Set',
+                            price: 2500,
+                            deposit: 5000,
+                            image: 'https://images.unsplash.com/photo-1601121141461-9d6647bca1ed?auto=format&fit=crop&w=400&q=80',
+                            description: 'Heavy antique gold finish Lakshmi haram with matching earrings.',
+                            status: 'Available'
+                        }
+                    ],
+                    rentals: []
+                };
+            }
+            populateRentalDropdown();
+        }
+
+        function handleImageUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                document.getElementById('admin-item-img-base64').value = evt.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function populateRentalDropdown() {
+            const select = document.getElementById('rental-item-select');
+            select.innerHTML = '<option value="">-- Choose Available Jewellery --</option>';
+
+            const availItems = dbData.items.filter(item => item.status === 'Available');
+            availItems.forEach(item => {
+                const opt = document.createElement('option');
+                opt.value = item.id;
+                opt.textContent = `[${item.id}] ${item.name} - ₹${item.price}/day`;
+                select.appendChild(opt);
+            });
+        }
+
+        function autoPopulateItemDetails() {
+            const selectedId = document.getElementById('rental-item-select').value;
+            const item = dbData.items.find(i => i.id === selectedId);
+            const previewBox = document.getElementById('rental-item-preview');
+
+            if (item) {
+                document.getElementById('rental-price-display').value = item.price;
+                document.getElementById('rental-deposit-display').value = item.deposit;
+
+                document.getElementById('preview-img').src = item.image || 'https://via.placeholder.com/150';
+                document.getElementById('preview-title').textContent = item.name;
+                document.getElementById('preview-category').textContent = item.category;
+                document.getElementById('preview-desc').textContent = item.description || 'No description available.';
+                previewBox.classList.remove('hidden');
+
+                calculateRemaining();
+            } else {
+                document.getElementById('rental-price-display').value = '';
+                document.getElementById('rental-deposit-display').value = '';
+                previewBox.classList.add('hidden');
+            }
+        }
+
+        function calculateRemaining() {
+            const price = parseFloat(document.getElementById('rental-price-display').value) || 0;
+            const advance = parseFloat(document.getElementById('rental-advance-paid').value) || 0;
+            const remaining = Math.max(0, price - advance);
+            document.getElementById('rental-remaining-balance').value = remaining;
+        }
+
+        async function handleRentalSubmit(e) {
+            e.preventDefault();
+
+            const itemId = document.getElementById('rental-item-select').value;
+            const item = dbData.items.find(i => i.id === itemId);
+
+            if (!item) {
+                alert('Please select a valid jewellery item.');
+                return;
+            }
+
+            const phone = document.getElementById('cust-phone').value.trim();
+            if (!/^[0-9]{10}$/.test(phone)) {
+                alert('Validation Error: Customer Phone Number must be exactly 10 numeric digits.');
+                return;
+            }
+
+            const rentalRecord = {
+                rentalId: 'LFS-R-' + Date.now().toString().slice(-6),
+                itemId: item.id,
+                itemName: item.name,
+                customerName: document.getElementById('cust-name').value.trim(),
+                customerPhone: phone,
+                customerArea: document.getElementById('cust-area').value,
+                functionCategory: document.getElementById('rental-function').value,
+                bookedDate: document.getElementById('rental-booked-date').value,
+                returnDate: document.getElementById('rental-return-date').value,
+                price: parseFloat(document.getElementById('rental-price-display').value),
+                advance: parseFloat(document.getElementById('rental-advance-paid').value),
+                remaining: parseFloat(document.getElementById('rental-remaining-balance').value),
+                paymentStatus: document.getElementById('rental-pay-status').value,
+                rentalStatus: 'Active'
+            };
+
+            item.status = 'Rented';
+            dbData.rentals.push(rentalRecord);
+
+            await saveDataToGitHub();
+
+            alert(`Rental Entry Recorded Successfully!\nRental ID: ${rentalRecord.rentalId}`);
+            document.getElementById('rental-form').reset();
+            document.getElementById('rental-item-preview').classList.add('hidden');
+            document.getElementById('rental-booked-date').value = new Date().toISOString().split('T')[0];
+            populateRentalDropdown();
+        }
+
+        function renderCatalogAndStatus() {
+            const grid = document.getElementById('catalog-grid');
+            grid.innerHTML = '';
+
+            dbData.items.forEach(item => {
+                const isRented = item.status === 'Rented';
+                const card = document.createElement('div');
+                card.className = `glass-card rounded-xl overflow-hidden shadow-sm border ${isRented ? 'border-amber-300 bg-amber-50/20' : 'border-emerald-200'}`;
+
+                card.innerHTML = `
+                    <div class="relative h-48 bg-stone-200">
+                        <img src="${item.image || 'https://via.placeholder.com/300'}" class="w-full h-full object-cover">
+                        <span class="absolute top-3 right-3 px-3 py-1 rounded-full text-xs font-bold ${isRented ? 'bg-red-800 text-white' : 'bg-emerald-600 text-white'} shadow">
+                            ${isRented ? 'RENTED OUT' : 'AVAILABLE'}
+                        </span>
+                    </div>
+                    <div class="p-4 space-y-2">
+                        <div class="flex justify-between items-start">
+                            <span class="text-[10px] font-bold text-amber-800 uppercase px-2 py-0.5 bg-amber-100 rounded">${item.category}</span>
+                            <span class="text-xs font-mono text-gray-500">${item.id}</span>
+                        </div>
+                        <h3 class="font-bold text-gray-900 text-sm leading-tight">${item.name}</h3>
+                        <p class="text-xs text-gray-500 line-clamp-2">${item.description || 'No description provided.'}</p>
+                        <div class="pt-2 border-t border-gray-100 flex justify-between items-center text-xs">
+                            <div>
+                                <span class="text-gray-500 block text-[10px]">Rental Rate</span>
+                                <span class="font-extrabold text-red-900 text-sm">₹${item.price} / day</span>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-gray-500 block text-[10px]">Deposit</span>
+                                <span class="font-semibold text-gray-700">₹${item.deposit}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+
+            renderActiveRentalsTable();
+        }
+
+        function renderActiveRentalsTable() {
+            const tbody = document.getElementById('active-rentals-table-body');
+            tbody.innerHTML = '';
+
+            const activeRentals = dbData.rentals.filter(r => r.rentalStatus === 'Active');
+
+            if (activeRentals.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" class="text-center py-6 text-gray-400">No active rental orders found.</td></tr>`;
+                return;
+            }
+
+            activeRentals.forEach(r => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-amber-50/40 text-xs";
+                tr.innerHTML = `
+                    <td class="p-3 font-mono font-bold text-gray-700">${r.rentalId}</td>
+                    <td class="p-3 font-semibold text-gray-900">${r.itemName}<div class="text-[10px] text-gray-500">ID: ${r.itemId}</div></td>
+                    <td class="p-3"><div class="font-medium">${r.customerName}</div><div class="text-[10px] text-blue-700 font-mono">${r.customerPhone}</div></td>
+                    <td class="p-3"><span class="px-2 py-0.5 rounded bg-purple-100 text-purple-800 font-semibold text-[10px]">${r.functionCategory}</span><div class="text-[10px] text-gray-600 mt-0.5">${r.customerArea}</div></td>
+                    <td class="p-3"><div>Booked: ${r.bookedDate}</div><div class="text-red-700 font-semibold">Return: ${r.returnDate}</div></td>
+                    <td class="p-3"><div>Price: ₹${r.price}</div><div class="text-emerald-700">Adv: ₹${r.advance}</div><div class="text-red-800 font-bold">Due: ₹${r.remaining}</div></td>
+                    <td class="p-3"><span class="px-2 py-1 rounded bg-amber-100 text-amber-900 font-bold text-[10px]">${r.paymentStatus}</span></td>
+                    <td class="p-3 text-center">
+                        <button onclick="markReturned('${r.rentalId}', '${r.itemId}')" class="px-3 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded text-[11px] font-semibold transition">
+                            <i class="fa-solid fa-check"></i> Mark Returned
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        async function markReturned(rentalId, itemId) {
+            if (!confirm(`Confirm return of jewellery for Rental ${rentalId}?`)) return;
+
+            const rental = dbData.rentals.find(r => r.rentalId === rentalId);
+            const item = dbData.items.find(i => i.id === itemId);
+
+            if (rental) rental.rentalStatus = 'Returned';
+            if (item) item.status = 'Available';
+
+            await saveDataToGitHub();
+            alert('Item returned successfully!');
+            renderCatalogAndStatus();
+            populateRentalDropdown();
+        }
+
+        function filterStatusCatalog() {
+            const query = document.getElementById('status-search').value.toLowerCase();
+            const filter = document.getElementById('status-filter').value;
+            const cards = document.querySelectorAll('#catalog-grid > div');
+
+            cards.forEach(card => {
+                const text = card.textContent.toLowerCase();
+                const isRented = text.includes('rented out');
+                let matchesFilter = (filter === 'ALL') || (filter === 'Available' && !isRented) || (filter === 'Rented' && isRented);
+                card.classList.toggle('hidden', !(matchesFilter && text.includes(query)));
+            });
+        }
+
+        function renderAdminTable() {
+            const tbody = document.getElementById('admin-inventory-table');
+            tbody.innerHTML = '';
+
+            dbData.items.forEach(item => {
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-gray-50';
+                tr.innerHTML = `
+                    <td class="p-3"><img src="${item.image || 'https://via.placeholder.com/50'}" class="w-10 h-10 object-cover rounded border"></td>
+                    <td class="p-3 font-mono font-bold">${item.id}</td>
+                    <td class="p-3 font-medium">${item.name}</td>
+                    <td class="p-3 text-xs text-gray-600">${item.category}</td>
+                    <td class="p-3 font-bold text-red-800">₹${item.price}</td>
+                    <td class="p-3 text-gray-700">₹${item.deposit}</td>
+                    <td class="p-3"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${item.status === 'Available' ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-800'}">${item.status}</span></td>
+                    <td class="p-3 text-right space-x-2">
+                        <button onclick="editAdminItem('${item.id}')" class="text-blue-600 hover:text-blue-800 font-semibold text-xs"><i class="fa-solid fa-pen"></i> Edit</button>
+                        <button onclick="deleteAdminItem('${item.id}')" class="text-red-600 hover:text-red-800 font-semibold text-xs"><i class="fa-solid fa-trash"></i> Delete</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        async function handleAdminItemSubmit(e) {
+            e.preventDefault();
+
+            const editId = document.getElementById('admin-edit-id').value;
+            const itemId = document.getElementById('admin-item-id').value.trim().toUpperCase();
+            const name = document.getElementById('admin-item-name').value.trim();
+            const category = document.getElementById('admin-item-category').value;
+            const price = parseFloat(document.getElementById('admin-item-price').value);
+            const deposit = parseFloat(document.getElementById('admin-item-deposit').value);
+            const desc = document.getElementById('admin-item-desc').value.trim();
+            const base64Img = document.getElementById('admin-item-img-base64').value;
+
+            if (editId) {
+                const existing = dbData.items.find(i => i.id === editId);
+                if (existing) {
+                    existing.id = itemId;
+                    existing.name = name;
+                    existing.category = category;
+                    existing.price = price;
+                    existing.deposit = deposit;
+                    existing.description = desc;
+                    if (base64Img) existing.image = base64Img;
+                }
+            } else {
+                if (dbData.items.some(i => i.id === itemId)) {
+                    alert(`Item ID ${itemId} already exists!`);
+                    return;
+                }
+                dbData.items.push({
+                    id: itemId,
+                    name: name,
+                    category: category,
+                    price: price,
+                    deposit: deposit,
+                    description: desc,
+                    image: base64Img || 'https://images.unsplash.com/photo-1601121141461-9d6647bca1ed?auto=format&fit=crop&w=400&q=80',
+                    status: 'Available'
+                });
+            }
+
+            await saveDataToGitHub();
+            alert('Jewellery Inventory Saved Successfully!');
+            resetAdminForm();
+            renderAdminTable();
+            populateRentalDropdown();
+        }
+
+        function editAdminItem(id) {
+            const item = dbData.items.find(i => i.id === id);
+            if (!item) return;
+
+            document.getElementById('admin-edit-id').value = item.id;
+            document.getElementById('admin-item-id').value = item.id;
+            document.getElementById('admin-item-name').value = item.name;
+            document.getElementById('admin-item-category').value = item.category;
+            document.getElementById('admin-item-price').value = item.price;
+            document.getElementById('admin-item-deposit').value = item.deposit;
+            document.getElementById('admin-item-desc').value = item.description || '';
+            document.getElementById('admin-item-img-base64').value = item.image || '';
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        async function deleteAdminItem(id) {
+            if (!confirm(`Are you sure you want to delete jewellery item [${id}]?`)) return;
+
+            dbData.items = dbData.items.filter(i => i.id !== id);
+            await saveDataToGitHub();
+            renderAdminTable();
+            populateRentalDropdown();
+        }
+
+        function resetAdminForm() {
+            document.getElementById('admin-item-form').reset();
+            document.getElementById('admin-edit-id').value = '';
+            document.getElementById('admin-item-img-base64').value = '';
+        }
+    </script>
 </body>
 </html>
