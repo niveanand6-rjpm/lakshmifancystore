@@ -1,857 +1,1180 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lakshmi Fancy Store - Bridal Jewellery Rentals</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        body { background-color: #faf8f5; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        .tab-btn.active { border-bottom: 3px solid #b91c1c; color: #b91c1c; font-weight: bold; }
-        .glass-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border: 1px solid #f3e8ff; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lakshmi Fancy Store - Rental & Inventory Management</title>
+  <style>
+    :root {
+      --primary: #8b0000;
+      --primary-hover: #a00000;
+      --secondary: #d4af37;
+      --dark: #2c3e50;
+      --light: #f8f9fa;
+      --gray: #6c757d;
+      --success: #28a745;
+      --danger: #dc3545;
+      --warning: #ffc107;
+      --border: #e0e0e0;
+      --shadow: 0 4px 12px rgba(0,0,0,0.08);
+      --radius: 8px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background-color: #f4f6f9; color: #333; line-height: 1.5; padding-bottom: 40px; }
+
+    /* Header & Branding */
+    header {
+      background: linear-gradient(135deg, var(--primary), #5a0000);
+      color: white;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: var(--shadow);
+    }
+    .brand-container { display: flex; align-items: center; gap: 15px; }
+    .brand-logo { width: 55px; height: 55px; object-fit: cover; border-radius: 50%; border: 2px solid var(--secondary); background: #fff; }
+    .brand-title h1 { font-size: 1.6rem; font-weight: 700; color: var(--secondary); letter-spacing: 0.5px; }
+    .brand-title p { font-size: 0.85rem; opacity: 0.85; }
+
+    /* Navigation Tabs */
+    nav { background: #fff; border-bottom: 2px solid var(--border); display: flex; justify-content: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 4px rgba(0,0,0,0.04); }
+    .nav-btn {
+      padding: 1rem 2rem;
+      border: none;
+      background: none;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--gray);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border-bottom: 3px solid transparent;
+    }
+    .nav-btn:hover { color: var(--primary); background: #fdf8f8; }
+    .nav-btn.active { color: var(--primary); border-bottom-color: var(--primary); background: #fff; }
+
+    /* Container & Layout */
+    .container { max-width: 1200px; margin: 25px auto; padding: 0 20px; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; animation: fadeIn 0.3s ease-in; }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* Cards & Section Panels */
+    .panel { background: white; padding: 25px; border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 25px; border: 1px solid var(--border); }
+    .panel-title { font-size: 1.25rem; font-weight: 700; color: var(--primary); margin-bottom: 20px; border-bottom: 2px solid #f0f0f0; padding-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+
+    /* Forms & Grid */
+    .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px; margin-bottom: 20px; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-group.full-width { grid-column: 1 / -1; }
+    label { font-size: 0.88rem; font-weight: 600; color: var(--dark); }
+    input, select, textarea {
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border 0.2s;
+    }
+    input:focus, select:focus, textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(139, 0, 0, 0.1); }
+    input[readonly] { background-color: #e9ecef; cursor: not-allowed; }
+
+    /* Buttons */
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .btn-primary { background: var(--primary); color: white; }
+    .btn-primary:hover { background: var(--primary-hover); }
+    .btn-secondary { background: var(--secondary); color: var(--dark); }
+    .btn-secondary:hover { background: #c5a028; }
+    .btn-danger { background: var(--danger); color: white; }
+    .btn-danger:hover { background: #bd2130; }
+    .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--dark); }
+    .btn-outline:hover { background: #f1f1f1; }
+
+    /* Tables */
+    .table-responsive { overflow-x: auto; margin-top: 15px; }
+    table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.92rem; }
+    th, td { padding: 12px 15px; border-bottom: 1px solid var(--border); }
+    th { background: #f8f9fa; font-weight: 700; color: var(--dark); white-space: nowrap; }
+    tr:hover { background: #fdfdfd; }
+
+    /* Status Badges */
+    .badge { padding: 4px 10px; border-radius: 20px; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; display: inline-block; }
+    .badge-available { background: #e2f0d9; color: #385723; }
+    .badge-rented { background: #fce4d6; color: #c65911; }
+    .badge-maintenance { background: #fff2cc; color: #806000; }
+
+    /* Image Hover Preview & Catalog Cards */
+    .catalog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
+    .card { background: white; border-radius: var(--radius); border: 1px solid var(--border); overflow: hidden; box-shadow: var(--shadow); transition: transform 0.2s; }
+    .card:hover { transform: translateY(-4px); }
+    .card-img-wrap { width: 100%; height: 200px; position: relative; overflow: hidden; background: #eaeded; cursor: zoom-in; }
+    .card-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; }
+    .card-img-wrap:hover .card-img { transform: scale(1.08); }
+    .card-body { padding: 15px; }
+    .card-title { font-size: 1.05rem; font-weight: 700; margin-bottom: 6px; color: var(--dark); }
+    .card-meta { font-size: 0.85rem; color: var(--gray); margin-bottom: 10px; }
+    .card-price { font-size: 1.1rem; font-weight: 700; color: var(--primary); margin-bottom: 12px; }
+
+    /* Modal for Image Preview & Receipt */
+    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1000; justify-content: center; align-items: center; padding: 20px; }
+    .modal.active { display: flex; }
+    .modal-content { background: white; border-radius: var(--radius); max-width: 600px; width: 100%; padding: 25px; position: relative; max-height: 90vh; overflow-y: auto; }
+    .modal-close { position: absolute; top: 15px; right: 20px; font-size: 1.5rem; cursor: pointer; border: none; background: none; color: var(--gray); }
+    .img-modal-body img { width: 100%; max-height: 70vh; object-fit: contain; border-radius: 6px; }
+
+    /* Printable Receipt Styling */
+    #receiptPrintArea { display: none; }
+    @media print {
+      body * { visibility: hidden; }
+      #receiptPrintArea, #receiptPrintArea * { visibility: visible; }
+      #receiptPrintArea { position: absolute; left: 0; top: 0; width: 100%; padding: 20px; display: block !important; }
+      .no-print { display: none !important; }
+    }
+    .receipt-box { border: 2px dashed #333; padding: 25px; max-width: 500px; margin: 0 auto; background: #fff; }
+    .receipt-header { text-align: center; margin-bottom: 20px; border-bottom: 1px solid #ddd; padding-bottom: 10px; }
+    .receipt-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.95rem; }
+
+    /* Sub-tabs inside Admin */
+    .sub-nav { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+    .sub-btn { padding: 8px 16px; border: none; background: #e9ecef; border-radius: 4px; cursor: pointer; font-weight: 600; color: var(--dark); }
+    .sub-btn.active { background: var(--primary); color: white; }
+
+    /* Helper Utilities */
+    .text-right { text-align: right; }
+    .text-center { text-align: center; }
+    .mb-3 { margin-bottom: 15px; }
+    .summary-card { background: #fdf8f8; border-left: 4px solid var(--primary); padding: 15px; margin-top: 15px; border-radius: 0 var(--radius) var(--radius) 0; }
+  </style>
 </head>
-<body class="min-h-screen flex flex-col text-gray-800">
+<body>
 
-    <!-- Top Navigation Header -->
-    <header class="bg-gradient-to-r from-red-900 via-rose-900 to-amber-900 text-amber-100 shadow-xl">
-        <div class="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-4">
-            <div class="flex items-center gap-3">
-                <div class="bg-amber-400 text-red-950 p-3 rounded-full shadow-lg">
-                    <i class="fa-solid fa-crown text-2xl"></i>
-                </div>
-                <div>
-                    <h1 class="text-3xl font-extrabold tracking-wide font-serif text-amber-300">LAKSHMI FANCY STORE</h1>
-                    <p class="text-xs tracking-widest text-amber-200 uppercase">Premium Bridal Imitation Jewellery Rentals</p>
-                </div>
-            </div>
-            <div class="text-right flex items-center gap-3 bg-red-950/40 px-4 py-2 rounded-lg border border-amber-500/30">
-                <i class="fa-solid fa-store text-amber-400"></i>
-                <div class="text-xs text-amber-200">
-                    <p class="font-semibold text-amber-100">Store Management Portal</p>
-                    <p id="api-status-badge" class="text-amber-400 flex items-center gap-1">
-                        <span class="w-2 h-2 rounded-full bg-amber-400 inline-block animate-pulse"></span> Initializing...
-                    </p>
-                </div>
-            </div>
-        </div>
-    </header>
+  <!-- Top Header -->
+  <header>
+    <div class="brand-container">
+      <img id="storeLogo" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='50' height='50' viewBox='0 0 24 24' fill='none' stroke='%23d4af37' stroke-width='2'><polygon points='12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2'/></svg>" alt="Logo" class="brand-logo">
+      <div class="brand-title">
+        <h1 id="storeTitleHeader">LAKSHMI FANCY STORE</h1>
+        <p>Bridal Imitation Jewellery Rental Terminal</p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-secondary" onclick="exportDataJSON()">Export JSON Data</button>
+      <button class="btn btn-outline" style="color:white; border-color:white;" onclick="document.getElementById('importFileInput').click()">Import JSON</button>
+      <input type="file" id="importFileInput" style="display:none" accept=".json" onchange="importDataJSON(event)">
+    </div>
+  </header>
 
-    <!-- Navigation Tabs & Token Config -->
-    <nav class="bg-white border-b border-amber-200 shadow-sm sticky top-0 z-30">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
-            <div class="flex space-x-8 overflow-x-auto">
-                <button onclick="switchTab('rental')" id="tab-btn-rental" class="tab-btn active py-4 px-3 flex items-center gap-2 text-gray-600 hover:text-red-800 font-medium transition">
-                    <i class="fa-solid fa-receipt"></i> Rental Entry
-                </button>
-                <button onclick="switchTab('status')" id="tab-btn-status" class="tab-btn py-4 px-3 flex items-center gap-2 text-gray-600 hover:text-red-800 font-medium transition">
-                    <i class="fa-solid fa-boxes-stacked"></i> Jewellery Status & Catalog
-                </button>
-                <button onclick="switchTab('admin')" id="tab-btn-admin" class="tab-btn py-4 px-3 flex items-center gap-2 text-gray-600 hover:text-red-800 font-medium transition">
-                    <i class="fa-solid fa-user-shield"></i> Admin Inventory Management
-                </button>
-            </div>
-            <div>
-                <button onclick="toggleConfigModal()" class="text-xs bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-300 px-3 py-1.5 rounded-md font-semibold transition flex items-center gap-1">
-                    <i class="fa-solid fa-gear"></i> Setup Token / Repo
-                </button>
-            </div>
-        </div>
-    </nav>
+  <!-- Navigation Bar -->
+  <nav>
+    <button class="nav-btn active" onclick="switchTab('rentalTab')">Rental Entry</button>
+    <button class="nav-btn" onclick="switchTab('catalogTab')">Jewellery Status & Catalog</button>
+    <button class="nav-btn" onclick="switchTab('adminTab')">Admin Management</button>
+  </nav>
 
-    <!-- Main Content Area -->
-    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <div class="container">
 
-        <!-- TAB 1: RENTAL ENTRY FORM (Sales Person) -->
-        <section id="tab-rental" class="tab-content space-y-6">
-            <div class="bg-white rounded-xl shadow-md p-6 border-l-4 border-red-800">
-                <h2 class="text-2xl font-bold text-red-950 mb-1 flex items-center gap-2">
-                    <i class="fa-solid fa-file-signature text-red-700"></i> New Bridal Jewellery Rental Entry
-                </h2>
-                <p class="text-sm text-gray-600 mb-6">Enter customer booking details and select jewellery items to issue rentals.</p>
-
-                <form id="rental-form" onsubmit="handleRentalSubmit(event)" class="space-y-6">
-                    <!-- Jewellery Selection Section -->
-                    <div class="bg-amber-50/50 p-4 rounded-lg border border-amber-200/60 space-y-4">
-                        <h3 class="text-md font-bold text-amber-900 flex items-center gap-2">
-                            <i class="fa-solid fa-gem text-amber-600"></i> Select Jewellery Item
-                        </h3>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div>
-                                <label class="block text-xs font-semibold text-gray-700 mb-1">Search/Select Item ID or Name *</label>
-                                <select id="rental-item-select" onchange="autoPopulateItemDetails()" required class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-800 bg-white">
-                                    <option value="">-- Choose Available Jewellery --</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-xs font-semibold text-gray-700 mb-1">Set Daily Rental Price (₹)</label>
-                                <input type="number" id="rental-price-display" readonly class="w-full p-2.5 bg-gray-100 border border-gray-300 rounded-lg font-bold text-red-800" placeholder="0">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-semibold text-gray-700 mb-1">Security Deposit Required (₹)</label>
-                                <input type="number" id="rental-deposit-display" readonly class="w-full p-2.5 bg-gray-100 border border-gray-300 rounded-lg font-bold text-amber-800" placeholder="0">
-                            </div>
-                        </div>
-
-                        <!-- Item Preview Card -->
-                        <div id="rental-item-preview" class="hidden flex items-center gap-4 bg-white p-3 rounded border border-amber-200 mt-2">
-                            <img id="preview-img" src="" class="w-16 h-16 object-cover rounded-md border border-gray-200">
-                            <div>
-                                <h4 id="preview-title" class="font-bold text-sm text-gray-900"></h4>
-                                <p id="preview-category" class="text-xs text-gray-500"></p>
-                                <p id="preview-desc" class="text-xs text-gray-600 mt-1"></p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Customer & Function Info -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-700 mb-1">Customer Full Name *</label>
-                            <input type="text" id="cust-name" required class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-800" placeholder="e.g. S. Meenakshi">
-                        </div>
-
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-700 mb-1">Customer Phone Number (10 Digits) *</label>
-                            <input type="tel" id="cust-phone" required pattern="[0-9]{10}" maxlength="10" title="Must be exactly 10 numeric digits" class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-800" placeholder="e.g. 9876543210">
-                        </div>
-
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-700 mb-1">Customer Area *</label>
-                            <select id="cust-area" required class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-800 bg-white">
-                                <option value="">-- Select Area --</option>
-                                <option value="Rajapalayam">Rajapalayam</option>
-                                <option value="Seithur">Seithur</option>
-                                <option value="Muhavur">Muhavur</option>
-                                <option value="Srivilliputhoor">Srivilliputhoor</option>
-                                <option value="Other Area">Other Surrounding Area</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-700 mb-1">Function / Event Category *</label>
-                            <select id="rental-function" required class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-800 bg-white">
-                                <option value="">-- Select Function --</option>
-                                <option value="Marriage">Marriage</option>
-                                <option value="Baby Shower">Baby Shower</option>
-                                <option value="Reception">Reception</option>
-                                <option value="Engagement">Engagement</option>
-                                <option value="Naming Ceremony">Naming Ceremony</option>
-                                <option value="Puberty Ceremony">Puberty Ceremony</option>
-                                <option value="Other">Other Occasion</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-700 mb-1">Rental Booked Date *</label>
-                            <input type="date" id="rental-booked-date" required class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-800">
-                        </div>
-
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-700 mb-1">Expected Return Date *</label>
-                            <input type="date" id="rental-return-date" required class="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-800">
-                        </div>
-                    </div>
-
-                    <!-- Payment Calculations -->
-                    <div class="bg-stone-100 p-4 rounded-lg border border-stone-300 grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-700 mb-1">Advance Amount Paid (₹) *</label>
-                            <input type="number" id="rental-advance-paid" oninput="calculateRemaining()" required min="0" class="w-full p-2.5 border border-gray-300 rounded-lg font-bold text-emerald-800" placeholder="0">
-                        </div>
-
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-700 mb-1">Remaining Balance Due (₹)</label>
-                            <input type="number" id="rental-remaining-balance" readonly class="w-full p-2.5 bg-gray-200 border border-gray-300 rounded-lg font-bold text-red-800" placeholder="0">
-                        </div>
-
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-700 mb-1">Payment Status</label>
-                            <select id="rental-pay-status" class="w-full p-2.5 border border-gray-300 rounded-lg bg-white">
-                                <option value="Advance Paid">Advance Paid</option>
-                                <option value="Fully Paid">Fully Paid</option>
-                                <option value="Pending">Pending</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="flex justify-end gap-3">
-                        <button type="reset" class="px-5 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 transition">Reset Form</button>
-                        <button type="submit" id="btn-save-rental" class="px-6 py-2.5 bg-red-800 hover:bg-red-900 text-white font-semibold rounded-lg shadow-md transition flex items-center gap-2">
-                            <i class="fa-solid fa-paper-plane"></i> Submit Rental Booking
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </section>
-
-        <!-- TAB 2: ITEM STATUS & CATALOG -->
-        <section id="tab-status" class="tab-content hidden space-y-6">
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                <div>
-                    <h2 class="text-2xl font-bold text-gray-900 font-serif">Jewellery Inventory & Status Tracking</h2>
-                    <p class="text-sm text-gray-600">Track available items, active rentals, and record returns.</p>
-                </div>
-                <div class="flex gap-2 w-full md:w-auto">
-                    <input type="text" id="status-search" onkeyup="filterStatusCatalog()" placeholder="Search jewellery by Name or ID..." class="p-2 border border-gray-300 rounded-lg text-sm w-full md:w-64">
-                    <select id="status-filter" onchange="filterStatusCatalog()" class="p-2 border border-gray-300 rounded-lg text-sm bg-white">
-                        <option value="ALL">All Items</option>
-                        <option value="Available">Available Only</option>
-                        <option value="Rented">Currently Rented</option>
-                    </select>
-                </div>
-            </div>
-
-            <!-- Grid Display -->
-            <div id="catalog-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                <!-- Cards injected via JS -->
-            </div>
-
-            <!-- Active Rentals Log Table -->
-            <div class="bg-white rounded-xl shadow p-6 border border-gray-200 mt-8">
-                <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
-                    <i class="fa-solid fa-clock-rotate-left text-amber-700"></i> Active Rental Ledger
-                </h3>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-xs border-collapse">
-                        <thead>
-                            <tr class="bg-stone-100 text-stone-700 border-b">
-                                <th class="p-3">Rental ID</th>
-                                <th class="p-3">Item Details</th>
-                                <th class="p-3">Customer Info</th>
-                                <th class="p-3">Function / Area</th>
-                                <th class="p-3">Booked / Return Date</th>
-                                <th class="p-3">Financials</th>
-                                <th class="p-3">Status</th>
-                                <th class="p-3 text-center">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="active-rentals-table-body" class="divide-y divide-gray-200">
-                            <!-- Injected dynamically -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
-
-        <!-- TAB 3: ADMIN INVENTORY MANAGEMENT -->
-        <section id="tab-admin" class="tab-content hidden space-y-6">
-            <div class="bg-white rounded-xl shadow-md p-6 border-t-4 border-amber-600">
-                <div class="flex justify-between items-center mb-4">
-                    <div>
-                        <h2 class="text-2xl font-bold text-gray-900 flex items-center gap-2">
-                            <i class="fa-solid fa-folder-plus text-amber-600"></i> Admin - Jewellery Inventory Controller
-                        </h2>
-                        <p class="text-sm text-gray-600">Add new rental sets, edit pricing, or remove old inventory items.</p>
-                    </div>
-                    <span class="bg-amber-100 text-amber-900 text-xs font-semibold px-3 py-1 rounded-full border border-amber-300">
-                        <i class="fa-solid fa-lock text-amber-700"></i> Admin Authenticated
-                    </span>
-                </div>
-
-                <!-- Add / Edit Form -->
-                <form id="admin-item-form" onsubmit="handleAdminItemSubmit(event)" class="space-y-4 bg-amber-50/40 p-5 rounded-xl border border-amber-200">
-                    <input type="hidden" id="admin-edit-id" value="">
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-700 mb-1">Jewellery ID Code *</label>
-                            <input type="text" id="admin-item-id" required class="w-full p-2.5 border border-gray-300 rounded-lg uppercase" placeholder="e.g. JWL-101">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-700 mb-1">Jewellery Item Title *</label>
-                            <input type="text" id="admin-item-name" required class="w-full p-2.5 border border-gray-300 rounded-lg" placeholder="e.g. Heavy Bridal Temple Antique Haram Set">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-700 mb-1">Category *</label>
-                            <select id="admin-item-category" required class="w-full p-2.5 border border-gray-300 rounded-lg bg-white">
-                                <option value="Haram / Necklace Set">Haram / Necklace Set</option>
-                                <option value="Antique Bridal Choker">Antique Bridal Choker</option>
-                                <option value="Oddiyanam / Waist Belt">Oddiyanam / Waist Belt</option>
-                                <option value="Nethi Chutti / Maang Tikka">Nethi Chutti / Maang Tikka</option>
-                                <option value="Full Bridal Combo Set">Full Bridal Combo Set</option>
-                                <option value="Bangles & Accessories">Bangles & Accessories</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-700 mb-1">Daily Rental Price (₹) *</label>
-                            <input type="number" id="admin-item-price" required min="0" class="w-full p-2.5 border border-gray-300 rounded-lg" placeholder="1500">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-700 mb-1">Deposit Amount (₹) *</label>
-                            <input type="number" id="admin-item-deposit" required min="0" class="w-full p-2.5 border border-gray-300 rounded-lg" placeholder="3000">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-700 mb-1">Upload Jewellery Photo *</label>
-                            <input type="file" id="admin-item-image" accept="image/*" class="w-full text-xs text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-amber-100 file:text-amber-800 hover:file:bg-amber-200">
-                            <input type="hidden" id="admin-item-img-base64" value="">
-                        </div>
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-semibold text-gray-700 mb-1">Description / Set Includes</label>
-                        <textarea id="admin-item-desc" rows="2" class="w-full p-2 border border-gray-300 rounded-lg text-xs" placeholder="Includes Haram, Choker, Earrings, and Nethi Chutti..."></textarea>
-                    </div>
-
-                    <div class="flex justify-end gap-2">
-                        <button type="button" onclick="resetAdminForm()" class="px-4 py-2 text-xs border border-gray-300 rounded-lg hover:bg-gray-100">Cancel / Reset</button>
-                        <button type="submit" class="px-6 py-2 bg-amber-700 hover:bg-amber-800 text-white text-xs font-bold rounded-lg shadow transition">
-                            <i class="fa-solid fa-save"></i> Save Jewellery Item
-                        </button>
-                    </div>
-                </form>
-
-                <!-- Current Inventory Manage Table -->
-                <div class="mt-8">
-                    <h3 class="text-md font-bold text-gray-800 mb-3">Manage Existing Inventory Items</h3>
-                    <div class="overflow-x-auto border border-gray-200 rounded-lg">
-                        <table class="w-full text-left text-xs">
-                            <thead class="bg-gray-100 text-gray-700 border-b">
-                                <tr>
-                                    <th class="p-3">Image</th>
-                                    <th class="p-3">Item ID</th>
-                                    <th class="p-3">Name</th>
-                                    <th class="p-3">Category</th>
-                                    <th class="p-3">Rental Fee</th>
-                                    <th class="p-3">Deposit</th>
-                                    <th class="p-3">Status</th>
-                                    <th class="p-3 text-right">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="admin-inventory-table" class="divide-y divide-gray-200 bg-white">
-                                <!-- Injected dynamically -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-    </main>
-
-    <!-- Modal: GitHub API & Password Configuration -->
-    <div id="config-modal" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-50 p-4">
-        <div class="bg-white rounded-xl shadow-2xl max-w-lg w-full p-6 space-y-4">
-            <div class="flex justify-between items-center border-b pb-3">
-                <h3 class="text-lg font-bold text-red-950 flex items-center gap-2">
-                    <i class="fa-solid fa-sliders text-amber-600"></i> Store GitHub Backend Config
-                </h3>
-                <button onclick="toggleConfigModal()" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-xl"></i></button>
-            </div>
+    <!-- ==================== TAB 1: RENTAL ENTRY ==================== -->
+    <div id="rentalTab" class="tab-content active">
+      <div class="panel">
+        <div class="panel-title">New Rental Order Entry</div>
+        <form id="rentalForm" onsubmit="handleRentalSubmit(event)">
+          <div class="form-grid">
             
-            <p class="text-xs text-gray-600">
-                To sync data directly to GitHub repository (for persistence without server), enter your GitHub Token and Repo details below.
-            </p>
-
-            <div class="space-y-3 text-xs">
-                <div>
-                    <label class="block font-semibold mb-1">GitHub Owner / Username</label>
-                    <input type="text" id="cfg-owner" class="w-full p-2 border rounded" placeholder="e.g. myusername">
-                </div>
-                <div>
-                    <label class="block font-semibold mb-1">GitHub Repository Name</label>
-                    <input type="text" id="cfg-repo" class="w-full p-2 border rounded" placeholder="e.g. lakshmi-fancy-store">
-                </div>
-                <div>
-                    <label class="block font-semibold mb-1">GitHub Fine-Grained Personal Access Token (PAT)</label>
-                    <input type="password" id="cfg-token" class="w-full p-2 border rounded" placeholder="ghp_xxxxxxxxxxxx">
-                    <span class="text-[10px] text-gray-500">Requires Contents: Read & Write permission.</span>
-                </div>
-                <div>
-                    <label class="block font-semibold mb-1">Admin Access Password</label>
-                    <input type="password" id="cfg-admin-pass" class="w-full p-2 border rounded" value="admin123">
-                </div>
+            <div class="form-group">
+              <label for="rentalJewellerySelect">Select Jewellery Item *</label>
+              <select id="rentalJewellerySelect" required onchange="populateJewelleryRentalDetails()">
+                <option value="">-- Choose Available Jewellery --</option>
+              </select>
             </div>
 
-            <div class="flex justify-end gap-2 pt-2 border-t">
-                <button onclick="saveConfiguration()" class="px-4 py-2 bg-red-800 text-white rounded text-xs font-semibold hover:bg-red-900">
-                    Save Configuration
-                </button>
+            <div class="form-group">
+              <label>Daily Rental Rate (₹)</label>
+              <input type="number" id="rentalRate" readonly>
             </div>
+
+            <div class="form-group">
+              <label>Required Deposit (₹)</label>
+              <input type="number" id="rentalDeposit" readonly>
+            </div>
+
+            <div class="form-group">
+              <label for="customerName">Customer Name *</label>
+              <input type="text" id="customerName" placeholder="Enter Full Name" required>
+            </div>
+
+            <div class="form-group">
+              <label for="customerPhone">Phone Number (10 Digits) *</label>
+              <input type="tel" id="customerPhone" pattern="[0-9]{10}" placeholder="e.g. 9876543210" required>
+            </div>
+
+            <div class="form-group">
+              <label for="customerArea">Customer Area *</label>
+              <select id="customerArea" required>
+                <option value="">-- Select Region --</option>
+                <option value="Rajapalayam">Rajapalayam</option>
+                <option value="Seithur">Seithur</option>
+                <option value="Muhavur">Muhavur</option>
+                <option value="Srivilliputhoor">Srivilliputhoor</option>
+                <option value="Others">Others</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="functionCategory">Rental Function Category *</label>
+              <select id="functionCategory" required>
+                <option value="">-- Select Event --</option>
+                <option value="Marriage">Marriage</option>
+                <option value="Baby Shower">Baby Shower</option>
+                <option value="Reception">Reception</option>
+                <option value="Engagement">Engagement</option>
+                <option value="Naming Ceremony">Naming Ceremony</option>
+                <option value="Others">Others</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="rentalBookingDate">Rental Booking Date *</label>
+              <input type="date" id="rentalBookingDate" required onchange="calculateRentalTotals()">
+            </div>
+
+            <div class="form-group">
+              <label for="expectedReturnDate">Expected Return Date *</label>
+              <input type="date" id="expectedReturnDate" required onchange="calculateRentalTotals()">
+            </div>
+
+            <div class="form-group">
+              <label for="advancePaid">Advance Paid (₹) *</label>
+              <input type="number" id="advancePaid" min="0" value="0" required oninput="calculateRentalTotals()">
+            </div>
+
+            <div class="form-group">
+              <label for="rentalDiscount">Discount (₹)</label>
+              <input type="number" id="rentalDiscount" min="0" value="0" oninput="calculateRentalTotals()">
+            </div>
+
+            <div class="form-group">
+              <label>Amount Remaining (₹)</label>
+              <input type="number" id="amountRemaining" readonly>
+            </div>
+
+            <div class="form-group">
+              <label for="paymentStatus">Payment Status *</label>
+              <select id="paymentStatus" required>
+                <option value="Advance Paid">Advance Paid</option>
+                <option value="Fully Paid">Fully Paid</option>
+                <option value="Pending">Pending</option>
+              </select>
+            </div>
+
+          </div>
+
+          <div class="summary-card mb-3" id="rentalSummaryBox">
+            <strong>Calculation Breakdown:</strong> Total Payable: ₹0 | Security Deposit: ₹0 | Advance Paid: ₹0 | Balance Due: ₹0
+          </div>
+
+          <button type="submit" class="btn btn-primary">Save Rental Entry & Generate Receipt</button>
+        </form>
+      </div>
+
+      <!-- Recent Rental History Table -->
+      <div class="panel">
+        <div class="panel-title">Active & Past Rental Transactions</div>
+        <div class="table-responsive">
+          <table>
+            <thead>
+              <tr>
+                <th>Receipt #</th>
+                <th>Jewellery Item</th>
+                <th>Customer</th>
+                <th>Phone</th>
+                <th>Area</th>
+                <th>Event</th>
+                <th>Rental Period</th>
+                <th>Remaining (₹)</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="rentalTableBody">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
         </div>
+      </div>
     </div>
 
-    <!-- Footer -->
-    <footer class="bg-stone-900 text-stone-400 text-xs py-6 mt-12 border-t border-stone-800">
-        <div class="max-w-7xl mx-auto px-4 text-center space-y-2">
-            <p class="font-serif text-amber-200 text-sm">Lakshmi Fancy Store - Bridal Jewellery Rentals</p>
-            <p>Serving Rajapalayam | Seithur | Muhavur | Srivilliputhoor</p>
-            <p class="text-stone-500 text-[11px]">Static GitHub Pages Web App • Free Cloud Persistence Engine</p>
+    <!-- ==================== TAB 2: JEWELLERY STATUS & CATALOG ==================== -->
+    <div id="catalogTab" class="tab-content">
+      <div class="panel">
+        <div class="panel-title">
+          <span>Jewellery Catalog & Live Availability</span>
+          <div>
+            <select id="catalogFilter" onchange="renderCatalog()" style="padding: 6px; font-size: 0.85rem;">
+              <option value="ALL">All Items</option>
+              <option value="Available">Available Only</option>
+              <option value="Rented">Rented Out</option>
+            </select>
+          </div>
         </div>
-    </footer>
+        <div class="catalog-grid" id="catalogGrid">
+          <!-- Rendered via JS -->
+        </div>
+      </div>
+    </div>
 
-    <!-- App Logic Script -->
-    <script>
-        const DEFAULT_CONFIG = {
-            owner: '',
-            repo: '',
-            branch: 'main',
-            filePath: 'data/inventory.json',
-            token: '',
-            adminPassword: 'admin123'
+    <!-- ==================== TAB 3: ADMIN MANAGEMENT ==================== -->
+    <div id="adminTab" class="tab-content">
+      
+      <!-- Sub Navigation inside Admin -->
+      <div class="sub-nav">
+        <button class="sub-btn active" onclick="switchAdminSubTab('inventorySubTab', this)">Inventory Management</button>
+        <button class="sub-btn" onclick="switchAdminSubTab('staffSubTab', this)">Staff Management</button>
+        <button class="sub-btn" onclick="switchAdminSubTab('expenseSubTab', this)">Expenses Management</button>
+        <button class="sub-btn" onclick="switchAdminSubTab('settingsSubTab', this)">Store Branding</button>
+      </div>
+
+      <!-- ADMIN SUB-TAB 1: INVENTORY MANAGEMENT -->
+      <div id="inventorySubTab" class="admin-sub-tab">
+        <div class="panel">
+          <div class="panel-title" id="inventoryFormTitle">Add New Jewellery Item</div>
+          <form id="inventoryForm" onsubmit="handleSaveInventory(event)">
+            <input type="hidden" id="editJewelleryId">
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="itemCode">Jewellery ID Code *</label>
+                <input type="text" id="itemCode" placeholder="e.g. LFS-J001" required>
+              </div>
+              <div class="form-group">
+                <label for="itemTitle">Item Title *</label>
+                <input type="text" id="itemTitle" placeholder="e.g. Antique Gold Bridal Set" required>
+              </div>
+              <div class="form-group">
+                <label for="itemCategory">Category *</label>
+                <select id="itemCategory" required>
+                  <option value="Necklace Set">Necklace Set</option>
+                  <option value="Haram / Long Chain">Haram / Long Chain</option>
+                  <option value="Bangles / Kadas">Bangles / Kadas</option>
+                  <option value="Maang Tikka / Nethi Chutti">Maang Tikka / Nethi Chutti</option>
+                  <option value="Full Bridal Combo">Full Bridal Combo</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="dailyRate">Daily Rental Price (₹) *</label>
+                <input type="number" id="dailyRate" min="0" required>
+              </div>
+              <div class="form-group">
+                <label for="depositAmount">Deposit Amount (₹) *</label>
+                <input type="number" id="depositAmount" min="0" required>
+              </div>
+              <div class="form-group">
+                <label for="itemPhoto">Upload Photo</label>
+                <input type="file" id="itemPhoto" accept="image/*" onchange="previewImageUpload(this, 'photoPreview')">
+                <input type="hidden" id="photoBase64">
+              </div>
+              <div class="form-group full-width">
+                <label for="itemDescription">Description Details</label>
+                <textarea id="itemDescription" rows="2" placeholder="Item characteristics, stones, weight specs..."></textarea>
+              </div>
+            </div>
+            <div style="display:flex; gap:10px;">
+              <button type="submit" class="btn btn-primary">Save Jewellery Item</button>
+              <button type="button" class="btn btn-outline" onclick="resetInventoryForm()">Cancel / Reset</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="panel">
+          <div class="panel-title">Manage Existing Inventory Items</div>
+          <div class="table-responsive">
+            <table>
+              <thead>
+                <tr>
+                  <th>Photo</th>
+                  <th>ID Code</th>
+                  <th>Title</th>
+                  <th>Category</th>
+                  <th>Daily Price</th>
+                  <th>Deposit</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="inventoryTableBody">
+                <!-- Rendered via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ADMIN SUB-TAB 2: STAFF & ATTENDANCE MANAGEMENT -->
+      <div id="staffSubTab" class="admin-sub-tab" style="display: none;">
+        <div class="panel">
+          <div class="panel-title">Add / Edit Staff Member</div>
+          <form id="staffForm" onsubmit="handleSaveStaff(event)">
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="staffName">Staff Name *</label>
+                <input type="text" id="staffName" required>
+              </div>
+              <div class="form-group">
+                <label for="staffRole">Role / Designation *</label>
+                <input type="text" id="staffRole" placeholder="e.g. Sales Assistant" required>
+              </div>
+              <div class="form-group">
+                <label for="staffJoiningDate">Joining Date *</label>
+                <input type="date" id="staffJoiningDate" required>
+              </div>
+              <div class="form-group">
+                <label for="staffSalary">Monthly Salary (₹) *</label>
+                <input type="number" id="staffSalary" required>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Add Staff Member</button>
+          </form>
+        </div>
+
+        <div class="panel">
+          <div class="panel-title">Staff Roster</div>
+          <div class="table-responsive">
+            <table>
+              <thead>
+                <tr>
+                  <th>Staff ID</th>
+                  <th>Name</th>
+                  <th>Role</th>
+                  <th>Joining Date</th>
+                  <th>Salary (₹)</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="staffTableBody">
+                <!-- Rendered via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-title">Record Staff Leave / Attendance</div>
+          <form id="leaveForm" onsubmit="handleSaveLeave(event)">
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="leaveStaffSelect">Select Staff Member *</label>
+                <select id="leaveStaffSelect" required></select>
+              </div>
+              <div class="form-group">
+                <label for="leaveDate">Leave Date *</label>
+                <input type="date" id="leaveDate" required>
+              </div>
+              <div class="form-group">
+                <label for="leaveReason">Reason / Remarks</label>
+                <input type="text" id="leaveReason" placeholder="e.g. Personal Work / Sick Leave">
+              </div>
+            </div>
+            <button type="submit" class="btn btn-secondary">Record Leave Entry</button>
+          </form>
+          <div class="table-responsive" style="margin-top:20px;">
+            <table>
+              <thead>
+                <tr>
+                  <th>Staff Name</th>
+                  <th>Leave Date</th>
+                  <th>Reason</th>
+                </tr>
+              </thead>
+              <tbody id="leaveTableBody">
+                <!-- Rendered via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ADMIN SUB-TAB 3: EXPENSES MANAGEMENT -->
+      <div id="expenseSubTab" class="admin-sub-tab" style="display: none;">
+        <div class="panel">
+          <div class="panel-title">Log Store Monthly Expense</div>
+          <form id="expenseForm" onsubmit="handleSaveExpense(event)">
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="expenseCategory">Expense Category *</label>
+                <select id="expenseCategory" required>
+                  <option value="Store Rent">Store Rent</option>
+                  <option value="Electricity Bill">Electricity Bill</option>
+                  <option value="Internet Bill">Internet Bill</option>
+                  <option value="Store Service Tax">Store Service Tax</option>
+                  <option value="Staff Salaries">Staff Salaries</option>
+                  <option value="Maintenance / Repairs">Maintenance / Repairs</option>
+                  <option value="Others">Others</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="expenseAmount">Amount Paid (₹) *</label>
+                <input type="number" id="expenseAmount" min="0" required>
+              </div>
+              <div class="form-group">
+                <label for="expenseDate">Expense Date *</label>
+                <input type="date" id="expenseDate" required>
+              </div>
+              <div class="form-group full-width">
+                <label for="expenseNotes">Notes / Receipt Reference</label>
+                <input type="text" id="expenseNotes" placeholder="Additional details...">
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Log Expense Entry</button>
+          </form>
+        </div>
+
+        <div class="panel">
+          <div class="panel-title">Expense History & Log</div>
+          <div class="table-responsive">
+            <table>
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Category</th>
+                  <th>Notes</th>
+                  <th>Amount (₹)</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="expenseTableBody">
+                <!-- Rendered via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ADMIN SUB-TAB 4: BRANDING & SETTINGS -->
+      <div id="settingsSubTab" class="admin-sub-tab" style="display: none;">
+        <div class="panel">
+          <div class="panel-title">Store Identity Settings</div>
+          <form id="settingsForm" onsubmit="handleSaveSettings(event)">
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="storeTitleInput">Store Header Title</label>
+                <input type="text" id="storeTitleInput" value="LAKSHMI FANCY STORE" required>
+              </div>
+              <div class="form-group">
+                <label for="storeLogoInput">Upload Store Logo</label>
+                <input type="file" id="storeLogoInput" accept="image/*" onchange="previewImageUpload(this, 'logoPreview')">
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Update Branding Settings</button>
+          </form>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Image Modal Popup -->
+  <div id="imageModal" class="modal" onclick="closeModal('imageModal')">
+    <div class="modal-content img-modal-body" onclick="event.stopPropagation()">
+      <button class="modal-close" onclick="closeModal('imageModal')">&times;</button>
+      <img id="modalFullImage" src="" alt="Full View">
+    </div>
+  </div>
+
+  <!-- Printable Receipt Modal -->
+  <div id="receiptModal" class="modal">
+    <div class="modal-content" style="max-width:550px;">
+      <button class="modal-close no-print" onclick="closeModal('receiptModal')">&times;</button>
+      
+      <div id="receiptPrintArea">
+        <div class="receipt-box">
+          <div class="receipt-header">
+            <h2 id="receiptStoreTitle">LAKSHMI FANCY STORE</h2>
+            <p>Bridal Jewellery Rental & Fancy Collections</p>
+            <p style="font-size: 0.8rem; margin-top:4px;">Receipt Ref: <span id="rNum"></span></p>
+          </div>
+          <div class="receipt-row"><span>Date:</span> <strong id="rDate"></strong></div>
+          <div class="receipt-row"><span>Customer Name:</span> <strong id="rName"></strong></div>
+          <div class="receipt-row"><span>Phone:</span> <span id="rPhone"></span></div>
+          <div class="receipt-row"><span>Area:</span> <span id="rArea"></span></div>
+          <div class="receipt-row"><span>Event / Function:</span> <span id="rEvent"></span></div>
+          <hr style="margin: 10px 0;">
+          <div class="receipt-row"><span>Jewellery ID & Title:</span> <strong id="rItem"></strong></div>
+          <div class="receipt-row"><span>Rental Duration:</span> <span id="rDates"></span></div>
+          <div class="receipt-row"><span>Daily Rate:</span> <span id="rRate"></span></div>
+          <div class="receipt-row"><span>Security Deposit:</span> <span id="rDeposit"></span></div>
+          <div class="receipt-row"><span>Discount Offered:</span> <span id="rDiscount"></span></div>
+          <hr style="margin: 10px 0;">
+          <div class="receipt-row" style="font-weight:700; font-size: 1.1rem;"><span>Total Payable:</span> <span id="rTotal"></span></div>
+          <div class="receipt-row"><span>Advance Paid:</span> <span id="rAdvance"></span></div>
+          <div class="receipt-row" style="font-weight:700; color:var(--primary)"><span>Remaining Due:</span> <span id="rBalance"></span></div>
+          <div class="receipt-row"><span>Payment Status:</span> <strong id="rStatus"></strong></div>
+          <div style="text-align:center; margin-top: 20px; font-size: 0.8rem;">
+            <p>Thank you for choosing Lakshmi Fancy Store!</p>
+            <p>Please return items on time to ensure refund of security deposit.</p>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:20px; text-align:right;" class="no-print">
+        <button class="btn btn-primary" onclick="window.print()">Print Invoice / Receipt</button>
+        <button class="btn btn-outline" onclick="closeModal('receiptModal')">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ==========================================
+    // INITIALIZATION & DEFAULT SEED DATA
+    // ==========================================
+    const DEFAULT_INVENTORY = [
+      { id: 'LFS-J001', code: 'LFS-J001', title: 'Grand Temple Bridal Haram Set', category: 'Haram / Long Chain', dailyRate: 1500, deposit: 3000, description: 'Gold plated temple design with kemp stones.', status: 'Available', photo: '' },
+      { id: 'LFS-J002', code: 'LFS-J002', title: 'Antique Matte Kundan Necklace', category: 'Necklace Set', dailyRate: 1200, deposit: 2500, description: 'Royal Kundan finish set for reception.', status: 'Available', photo: '' }
+    ];
+
+    let storeData = {
+      inventory: JSON.parse(localStorage.getItem('lfs_inventory')) || DEFAULT_INVENTORY,
+      rentals: JSON.parse(localStorage.getItem('lfs_rentals')) || [],
+      staff: JSON.parse(localStorage.getItem('lfs_staff')) || [],
+      leaves: JSON.parse(localStorage.getItem('lfs_leaves')) || [],
+      expenses: JSON.parse(localStorage.getItem('lfs_expenses')) || [],
+      settings: JSON.parse(localStorage.getItem('lfs_settings')) || { title: 'LAKSHMI FANCY STORE', logo: '' }
+    };
+
+    let isAdminAuthenticated = false;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // Set default dates
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('rentalBookingDate').value = today;
+      document.getElementById('expectedReturnDate').value = today;
+      
+      applyStoreSettings();
+      renderAll();
+    });
+
+    function saveState() {
+      localStorage.setItem('lfs_inventory', JSON.stringify(storeData.inventory));
+      localStorage.setItem('lfs_rentals', JSON.stringify(storeData.rentals));
+      localStorage.setItem('lfs_staff', JSON.stringify(storeData.staff));
+      localStorage.setItem('lfs_leaves', JSON.stringify(storeData.leaves));
+      localStorage.setItem('lfs_expenses', JSON.stringify(storeData.expenses));
+      localStorage.setItem('lfs_settings', JSON.stringify(storeData.settings));
+    }
+
+    function renderAll() {
+      populateRentalDropdown();
+      renderRentalsTable();
+      renderCatalog();
+      renderInventoryTable();
+      renderStaffTable();
+      renderLeaveTable();
+      renderExpenseTable();
+    }
+
+    // ==========================================
+    // NAVIGATION & AUTHENTICATION
+    // ==========================================
+    function switchTab(tabId) {
+      if (tabId === 'adminTab' && !isAdminAuthenticated) {
+        const password = prompt('Enter Admin Password:');
+        if (password === 'admin123' || password === 'admin') {
+          isAdminAuthenticated = true;
+          alert('Admin Authenticated Successfully.');
+        } else {
+          alert('Incorrect Password! Access Denied.');
+          return;
+        }
+      }
+
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('nav .nav-btn').forEach(el => el.classList.remove('active'));
+
+      document.getElementById(tabId).classList.add('active');
+      event.currentTarget.classList.add('active');
+    }
+
+    function switchAdminSubTab(subTabId, btn) {
+      document.querySelectorAll('.admin-sub-tab').forEach(el => el.style.display = 'none');
+      document.querySelectorAll('.sub-btn').forEach(el => el.classList.remove('active'));
+      document.getElementById(subTabId).style.display = 'block';
+      btn.classList.add('active');
+    }
+
+    // ==========================================
+    // TAB 1: RENTAL ENTRY SYSTEM
+    // ==========================================
+    function populateRentalDropdown() {
+      const select = document.getElementById('rentalJewellerySelect');
+      select.innerHTML = '<option value="">-- Choose Available Jewellery --</option>';
+      
+      storeData.inventory.filter(i => i.status === 'Available').forEach(item => {
+        select.innerHTML += `<option value="${item.id}">[${item.code}] ${item.title} (₹${item.dailyRate}/day)</option>`;
+      });
+    }
+
+    function populateJewelleryRentalDetails() {
+      const id = document.getElementById('rentalJewellerySelect').value;
+      const item = storeData.inventory.find(i => i.id === id);
+      if (item) {
+        document.getElementById('rentalRate').value = item.dailyRate;
+        document.getElementById('rentalDeposit').value = item.deposit;
+      } else {
+        document.getElementById('rentalRate').value = '';
+        document.getElementById('rentalDeposit').value = '';
+      }
+      calculateRentalTotals();
+    }
+
+    function calculateRentalTotals() {
+      const rate = parseFloat(document.getElementById('rentalRate').value) || 0;
+      const deposit = parseFloat(document.getElementById('rentalDeposit').value) || 0;
+      const advance = parseFloat(document.getElementById('advancePaid').value) || 0;
+      const discount = parseFloat(document.getElementById('rentalDiscount').value) || 0;
+
+      const d1 = new Date(document.getElementById('rentalBookingDate').value);
+      const d2 = new Date(document.getElementById('expectedReturnDate').value);
+      
+      let days = 1;
+      if (d2 >= d1) {
+        const diffTime = Math.abs(d2 - d1);
+        days = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1; // inclusive
+      }
+
+      const rentalCharge = rate * days;
+      const totalPayable = rentalCharge + deposit - discount;
+      const remaining = totalPayable - advance;
+
+      document.getElementById('amountRemaining').value = remaining > 0 ? remaining : 0;
+
+      document.getElementById('rentalSummaryBox').innerHTML = 
+        `<strong>Calculation Breakdown (${days} Day(s)):</strong> Rental Fee: ₹${rentalCharge} + Deposit: ₹${deposit} - Discount: ₹${discount} = <strong>Total: ₹${totalPayable}</strong> | Advance Paid: ₹${advance} | <strong>Balance Due: ₹${remaining}</strong>`;
+    }
+
+    function handleRentalSubmit(e) {
+      e.preventDefault();
+      const jewelleryId = document.getElementById('rentalJewellerySelect').value;
+      const phone = document.getElementById('customerPhone').value;
+
+      if (phone.length !== 10) {
+        alert('Customer Phone Number must be exactly 10 digits.');
+        return;
+      }
+
+      const item = storeData.inventory.find(i => i.id === jewelleryId);
+      if (!item) return;
+
+      const rentalRecord = {
+        receiptNo: 'LFS-R' + Math.floor(100000 + Math.random() * 900000),
+        jewelleryId: item.id,
+        jewelleryTitle: item.title,
+        customerName: document.getElementById('customerName').value,
+        customerPhone: phone,
+        customerArea: document.getElementById('customerArea').value,
+        functionCategory: document.getElementById('functionCategory').value,
+        bookingDate: document.getElementById('rentalBookingDate').value,
+        returnDate: document.getElementById('expectedReturnDate').value,
+        dailyRate: item.dailyRate,
+        deposit: item.deposit,
+        advance: parseFloat(document.getElementById('advancePaid').value) || 0,
+        discount: parseFloat(document.getElementById('rentalDiscount').value) || 0,
+        remaining: parseFloat(document.getElementById('amountRemaining').value) || 0,
+        paymentStatus: document.getElementById('paymentStatus').value,
+        status: 'Active'
+      };
+
+      // Mark inventory as Rented
+      item.status = 'Rented';
+
+      storeData.rentals.unshift(rentalRecord);
+      saveState();
+      renderAll();
+
+      showReceiptModal(rentalRecord);
+      document.getElementById('rentalForm').reset();
+    }
+
+    function renderRentalsTable() {
+      const tbody = document.getElementById('rentalTableBody');
+      tbody.innerHTML = '';
+      
+      storeData.rentals.forEach(r => {
+        tbody.innerHTML += `
+          <tr>
+            <td><strong>${r.receiptNo}</strong></td>
+            <td>${r.jewelleryTitle}</td>
+            <td>${r.customerName}</td>
+            <td>${r.customerPhone}</td>
+            <td>${r.customerArea}</td>
+            <td>${r.functionCategory}</td>
+            <td>${r.bookingDate} to ${r.returnDate}</td>
+            <td>₹${r.remaining}</td>
+            <td><span class="badge ${r.status === 'Active' ? 'badge-rented' : 'badge-available'}">${r.paymentStatus}</span></td>
+            <td>
+              <button class="btn btn-outline" style="padding:4px 8px; font-size:0.8rem" onclick='showReceiptModal(${JSON.stringify(r)})'>Receipt</button>
+              ${r.status === 'Active' ? `<button class="btn btn-secondary" style="padding:4px 8px; font-size:0.8rem" onclick="markRentalReturned('${r.receiptNo}')">Return</button>` : ''}
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    function markRentalReturned(receiptNo) {
+      const rental = storeData.rentals.find(r => r.receiptNo === receiptNo);
+      if (rental) {
+        rental.status = 'Completed';
+        const item = storeData.inventory.find(i => i.id === rental.jewelleryId);
+        if (item) item.status = 'Available';
+        saveState();
+        renderAll();
+      }
+    }
+
+    function showReceiptModal(r) {
+      document.getElementById('rNum').innerText = r.receiptNo;
+      document.getElementById('rDate').innerText = r.bookingDate;
+      document.getElementById('rName').innerText = r.customerName;
+      document.getElementById('rPhone').innerText = r.customerPhone;
+      document.getElementById('rArea').innerText = r.customerArea;
+      document.getElementById('rEvent').innerText = r.functionCategory;
+      document.getElementById('rItem').innerText = r.jewelleryTitle;
+      document.getElementById('rDates').innerText = `${r.bookingDate} to ${r.returnDate}`;
+      document.getElementById('rRate').innerText = `₹${r.dailyRate}`;
+      document.getElementById('rDeposit').innerText = `₹${r.deposit}`;
+      document.getElementById('rDiscount').innerText = `₹${r.discount}`;
+      
+      const days = Math.ceil(Math.abs(new Date(r.returnDate) - new Date(r.bookingDate)) / (1000 * 60 * 60 * 24)) + 1;
+      const total = (r.dailyRate * days) + r.deposit - r.discount;
+      
+      document.getElementById('rTotal').innerText = `₹${total}`;
+      document.getElementById('rAdvance').innerText = `₹${r.advance}`;
+      document.getElementById('rBalance').innerText = `₹${r.remaining}`;
+      document.getElementById('rStatus').innerText = r.paymentStatus;
+
+      document.getElementById('receiptModal').classList.add('active');
+    }
+
+    // ==========================================
+    // TAB 2: CATALOG & STATUS
+    // ==========================================
+    function renderCatalog() {
+      const filter = document.getElementById('catalogFilter').value;
+      const grid = document.getElementById('catalogGrid');
+      grid.innerHTML = '';
+
+      const items = storeData.inventory.filter(i => filter === 'ALL' || i.status === filter);
+
+      items.forEach(item => {
+        const fallbackImg = `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 24 24' fill='none' stroke='%238b0000' stroke-width='1'><rect x='3' y='3' width='18' height='18' rx='2'/><circle cx='12' cy='10' r='3'/><path d='M7 21v-2a4 4 0 0 1 4-4h2a4 4 0 0 1 4 4v2'/></svg>`;
+        const imgSrc = item.photo || fallbackImg;
+
+        grid.innerHTML += `
+          <div class="card">
+            <div class="card-img-wrap" onclick="openImageModal('${imgSrc}')">
+              <img src="${imgSrc}" class="card-img" alt="${item.title}">
+            </div>
+            <div class="card-body">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span class="card-meta">${item.code}</span>
+                <span class="badge ${item.status === 'Available' ? 'badge-available' : 'badge-rented'}">${item.status}</span>
+              </div>
+              <div class="card-title">${item.title}</div>
+              <div class="card-price">₹${item.dailyRate} / day <span style="font-size:0.8rem; font-weight:normal; color:#555;">(Dep: ₹${item.deposit})</span></div>
+              <p style="font-size:0.82rem; color:#666;">${item.description || 'No description available.'}</p>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    // ==========================================
+    // TAB 3: ADMIN INVENTORY MANAGEMENT
+    // ==========================================
+    function handleSaveInventory(e) {
+      e.preventDefault();
+      const editId = document.getElementById('editJewelleryId').value;
+      const photo = document.getElementById('photoBase64').value;
+
+      const itemData = {
+        id: editId || 'J-' + Date.now(),
+        code: document.getElementById('itemCode').value,
+        title: document.getElementById('itemTitle').value,
+        category: document.getElementById('itemCategory').value,
+        dailyRate: parseFloat(document.getElementById('dailyRate').value) || 0,
+        deposit: parseFloat(document.getElementById('depositAmount').value) || 0,
+        description: document.getElementById('itemDescription').value,
+        status: 'Available',
+        photo: photo
+      };
+
+      if (editId) {
+        const index = storeData.inventory.findIndex(i => i.id === editId);
+        if (index !== -1) {
+          itemData.status = storeData.inventory[index].status;
+          itemData.photo = photo || storeData.inventory[index].photo;
+          storeData.inventory[index] = itemData;
+        }
+      } else {
+        storeData.inventory.push(itemData);
+      }
+
+      saveState();
+      renderAll();
+      resetInventoryForm();
+      alert('Jewellery item saved successfully!');
+    }
+
+    function renderInventoryTable() {
+      const tbody = document.getElementById('inventoryTableBody');
+      tbody.innerHTML = '';
+
+      storeData.inventory.forEach(item => {
+        const fallbackImg = `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 24 24' fill='none' stroke='%238b0000'><rect x='3' y='3' width='18' height='18' rx='2'/></svg>`;
+        const imgSrc = item.photo || fallbackImg;
+
+        tbody.innerHTML += `
+          <tr>
+            <td><img src="${imgSrc}" style="width:40px; height:40px; object-fit:cover; border-radius:4px; cursor:pointer;" onclick="openImageModal('${imgSrc}')"></td>
+            <td><strong>${item.code}</strong></td>
+            <td>${item.title}</td>
+            <td>${item.category}</td>
+            <td>₹${item.dailyRate}</td>
+            <td>₹${item.deposit}</td>
+            <td><span class="badge ${item.status === 'Available' ? 'badge-available' : 'badge-rented'}">${item.status}</span></td>
+            <td>
+              <button class="btn btn-outline" style="padding:4px 8px; font-size:0.8rem;" onclick="editInventoryItem('${item.id}')">Edit</button>
+              <button class="btn btn-danger" style="padding:4px 8px; font-size:0.8rem;" onclick="deleteInventoryItem('${item.id}')">Delete</button>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    function editInventoryItem(id) {
+      const item = storeData.inventory.find(i => i.id === id);
+      if (!item) return;
+
+      document.getElementById('editJewelleryId').value = item.id;
+      document.getElementById('itemCode').value = item.code;
+      document.getElementById('itemTitle').value = item.title;
+      document.getElementById('itemCategory').value = item.category;
+      document.getElementById('dailyRate').value = item.dailyRate;
+      document.getElementById('depositAmount').value = item.deposit;
+      document.getElementById('itemDescription').value = item.description;
+      document.getElementById('photoBase64').value = item.photo;
+
+      document.getElementById('inventoryFormTitle').innerText = "Edit Jewellery Item (" + item.code + ")";
+    }
+
+    function deleteInventoryItem(id) {
+      if (confirm('Are you sure you want to delete this item?')) {
+        storeData.inventory = storeData.inventory.filter(i => i.id !== id);
+        saveState();
+        renderAll();
+      }
+    }
+
+    function resetInventoryForm() {
+      document.getElementById('inventoryForm').reset();
+      document.getElementById('editJewelleryId').value = '';
+      document.getElementById('photoBase64').value = '';
+      document.getElementById('inventoryFormTitle').innerText = "Add New Jewellery Item";
+    }
+
+    // ==========================================
+    // ADMIN: STAFF & EXPENSES
+    // ==========================================
+    function handleSaveStaff(e) {
+      e.preventDefault();
+      const staffMember = {
+        id: 'STF-' + Date.now(),
+        name: document.getElementById('staffName').value,
+        role: document.getElementById('staffRole').value,
+        joiningDate: document.getElementById('staffJoiningDate').value,
+        salary: parseFloat(document.getElementById('staffSalary').value) || 0
+      };
+      storeData.staff.push(staffMember);
+      saveState();
+      renderStaffTable();
+      document.getElementById('staffForm').reset();
+    }
+
+    function renderStaffTable() {
+      const tbody = document.getElementById('staffTableBody');
+      const select = document.getElementById('leaveStaffSelect');
+      tbody.innerHTML = '';
+      select.innerHTML = '<option value="">-- Choose Staff --</option>';
+
+      storeData.staff.forEach(s => {
+        tbody.innerHTML += `
+          <tr>
+            <td>${s.id}</td>
+            <td><strong>${s.name}</strong></td>
+            <td>${s.role}</td>
+            <td>${s.joiningDate}</td>
+            <td>₹${s.salary}</td>
+            <td><button class="btn btn-danger" style="padding:2px 6px; font-size:0.75rem" onclick="deleteStaff('${s.id}')">Remove</button></td>
+          </tr>
+        `;
+        select.innerHTML += `<option value="${s.name}">${s.name} (${s.role})</option>`;
+      });
+    }
+
+    function deleteStaff(id) {
+      storeData.staff = storeData.staff.filter(s => s.id !== id);
+      saveState();
+      renderStaffTable();
+    }
+
+    function handleSaveLeave(e) {
+      e.preventDefault();
+      storeData.leaves.push({
+        staffName: document.getElementById('leaveStaffSelect').value,
+        leaveDate: document.getElementById('leaveDate').value,
+        reason: document.getElementById('leaveReason').value
+      });
+      saveState();
+      renderLeaveTable();
+      document.getElementById('leaveForm').reset();
+    }
+
+    function renderLeaveTable() {
+      const tbody = document.getElementById('leaveTableBody');
+      tbody.innerHTML = '';
+      storeData.leaves.forEach(l => {
+        tbody.innerHTML += `<tr><td>${l.staffName}</td><td>${l.leaveDate}</td><td>${l.reason}</td></tr>`;
+      });
+    }
+
+    function handleSaveExpense(e) {
+      e.preventDefault();
+      storeData.expenses.push({
+        id: 'EXP-' + Date.now(),
+        category: document.getElementById('expenseCategory').value,
+        amount: parseFloat(document.getElementById('expenseAmount').value) || 0,
+        date: document.getElementById('expenseDate').value,
+        notes: document.getElementById('expenseNotes').value
+      });
+      saveState();
+      renderExpenseTable();
+      document.getElementById('expenseForm').reset();
+    }
+
+    function renderExpenseTable() {
+      const tbody = document.getElementById('expenseTableBody');
+      tbody.innerHTML = '';
+      storeData.expenses.forEach(exp => {
+        tbody.innerHTML += `
+          <tr>
+            <td>${exp.date}</td>
+            <td><strong>${exp.category}</strong></td>
+            <td>${exp.notes || '-'}</td>
+            <td>₹${exp.amount}</td>
+            <td><button class="btn btn-danger" style="padding:2px 6px; font-size:0.75rem" onclick="deleteExpense('${exp.id}')">Delete</button></td>
+          </tr>
+        `;
+      });
+    }
+
+    function deleteExpense(id) {
+      storeData.expenses = storeData.expenses.filter(e => e.id !== id);
+      saveState();
+      renderExpenseTable();
+    }
+
+    // ==========================================
+    // BRANDING & SETTINGS
+    // ==========================================
+    function handleSaveSettings(e) {
+      e.preventDefault();
+      storeData.settings.title = document.getElementById('storeTitleInput').value;
+      saveState();
+      applyStoreSettings();
+      alert('Branding updated successfully!');
+    }
+
+    function applyStoreSettings() {
+      if (storeData.settings.title) {
+        document.getElementById('storeTitleHeader').innerText = storeData.settings.title;
+        document.getElementById('receiptStoreTitle').innerText = storeData.settings.title;
+      }
+      if (storeData.settings.logo) {
+        document.getElementById('storeLogo').src = storeData.settings.logo;
+      }
+    }
+
+    // Utility: Convert Image upload to Base64
+    function previewImageUpload(input, target) {
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          if (target === 'photoPreview') {
+            document.getElementById('photoBase64').value = e.target.result;
+          } else if (target === 'logoPreview') {
+            storeData.settings.logo = e.target.result;
+          }
         };
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
 
-        let appConfig = JSON.parse(localStorage.getItem('lfs_config')) || DEFAULT_CONFIG;
-        let dbData = { items: [], rentals: [] };
-        let currentSha = null;
+    // ==========================================
+    // MODAL & UTILITY FUNCTIONS
+    // ==========================================
+    function openImageModal(src) {
+      document.getElementById('modalFullImage').src = src;
+      document.getElementById('imageModal').classList.add('active');
+    }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const today = new Date().toISOString().split('T')[0];
-            document.getElementById('rental-booked-date').value = today;
-            
-            document.getElementById('cfg-owner').value = appConfig.owner || '';
-            document.getElementById('cfg-repo').value = appConfig.repo || '';
-            document.getElementById('cfg-token').value = appConfig.token || '';
-            document.getElementById('cfg-admin-pass').value = appConfig.adminPassword || 'admin123';
+    function closeModal(modalId) {
+      document.getElementById(modalId).classList.remove('active');
+    }
 
-            document.getElementById('admin-item-image').addEventListener('change', handleImageUpload);
+    // Export/Import JSON for GitHub Repo Syncing
+    function exportDataJSON() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(storeData, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", "inventory.json");
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+    }
 
-            fetchDataFromGitHub();
-        });
+    function importDataJSON(event) {
+      const file = event.target.files[0];
+      if (!file) return;
 
-        function switchTab(tabName) {
-            if (tabName === 'admin') {
-                const enteredPass = prompt("Admin Password Required:");
-                if (enteredPass !== appConfig.adminPassword) {
-                    alert("Incorrect Admin Password!");
-                    return;
-                }
-            }
-
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(sec => sec.classList.add('hidden'));
-
-            document.getElementById(`tab-btn-${tabName}`).classList.add('active');
-            document.getElementById(`tab-${tabName}`).classList.remove('hidden');
-
-            if (tabName === 'status') renderCatalogAndStatus();
-            if (tabName === 'admin') renderAdminTable();
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const imported = JSON.parse(e.target.result);
+          if (imported.inventory) {
+            storeData = imported;
+            saveState();
+            applyStoreSettings();
+            renderAll();
+            alert('Store data imported successfully!');
+          } else {
+            alert('Invalid JSON file format.');
+          }
+        } catch (err) {
+          alert('Error parsing JSON file.');
         }
-
-        function toggleConfigModal() {
-            document.getElementById('config-modal').classList.toggle('hidden');
-        }
-
-        function saveConfiguration() {
-            appConfig.owner = document.getElementById('cfg-owner').value.trim();
-            appConfig.repo = document.getElementById('cfg-repo').value.trim();
-            appConfig.token = document.getElementById('cfg-token').value.trim();
-            appConfig.adminPassword = document.getElementById('cfg-admin-pass').value.trim() || 'admin123';
-
-            localStorage.setItem('lfs_config', JSON.stringify(appConfig));
-            toggleConfigModal();
-            alert('Saved! Syncing with GitHub...');
-            fetchDataFromGitHub();
-        }
-
-        async function fetchDataFromGitHub() {
-            const badge = document.getElementById('api-status-badge');
-            badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-amber-400 inline-block animate-ping"></span> Syncing...';
-
-            if (!appConfig.owner || !appConfig.repo) {
-                badge.className = 'text-amber-400 flex items-center gap-1';
-                badge.innerHTML = '⚠️ Setup Required (Click Gear icon)';
-                loadLocalFallback();
-                return;
-            }
-
-            const url = `https://api.github.com/repos/${appConfig.owner}/${appConfig.repo}/contents/${appConfig.filePath}`;
-            const headers = {};
-            if (appConfig.token) headers['Authorization'] = `token ${appConfig.token}`;
-
-            try {
-                const response = await fetch(url, { headers });
-                if (response.ok) {
-                    const data = await response.json();
-                    currentSha = data.sha;
-                    const decodedData = JSON.parse(decodeURIComponent(escape(atob(data.content))));
-                    dbData = decodedData;
-                    
-                    badge.className = 'text-emerald-400 flex items-center gap-1';
-                    badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-400 inline-block"></span> GitHub Connected';
-                    populateRentalDropdown();
-                } else {
-                    throw new Error(`GitHub HTTP ${response.status}`);
-                }
-            } catch (err) {
-                console.warn('GitHub API sync failed, falling back to local memory:', err);
-                badge.className = 'text-red-400 flex items-center gap-1';
-                badge.innerHTML = '⚠️ Sync Error / Offline';
-                loadLocalFallback();
-            }
-        }
-
-        async function saveDataToGitHub() {
-            localStorage.setItem('lfs_fallback_db', JSON.stringify(dbData));
-
-            if (!appConfig.owner || !appConfig.repo || !appConfig.token) {
-                console.warn('GitHub details missing. Saved to local storage only.');
-                return;
-            }
-
-            const url = `https://api.github.com/repos/${appConfig.owner}/${appConfig.repo}/contents/${appConfig.filePath}`;
-            const contentJson = JSON.stringify(dbData, null, 2);
-            const encodedContent = btoa(unescape(encodeURIComponent(contentJson)));
-
-            const payload = {
-                message: `Update inventory database - ${new Date().toLocaleString()}`,
-                content: encodedContent,
-                sha: currentSha,
-                branch: appConfig.branch || 'main'
-            };
-
-            try {
-                const response = await fetch(url, {
-                    method: 'PUT',
-                    headers: {
-                        'Authorization': `token ${appConfig.token}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(payload)
-                });
-
-                if (response.ok) {
-                    const resData = await response.json();
-                    currentSha = resData.content.sha;
-                } else {
-                    console.error('Failed to commit to GitHub:', await response.text());
-                }
-            } catch (e) {
-                console.error('Error committing to GitHub:', e);
-            }
-        }
-
-        function loadLocalFallback() {
-            const saved = localStorage.getItem('lfs_fallback_db');
-            if (saved) {
-                dbData = JSON.parse(saved);
-            } else {
-                dbData = {
-                    items: [
-                        {
-                            id: 'JWL-101',
-                            name: 'Grand Antique Lakshmi Bridal Haram',
-                            category: 'Haram / Necklace Set',
-                            price: 2500,
-                            deposit: 5000,
-                            image: 'https://images.unsplash.com/photo-1601121141461-9d6647bca1ed?auto=format&fit=crop&w=400&q=80',
-                            description: 'Heavy antique gold finish Lakshmi haram with matching earrings.',
-                            status: 'Available'
-                        }
-                    ],
-                    rentals: []
-                };
-            }
-            populateRentalDropdown();
-        }
-
-        function handleImageUpload(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = function(evt) {
-                document.getElementById('admin-item-img-base64').value = evt.target.result;
-            };
-            reader.readAsDataURL(file);
-        }
-
-        function populateRentalDropdown() {
-            const select = document.getElementById('rental-item-select');
-            select.innerHTML = '<option value="">-- Choose Available Jewellery --</option>';
-
-            const availItems = dbData.items.filter(item => item.status === 'Available');
-            availItems.forEach(item => {
-                const opt = document.createElement('option');
-                opt.value = item.id;
-                opt.textContent = `[${item.id}] ${item.name} - ₹${item.price}/day`;
-                select.appendChild(opt);
-            });
-        }
-
-        function autoPopulateItemDetails() {
-            const selectedId = document.getElementById('rental-item-select').value;
-            const item = dbData.items.find(i => i.id === selectedId);
-            const previewBox = document.getElementById('rental-item-preview');
-
-            if (item) {
-                document.getElementById('rental-price-display').value = item.price;
-                document.getElementById('rental-deposit-display').value = item.deposit;
-
-                document.getElementById('preview-img').src = item.image || 'https://via.placeholder.com/150';
-                document.getElementById('preview-title').textContent = item.name;
-                document.getElementById('preview-category').textContent = item.category;
-                document.getElementById('preview-desc').textContent = item.description || 'No description available.';
-                previewBox.classList.remove('hidden');
-
-                calculateRemaining();
-            } else {
-                document.getElementById('rental-price-display').value = '';
-                document.getElementById('rental-deposit-display').value = '';
-                previewBox.classList.add('hidden');
-            }
-        }
-
-        function calculateRemaining() {
-            const price = parseFloat(document.getElementById('rental-price-display').value) || 0;
-            const advance = parseFloat(document.getElementById('rental-advance-paid').value) || 0;
-            const remaining = Math.max(0, price - advance);
-            document.getElementById('rental-remaining-balance').value = remaining;
-        }
-
-        async function handleRentalSubmit(e) {
-            e.preventDefault();
-
-            const itemId = document.getElementById('rental-item-select').value;
-            const item = dbData.items.find(i => i.id === itemId);
-
-            if (!item) {
-                alert('Please select a valid jewellery item.');
-                return;
-            }
-
-            const phone = document.getElementById('cust-phone').value.trim();
-            if (!/^[0-9]{10}$/.test(phone)) {
-                alert('Validation Error: Customer Phone Number must be exactly 10 numeric digits.');
-                return;
-            }
-
-            const rentalRecord = {
-                rentalId: 'LFS-R-' + Date.now().toString().slice(-6),
-                itemId: item.id,
-                itemName: item.name,
-                customerName: document.getElementById('cust-name').value.trim(),
-                customerPhone: phone,
-                customerArea: document.getElementById('cust-area').value,
-                functionCategory: document.getElementById('rental-function').value,
-                bookedDate: document.getElementById('rental-booked-date').value,
-                returnDate: document.getElementById('rental-return-date').value,
-                price: parseFloat(document.getElementById('rental-price-display').value),
-                advance: parseFloat(document.getElementById('rental-advance-paid').value),
-                remaining: parseFloat(document.getElementById('rental-remaining-balance').value),
-                paymentStatus: document.getElementById('rental-pay-status').value,
-                rentalStatus: 'Active'
-            };
-
-            item.status = 'Rented';
-            dbData.rentals.push(rentalRecord);
-
-            await saveDataToGitHub();
-
-            alert(`Rental Entry Recorded Successfully!\nRental ID: ${rentalRecord.rentalId}`);
-            document.getElementById('rental-form').reset();
-            document.getElementById('rental-item-preview').classList.add('hidden');
-            document.getElementById('rental-booked-date').value = new Date().toISOString().split('T')[0];
-            populateRentalDropdown();
-        }
-
-        function renderCatalogAndStatus() {
-            const grid = document.getElementById('catalog-grid');
-            grid.innerHTML = '';
-
-            dbData.items.forEach(item => {
-                const isRented = item.status === 'Rented';
-                const card = document.createElement('div');
-                card.className = `glass-card rounded-xl overflow-hidden shadow-sm border ${isRented ? 'border-amber-300 bg-amber-50/20' : 'border-emerald-200'}`;
-
-                card.innerHTML = `
-                    <div class="relative h-48 bg-stone-200">
-                        <img src="${item.image || 'https://via.placeholder.com/300'}" class="w-full h-full object-cover">
-                        <span class="absolute top-3 right-3 px-3 py-1 rounded-full text-xs font-bold ${isRented ? 'bg-red-800 text-white' : 'bg-emerald-600 text-white'} shadow">
-                            ${isRented ? 'RENTED OUT' : 'AVAILABLE'}
-                        </span>
-                    </div>
-                    <div class="p-4 space-y-2">
-                        <div class="flex justify-between items-start">
-                            <span class="text-[10px] font-bold text-amber-800 uppercase px-2 py-0.5 bg-amber-100 rounded">${item.category}</span>
-                            <span class="text-xs font-mono text-gray-500">${item.id}</span>
-                        </div>
-                        <h3 class="font-bold text-gray-900 text-sm leading-tight">${item.name}</h3>
-                        <p class="text-xs text-gray-500 line-clamp-2">${item.description || 'No description provided.'}</p>
-                        <div class="pt-2 border-t border-gray-100 flex justify-between items-center text-xs">
-                            <div>
-                                <span class="text-gray-500 block text-[10px]">Rental Rate</span>
-                                <span class="font-extrabold text-red-900 text-sm">₹${item.price} / day</span>
-                            </div>
-                            <div class="text-right">
-                                <span class="text-gray-500 block text-[10px]">Deposit</span>
-                                <span class="font-semibold text-gray-700">₹${item.deposit}</span>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                grid.appendChild(card);
-            });
-
-            renderActiveRentalsTable();
-        }
-
-        function renderActiveRentalsTable() {
-            const tbody = document.getElementById('active-rentals-table-body');
-            tbody.innerHTML = '';
-
-            const activeRentals = dbData.rentals.filter(r => r.rentalStatus === 'Active');
-
-            if (activeRentals.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="8" class="text-center py-6 text-gray-400">No active rental orders found.</td></tr>`;
-                return;
-            }
-
-            activeRentals.forEach(r => {
-                const tr = document.createElement('tr');
-                tr.className = "hover:bg-amber-50/40 text-xs";
-                tr.innerHTML = `
-                    <td class="p-3 font-mono font-bold text-gray-700">${r.rentalId}</td>
-                    <td class="p-3 font-semibold text-gray-900">${r.itemName}<div class="text-[10px] text-gray-500">ID: ${r.itemId}</div></td>
-                    <td class="p-3"><div class="font-medium">${r.customerName}</div><div class="text-[10px] text-blue-700 font-mono">${r.customerPhone}</div></td>
-                    <td class="p-3"><span class="px-2 py-0.5 rounded bg-purple-100 text-purple-800 font-semibold text-[10px]">${r.functionCategory}</span><div class="text-[10px] text-gray-600 mt-0.5">${r.customerArea}</div></td>
-                    <td class="p-3"><div>Booked: ${r.bookedDate}</div><div class="text-red-700 font-semibold">Return: ${r.returnDate}</div></td>
-                    <td class="p-3"><div>Price: ₹${r.price}</div><div class="text-emerald-700">Adv: ₹${r.advance}</div><div class="text-red-800 font-bold">Due: ₹${r.remaining}</div></td>
-                    <td class="p-3"><span class="px-2 py-1 rounded bg-amber-100 text-amber-900 font-bold text-[10px]">${r.paymentStatus}</span></td>
-                    <td class="p-3 text-center">
-                        <button onclick="markReturned('${r.rentalId}', '${r.itemId}')" class="px-3 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded text-[11px] font-semibold transition">
-                            <i class="fa-solid fa-check"></i> Mark Returned
-                        </button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        async function markReturned(rentalId, itemId) {
-            if (!confirm(`Confirm return of jewellery for Rental ${rentalId}?`)) return;
-
-            const rental = dbData.rentals.find(r => r.rentalId === rentalId);
-            const item = dbData.items.find(i => i.id === itemId);
-
-            if (rental) rental.rentalStatus = 'Returned';
-            if (item) item.status = 'Available';
-
-            await saveDataToGitHub();
-            alert('Item returned successfully!');
-            renderCatalogAndStatus();
-            populateRentalDropdown();
-        }
-
-        function filterStatusCatalog() {
-            const query = document.getElementById('status-search').value.toLowerCase();
-            const filter = document.getElementById('status-filter').value;
-            const cards = document.querySelectorAll('#catalog-grid > div');
-
-            cards.forEach(card => {
-                const text = card.textContent.toLowerCase();
-                const isRented = text.includes('rented out');
-                let matchesFilter = (filter === 'ALL') || (filter === 'Available' && !isRented) || (filter === 'Rented' && isRented);
-                card.classList.toggle('hidden', !(matchesFilter && text.includes(query)));
-            });
-        }
-
-        function renderAdminTable() {
-            const tbody = document.getElementById('admin-inventory-table');
-            tbody.innerHTML = '';
-
-            dbData.items.forEach(item => {
-                const tr = document.createElement('tr');
-                tr.className = 'hover:bg-gray-50';
-                tr.innerHTML = `
-                    <td class="p-3"><img src="${item.image || 'https://via.placeholder.com/50'}" class="w-10 h-10 object-cover rounded border"></td>
-                    <td class="p-3 font-mono font-bold">${item.id}</td>
-                    <td class="p-3 font-medium">${item.name}</td>
-                    <td class="p-3 text-xs text-gray-600">${item.category}</td>
-                    <td class="p-3 font-bold text-red-800">₹${item.price}</td>
-                    <td class="p-3 text-gray-700">₹${item.deposit}</td>
-                    <td class="p-3"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${item.status === 'Available' ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-800'}">${item.status}</span></td>
-                    <td class="p-3 text-right space-x-2">
-                        <button onclick="editAdminItem('${item.id}')" class="text-blue-600 hover:text-blue-800 font-semibold text-xs"><i class="fa-solid fa-pen"></i> Edit</button>
-                        <button onclick="deleteAdminItem('${item.id}')" class="text-red-600 hover:text-red-800 font-semibold text-xs"><i class="fa-solid fa-trash"></i> Delete</button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        async function handleAdminItemSubmit(e) {
-            e.preventDefault();
-
-            const editId = document.getElementById('admin-edit-id').value;
-            const itemId = document.getElementById('admin-item-id').value.trim().toUpperCase();
-            const name = document.getElementById('admin-item-name').value.trim();
-            const category = document.getElementById('admin-item-category').value;
-            const price = parseFloat(document.getElementById('admin-item-price').value);
-            const deposit = parseFloat(document.getElementById('admin-item-deposit').value);
-            const desc = document.getElementById('admin-item-desc').value.trim();
-            const base64Img = document.getElementById('admin-item-img-base64').value;
-
-            if (editId) {
-                const existing = dbData.items.find(i => i.id === editId);
-                if (existing) {
-                    existing.id = itemId;
-                    existing.name = name;
-                    existing.category = category;
-                    existing.price = price;
-                    existing.deposit = deposit;
-                    existing.description = desc;
-                    if (base64Img) existing.image = base64Img;
-                }
-            } else {
-                if (dbData.items.some(i => i.id === itemId)) {
-                    alert(`Item ID ${itemId} already exists!`);
-                    return;
-                }
-                dbData.items.push({
-                    id: itemId,
-                    name: name,
-                    category: category,
-                    price: price,
-                    deposit: deposit,
-                    description: desc,
-                    image: base64Img || 'https://images.unsplash.com/photo-1601121141461-9d6647bca1ed?auto=format&fit=crop&w=400&q=80',
-                    status: 'Available'
-                });
-            }
-
-            await saveDataToGitHub();
-            alert('Jewellery Inventory Saved Successfully!');
-            resetAdminForm();
-            renderAdminTable();
-            populateRentalDropdown();
-        }
-
-        function editAdminItem(id) {
-            const item = dbData.items.find(i => i.id === id);
-            if (!item) return;
-
-            document.getElementById('admin-edit-id').value = item.id;
-            document.getElementById('admin-item-id').value = item.id;
-            document.getElementById('admin-item-name').value = item.name;
-            document.getElementById('admin-item-category').value = item.category;
-            document.getElementById('admin-item-price').value = item.price;
-            document.getElementById('admin-item-deposit').value = item.deposit;
-            document.getElementById('admin-item-desc').value = item.description || '';
-            document.getElementById('admin-item-img-base64').value = item.image || '';
-
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        async function deleteAdminItem(id) {
-            if (!confirm(`Are you sure you want to delete jewellery item [${id}]?`)) return;
-
-            dbData.items = dbData.items.filter(i => i.id !== id);
-            await saveDataToGitHub();
-            renderAdminTable();
-            populateRentalDropdown();
-        }
-
-        function resetAdminForm() {
-            document.getElementById('admin-item-form').reset();
-            document.getElementById('admin-edit-id').value = '';
-            document.getElementById('admin-item-img-base64').value = '';
-        }
-    </script>
+      };
+      reader.readAsText(file);
+    }
+  </script>
 </body>
 </html>
