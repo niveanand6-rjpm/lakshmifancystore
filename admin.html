@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lakshmi Fancy Store - Admin Console</title>
+    <style>
+        :root {
+            --admin-dark: #1e293b;
+            --admin-accent: #0f172a;
+            --primary: #8b0000;
+            --gold: #d4af37;
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --text: #334155;
+            --border: #cbd5e1;
+            --radius: 8px;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body { background: var(--bg); color: var(--text); }
+
+        header { background: var(--admin-dark); color: white; padding: 15px 25px; display: flex; justify-content: space-between; align-items: center; }
+        nav { background: var(--admin-accent); display: flex; overflow-x: auto; }
+        .nav-btn { padding: 14px 20px; background: none; border: none; color: #94a3b8; font-weight: 600; cursor: pointer; white-space: nowrap; }
+        .nav-btn.active { color: white; background: var(--primary); }
+
+        .sub-nav { display: flex; gap: 10px; padding: 10px 20px; background: #e2e8f0; }
+        .sub-btn { padding: 6px 12px; background: white; border: 1px solid var(--border); border-radius: 4px; cursor: pointer; font-size: 0.85rem; }
+        .sub-btn.active { background: var(--admin-dark); color: white; }
+
+        .container { padding: 20px; max-width: 1200px; margin: 0 auto; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        .card { background: white; border-radius: var(--radius); padding: 20px; margin-bottom: 20px; border: 1px solid var(--border); box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .card-title { font-size: 1.2rem; color: var(--admin-dark); margin-bottom: 15px; border-bottom: 2px solid #f1f5f9; padding-bottom: 8px; }
+
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; }
+        .form-group { display: flex; flex-direction: column; gap: 5px; margin-bottom: 10px; }
+        .form-group label { font-size: 0.85rem; font-weight: 600; }
+        .form-group input, .form-group select, .form-group textarea { padding: 8px; border: 1px solid var(--border); border-radius: 4px; }
+
+        .btn { padding: 8px 16px; border: none; border-radius: 4px; font-weight: 600; cursor: pointer; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-dark { background: var(--admin-dark); color: white; }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { padding: 10px; border: 1px solid var(--border); text-align: left; font-size: 0.9rem; }
+        th { background: #f1f5f9; }
+
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: flex; justify-content: center; align-items: center; z-index: 1000; }
+        .modal { background: white; padding: 25px; border-radius: 8px; width: 350px; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h2>Lakshmi Fancy Store - Admin Console</h2>
+    <button class="btn btn-primary" onclick="exportModuleCSV('sales')">Export Sales CSV (GST)</button>
+</header>
+
+<nav>
+    <button class="nav-btn active" onclick="switchAdminTab('stock')">Daily Stock</button>
+    <button class="nav-btn" onclick="switchAdminTab('rental-inv')">Rental Inventory</button>
+    <button class="nav-btn" onclick="switchAdminTab('staff')">Staff & Attendance</button>
+    <button class="nav-btn" onclick="switchAdminTab('expenses')">Expenses</button>
+    <button class="nav-btn" onclick="switchAdminTab('analytics')">Usage & Sales Analytics</button>
+    <button class="nav-btn" onclick="switchAdminTab('customers')">Customers & Loyalty</button>
+    <button class="nav-btn" onclick="switchAdminTab('config')">Store Personalization</button>
+</nav>
+
+<div class="container">
+    <!-- STOCK MANAGEMENT -->
+    <div id="stock" class="tab-content active">
+        <div class="card">
+            <h3 class="card-title">Manage Fancy Counter Items</h3>
+            <form onsubmit="addSalesStockItem(event)" class="form-grid">
+                <div class="form-group"><label>Item Name</label><select id="st-name-preset" onchange="applyPresetName()"></select></div>
+                <div class="form-group"><label>Custom Name</label><input type="text" id="st-name-custom"></div>
+                <div class="form-group"><label>Item Code</label><input type="text" id="st-code" required></div>
+                <div class="form-group"><label>Category</label><select id="st-cat"><option>Imitation Jewellery</option><option>Accessories</option><option>Fancy Items</option><option>Others</option></select></div>
+                <div class="form-group"><label>Purchase Date</label><input type="date" id="st-date" required></div>
+                <div class="form-group"><label>Quantity</label><input type="number" id="st-qty" required></div>
+                <div class="form-group"><label>Unit Selling Price (₹)</label><input type="number" id="st-price" required></div>
+                <div class="form-group" style="grid-column: 1/-1;"><button class="btn btn-dark">Add Fancy Item Stock</button></div>
+            </form>
+        </div>
+        <div class="card">
+            <h3 class="card-title">Fancy Items Master Stock Table</h3>
+            <table>
+                <thead><tr><th>Code</th><th>Name</th><th>Category</th><th>Qty Available</th><th>Price</th><th>Action</th></tr></thead>
+                <tbody id="st-table-body"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- RENTAL INVENTORY MANAGEMENT -->
+    <div id="rental-inv" class="tab-content">
+        <div class="card">
+            <h3 class="card-title">Add/Edit Rental Jewellery</h3>
+            <form onsubmit="addRentalItem(event)" class="form-grid">
+                <div class="form-group"><label>Item Code</label><input type="text" id="ri-code" required></div>
+                <div class="form-group"><label>Jewellery Name</label><input type="text" id="ri-name" required></div>
+                <div class="form-group"><label>Daily Rental Rate (₹)</label><input type="number" id="ri-rate" required></div>
+                <div class="form-group"><label>Caution Deposit (₹)</label><input type="number" id="ri-deposit" required></div>
+                <div class="form-group"><label>Vendor / Purchased Where</label><input type="text" id="ri-vendor"></div>
+                <div class="form-group"><label>Purchase Price (Cost)</label><input type="number" id="ri-cost"></div>
+                <div class="form-group"><label>Purchase Date</label><input type="date" id="ri-pdate"></div>
+                <div class="form-group"><label>Warranty Details</label><input type="text" id="ri-warranty"></div>
+                <div class="form-group"><label>Image File</label><input type="file" id="ri-img" accept="image/*" onchange="convertBase64(this, 'ri-img-val')"></div>
+                <input type="hidden" id="ri-img-val">
+                <div class="form-group" style="grid-column: 1/-1;"><button class="btn btn-dark">Save Rental Jewellery</button></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- STAFF & ATTENDANCE -->
+    <div id="staff" class="tab-content">
+        <div class="sub-nav">
+            <button class="sub-btn active" onclick="switchSubAdminTab('staff-profiles')">Staff Profiles</button>
+            <button class="sub-btn" onclick="switchSubAdminTab('staff-att')">Attendance & Payroll</button>
+        </div>
+        <div id="staff-profiles" class="sub-tab-admin active" style="margin-top:15px;">
+            <div class="card">
+                <h3 class="card-title">Employee Profile Management</h3>
+                <form onsubmit="addEmployee(event)" class="form-grid">
+                    <div class="form-group"><label>Emp ID</label><input type="text" id="emp-id" required></div>
+                    <div class="form-group"><label>Full Name</label><input type="text" id="emp-name" required></div>
+                    <div class="form-group"><label>Monthly Base Salary (₹)</label><input type="number" id="emp-salary" value="3000" required></div>
+                    <button class="btn btn-dark" style="grid-column: 1/-1;">Add Employee</button>
+                </form>
+            </div>
+        </div>
+        <div id="staff-att" class="sub-tab-admin" style="display:none; margin-top:15px;">
+            <div class="card">
+                <h3 class="card-title">Attendance Tracking & Salary Calculation</h3>
+                <p style="font-size: 0.85rem; margin-bottom: 10px;">Allowed leaves per month: 4 days. Deductions applied for additional leaves.</p>
+                <table>
+                    <thead><tr><th>Emp Name</th><th>Base Salary</th><th>Last Month Leaves</th><th>Current Month Leaves</th><th>Deduction</th><th>Net Salary Pay</th></tr></thead>
+                    <tbody id="payroll-table-body"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- EXPENSES TRACKING -->
+    <div id="expenses" class="tab-content">
+        <div class="sub-nav">
+            <button class="sub-btn active" onclick="switchSubAdminTab('exp-log')">Log Expense</button>
+            <button class="sub-btn" onclick="switchSubAdminTab('exp-upcoming')">Upcoming & Salary Projection</button>
+        </div>
+        <div id="exp-log" class="sub-tab-admin active" style="margin-top:15px;">
+            <div class="card">
+                <h3 class="card-title">Log Store Overhead Expense</h3>
+                <form onsubmit="logExpense(event)" class="form-grid">
+                    <div class="form-group"><label>Category</label><select id="exp-cat"><option>Rent</option><option>Electricity</option><option>Tax</option><option>Salaries</option><option>Others</option></select></div>
+                    <div class="form-group"><label>Amount (₹)</label><input type="number" id="exp-amount" required></div>
+                    <div class="form-group"><label>Date</label><input type="date" id="exp-date" required></div>
+                    <button class="btn btn-dark" style="grid-column: 1/-1;">Log Expense</button>
+                </form>
+            </div>
+        </div>
+        <div id="exp-upcoming" class="sub-tab-admin" style="display:none; margin-top:15px;">
+            <div class="card"><h3 class="card-title">Projected Overhead Totals</h3><div id="expense-totals"></div></div>
+        </div>
+    </div>
+
+    <!-- ANALYTICS -->
+    <div id="analytics" class="tab-content">
+        <div class="card">
+            <h3 class="card-title">Jewellery Usage & Earnings Master</h3>
+            <table>
+                <thead><tr><th>Jewellery Code</th><th>Name</th><th>Rented Times (Usage)</th><th>Total Earnings (₹)</th></tr></thead>
+                <tbody id="usage-table-body"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- CUSTOMERS & LOYALTY -->
+    <div id="customers" class="tab-content">
+        <div class="card">
+            <h3 class="card-title">Customer Master CRM & Social Review Discounts</h3>
+            <table>
+                <thead><tr><th>Phone</th><th>Name</th><th>Area</th><th>Loyalty Points</th><th>Actions</th></tr></thead>
+                <tbody id="customer-table-body"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- STORE PERSONALIZATION -->
+    <div id="config" class="tab-content">
+        <div class="card">
+            <h3 class="card-title">Store Branding & Personalization Settings</h3>
+            <form onsubmit="saveStoreConfig(event)" class="form-grid">
+                <div class="form-group"><label>Store Title</label><input type="text" id="cfg-name" required></div>
+                <div class="form-group"><label>Branch Name</label><input type="text" id="cfg-branch" required></div>
+                <div class="form-group"><label>Business Type</label><select id="cfg-type"><option>Fancy & Bridal Rentals</option><option>Fancy Store Only</option></select></div>
+                <div class="form-group"><label>Address</label><input type="text" id="cfg-address" required></div>
+                <div class="form-group"><label>Contact Phone</label><input type="tel" id="cfg-phone" pattern="[0-9]{10}" required></div>
+                <div class="form-group"><label>GST Number</label><input type="text" id="cfg-gst"></div>
+                <div class="form-group"><label>Staff Access Password</label><input type="text" id="cfg-spass" required></div>
+                <div class="form-group"><label>Admin Access Password</label><input type="text" id="cfg-apass" required></div>
+                <div class="form-group"><label>Auto Backup Interval (Hours)</label><input type="number" id="cfg-backup" value="2" required></div>
+                <div class="form-group"><label>Store Logo</label><input type="file" accept="image/*" onchange="convertBase64(this, 'cfg-logo-val')"></div><input type="hidden" id="cfg-logo-val">
+                <div class="form-group"><label>GPay QR Code</label><input type="file" accept="image/*" onchange="convertBase64(this, 'cfg-gpay-val')"></div><input type="hidden" id="cfg-gpay-val">
+                <div class="form-group"><label>PhonePe QR Code</label><input type="file" accept="image/*" onchange="convertBase64(this, 'cfg-phonepe-val')"></div><input type="hidden" id="cfg-phonepe-val">
+                <div class="form-group"><label>Google Review QR Code</label><input type="file" accept="image/*" onchange="convertBase64(this, 'cfg-review-val')"></div><input type="hidden" id="cfg-review-val">
+                <button class="btn btn-dark" style="grid-column: 1/-1;">Save Personalization Settings</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Password Modal -->
+<div id="admin-auth-modal" class="modal-overlay">
+    <div class="modal">
+        <h3>Admin Console Authentication</h3>
+        <p style="margin-bottom: 10px; font-size: 0.9rem;">Master Access Required:</p>
+        <div class="form-group">
+            <input type="password" id="admin-pass-input">
+        </div>
+        <button class="btn btn-dark" style="width: 100%;" onclick="verifyAdminAuth()">Login to Admin Console</button>
+    </div>
+</div>
+
+<script>
+    const ITEM_PRESETS = [
+        "Necklace Sets","Earrings (Jhumkas)","Stud Earrings","Bangles (Set of 2/4)","Bracelets","Rings",
+        "Anklets (Payal)","Maang Tikka / Matha Patti","Nose Pins / Nose Rings","Hair Clips & Pins",
+        "Hair Bands / Scrunchies","Brooches / Pins","Keychains","Mobile Charms / Phone Accessories",
+        "Handbags / Clutches (Small Fancy)","Wallets / Coin Purses","Photo Frames (Decorative)",
+        "Showpieces / Figurines","Candles & Candle Holders","Artificial Flowers / Garlands",
+        "Gift Boxes & Wrapping Items","Makeup Accessories (Compact Mirrors, Brushes)",
+        "Perfume / Attar Mini Bottles","Beads & Craft Materials","Imitation Pearl Sets",
+        "Kundan / Polki Style Jewellery","Temple Jewellery (Imitation)","Oxidised Silver Look Jewellery",
+        "Kids Jewellery Sets","Waist Belts / Kamarbandh","Others"
+    ];
+
+    let salesInv = JSON.parse(localStorage.getItem('inventory_sales')) || [];
+    let rentalInv = JSON.parse(localStorage.getItem('inventory_rental')) || [];
+    let transactions = JSON.parse(localStorage.getItem('sales_transactions')) || [];
+    let customers = JSON.parse(localStorage.getItem('customers_loyalty')) || [];
+    let employees = JSON.parse(localStorage.getItem('admin_employees')) || [];
+    let expenses = JSON.parse(localStorage.getItem('admin_expenses')) || [];
+    let config = JSON.parse(localStorage.getItem('admin_store_config')) || {
+        storeName: "Lakshmi Fancy Store", branch: "Main Branch", address: "Rajapalayam", phone: "9876543210", gst: "33AAAAA0000A1Z5", staffPass: "1234", adminPass: "admin123", backupHours: 2
+    };
+
+    let adminAuth = false;
+
+    window.onload = function() {
+        if(!adminAuth) document.getElementById('admin-auth-modal').style.display = 'flex';
+        initPresets();
+        loadConfigForm();
+    };
+
+    function verifyAdminAuth() {
+        const input = document.getElementById('admin-pass-input').value;
+        if(input === (config.adminPass || 'admin123')) {
+            adminAuth = true;
+            document.getElementById('admin-auth-modal').style.display = 'none';
+            renderAllAdmin();
+        } else {
+            alert('Invalid Admin Password!');
+        }
+    }
+
+    function switchAdminTab(tabId) {
+        // Strict Security: Re-authenticate when switching tabs
+        adminAuth = false;
+        document.getElementById('admin-auth-modal').style.display = 'flex';
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('nav .nav-btn').forEach(el => el.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        event.target.classList.add('active');
+    }
+
+    function switchSubAdminTab(subId) {
+        document.querySelectorAll('.sub-tab-admin').forEach(el => el.style.display = 'none');
+        document.querySelectorAll('.sub-btn').forEach(el => el.classList.remove('active'));
+        document.getElementById(subId).style.display = 'block';
+        event.target.classList.add('active');
+    }
+
+    function initPresets() {
+        const sel = document.getElementById('st-name-preset');
+        sel.innerHTML = ITEM_PRESETS.map(p => `<option value="${p}">${p}</option>`).join('');
+    }
+
+    function applyPresetName() {
+        document.getElementById('st-name-custom').value = document.getElementById('st-name-preset').value;
+    }
+
+    function convertBase64(input, targetId) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById(targetId).value = e.target.result;
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function renderAllAdmin() {
+        renderSalesStockTable();
+        renderPayrollTable();
+        renderUsageTable();
+        renderCustomerTable();
+    }
+
+    // Stock Management
+    function addSalesStockItem(e) {
+        e.preventDefault();
+        const item = {
+            code: document.getElementById('st-code').value,
+            name: document.getElementById('st-name-custom').value || document.getElementById('st-name-preset').value,
+            category: document.getElementById('st-cat').value,
+            pdate: document.getElementById('st-date').value,
+            qty: parseInt(document.getElementById('st-qty').value),
+            price: parseFloat(document.getElementById('st-price').value)
+        };
+        salesInv.push(item);
+        localStorage.setItem('inventory_sales', JSON.stringify(salesInv));
+        alert('Item added to Sales Stock!');
+        renderSalesStockTable();
+    }
+
+    function renderSalesStockTable() {
+        const tbody = document.getElementById('st-table-body');
+        tbody.innerHTML = salesInv.map((s, idx) => `
+            <tr>
+                <td>${s.code}</td>
+                <td>${s.name}</td>
+                <td>${s.category}</td>
+                <td>${s.qty}</td>
+                <td>₹${s.price}</td>
+                <td><button onclick="salesInv.splice(${idx},1); localStorage.setItem('inventory_sales',JSON.stringify(salesInv)); renderSalesStockTable();">Remove</button></td>
+            </tr>
+        `).join('');
+    }
+
+    // Rental Management
+    function addRentalItem(e) {
+        e.preventDefault();
+        const item = {
+            code: document.getElementById('ri-code').value,
+            name: document.getElementById('ri-name').value,
+            dailyRate: parseFloat(document.getElementById('ri-rate').value),
+            deposit: parseFloat(document.getElementById('ri-deposit').value),
+            vendor: document.getElementById('ri-vendor').value,
+            cost: parseFloat(document.getElementById('ri-cost').value),
+            pdate: document.getElementById('ri-pdate').value,
+            warranty: document.getElementById('ri-warranty').value,
+            img: document.getElementById('ri-img-val').value,
+            status: 'Available',
+            usageCount: 0,
+            earnings: 0
+        };
+        rentalInv.push(item);
+        localStorage.setItem('inventory_rental', JSON.stringify(rentalInv));
+        alert('Rental Jewellery Registered!');
+    }
+
+    // Staff & Payroll Logic
+    function addEmployee(e) {
+        e.preventDefault();
+        const emp = {
+            id: document.getElementById('emp-id').value,
+            name: document.getElementById('emp-name').value,
+            salary: parseFloat(document.getElementById('emp-salary').value),
+            lastMonthLeaves: 0,
+            currentMonthLeaves: 0
+        };
+        employees.push(emp);
+        localStorage.setItem('admin_employees', JSON.stringify(employees));
+        renderPayrollTable();
+    }
+
+    function renderPayrollTable() {
+        const tbody = document.getElementById('payroll-table-body');
+        tbody.innerHTML = employees.map(e => {
+            const dailyRate = e.salary / 30; // 30 Days Base calculation
+            const excessLeaves = Math.max(0, e.currentMonthLeaves - 4);
+            const deduction = excessLeaves * dailyRate;
+            const netSalary = e.salary - deduction;
+
+            return `
+                <tr>
+                    <td>${e.name} (${e.id})</td>
+                    <td>₹${e.salary}</td>
+                    <td><input type="number" value="${e.lastMonthLeaves}" style="width:50px" onchange="updateLeaves('${e.id}', 'last', this.value)"></td>
+                    <td><input type="number" value="${e.currentMonthLeaves}" style="width:50px" onchange="updateLeaves('${e.id}', 'current', this.value)"></td>
+                    <td>₹${deduction.toFixed(2)}</td>
+                    <td><strong>₹${netSalary.toFixed(2)}</strong></td>
+                </tr>
+            `;
+        }).join('');
+    }
+
+    function updateLeaves(empId, period, val) {
+        const emp = employees.find(e => e.id === empId);
+        if(period === 'last') emp.lastMonthLeaves = parseInt(val) || 0;
+        if(period === 'current') emp.currentMonthLeaves = parseInt(val) || 0;
+        localStorage.setItem('admin_employees', JSON.stringify(employees));
+        renderPayrollTable();
+    }
+
+    // Overhead Expenses Log
+    function logExpense(e) {
+        e.preventDefault();
+        expenses.push({
+            category: document.getElementById('exp-cat').value,
+            amount: parseFloat(document.getElementById('exp-amount').value),
+            date: document.getElementById('exp-date').value
+        });
+        localStorage.setItem('admin_expenses', JSON.stringify(expenses));
+        alert('Expense Logged!');
+    }
+
+    // Usage Analytics
+    function renderUsageTable() {
+        const tbody = document.getElementById('usage-table-body');
+        tbody.innerHTML = rentalInv.map(r => `
+            <tr>
+                <td>${r.code}</td>
+                <td>${r.name}</td>
+                <td>${r.usageCount || 0} times</td>
+                <td>₹${r.earnings || 0}</td>
+            </tr>
+        `).join('');
+    }
+
+    // Customer & Loyalty
+    function renderCustomerTable() {
+        const tbody = document.getElementById('customer-table-body');
+        tbody.innerHTML = customers.map(c => `
+            <tr>
+                <td>${c.phone}</td>
+                <td>${c.name}</td>
+                <td>${c.area}</td>
+                <td>${c.points || 0} pts</td>
+                <td><button onclick="c.repeatDiscount=100; localStorage.setItem('customers_loyalty',JSON.stringify(customers)); alert('Social discount unlocked!');">Apply Social Discount</button></td>
+            </tr>
+        `).join('');
+    }
+
+    // Store Personalization
+    function loadConfigForm() {
+        document.getElementById('cfg-name').value = config.storeName || '';
+        document.getElementById('cfg-branch').value = config.branch || '';
+        document.getElementById('cfg-address').value = config.address || '';
+        document.getElementById('cfg-phone').value = config.phone || '';
+        document.getElementById('cfg-gst').value = config.gst || '';
+        document.getElementById('cfg-spass').value = config.staffPass || '1234';
+        document.getElementById('cfg-apass').value = config.adminPass || 'admin123';
+        document.getElementById('cfg-backup').value = config.backupHours || 2;
+    }
+
+    function saveStoreConfig(e) {
+        e.preventDefault();
+        config.storeName = document.getElementById('cfg-name').value;
+        config.branch = document.getElementById('cfg-branch').value;
+        config.address = document.getElementById('cfg-address').value;
+        config.phone = document.getElementById('cfg-phone').value;
+        config.gst = document.getElementById('cfg-gst').value;
+        config.staffPass = document.getElementById('cfg-spass').value;
+        config.adminPass = document.getElementById('cfg-apass').value;
+        config.backupHours = parseInt(document.getElementById('cfg-backup').value);
+
+        if(document.getElementById('cfg-logo-val').value) config.logo = document.getElementById('cfg-logo-val').value;
+        if(document.getElementById('cfg-gpay-val').value) config.qrGpay = document.getElementById('cfg-gpay-val').value;
+        if(document.getElementById('cfg-phonepe-val').value) config.qrPhonepe = document.getElementById('cfg-phonepe-val').value;
+        if(document.getElementById('cfg-review-val').value) config.qrReview = document.getElementById('cfg-review-val').value;
+
+        localStorage.setItem('admin_store_config', JSON.stringify(config));
+        alert('Personalization saved!');
+    }
+
+    // Export CSV for GST & External Systems
+    function exportModuleCSV(moduleType) {
+        let csvContent = "data:text/csv;charset=utf-8,";
+        if(moduleType === 'sales') {
+            csvContent += "BillID,Type,CustomerName,Phone,ItemCode,Advance,Pending,Date\n";
+            transactions.forEach(t => {
+                csvContent += `${t.billId || ''},${t.type},${t.name || ''},${t.phone || ''},${t.code},${t.advance || t.total},${t.pending || 0},${t.date}\n`;
+            });
+        }
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", `Store_Sales_Export_${new Date().toISOString().slice(0,10)}.csv`);
+        document.body.appendChild(link);
+        link.click();
+    }
+</script>
+</body>
+</html>
