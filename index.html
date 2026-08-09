@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Lakshmi Fancy Store - POS & Rental Management</title>
+  <title>Lakshmi Fancy Store - POS & Management System</title>
   <style>
     :root {
       --primary: #8b0000;
@@ -24,7 +24,7 @@
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; -webkit-tap-highlight-color: transparent; }
     body { background-color: #f4f6f9; color: #333; line-height: 1.5; padding-bottom: 70px; }
 
-    /* Header Styling */
+    /* Header & Branding */
     header {
       background: linear-gradient(135deg, var(--primary), var(--primary-dark));
       color: white;
@@ -48,13 +48,15 @@
       justify-content: space-around;
       box-shadow: 0 2px 5px rgba(0,0,0,0.05);
       position: sticky; top: 61px; z-index: 999;
+      overflow-x: auto;
     }
     .nav-btn {
       flex: 1;
+      min-width: 110px;
       padding: 0.75rem 0.5rem;
       border: none;
       background: none;
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       font-weight: 600;
       color: var(--gray);
       cursor: pointer;
@@ -87,7 +89,7 @@
     }
     .sub-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
 
-    /* Layout & Containers */
+    /* Layout Containers */
     .container { max-width: 1200px; margin: 15px auto; padding: 0 12px; }
     .tab-content, .sub-tab-content { display: none; }
     .tab-content.active, .sub-tab-content.active { display: block; animation: fadeIn 0.2s ease-in; }
@@ -95,9 +97,9 @@
 
     /* Panels & Cards */
     .panel { background: white; padding: 18px; border-radius: var(--radius); box-shadow: var(--card-shadow); margin-bottom: 20px; border: 1px solid #e2e8f0; }
-    .panel-title { font-size: 1.1rem; font-weight: 700; color: var(--primary); margin-bottom: 15px; border-bottom: 2px solid #f0f0f0; padding-bottom: 6px; display: flex; justify-content: space-between; align-items: center; }
+    .panel-title { font-size: 1.05rem; font-weight: 700; color: var(--primary); margin-bottom: 15px; border-bottom: 2px solid #f0f0f0; padding-bottom: 6px; display: flex; justify-content: space-between; align-items: center; }
 
-    /* Forms & Inputs */
+    /* Form Fields */
     .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-bottom: 15px; }
     .form-group { display: flex; flex-direction: column; gap: 4px; }
     .form-group.full-width { grid-column: 1 / -1; }
@@ -141,21 +143,21 @@
     th { background: #f8f9fa; font-weight: 700; color: #495057; }
     tr:hover { background: #fdfdfd; }
 
-    /* Status Badges */
+    /* Badges */
     .badge { padding: 3px 8px; border-radius: 12px; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; }
     .badge-available { background: #d4edda; color: #155724; }
     .badge-rented { background: #f8d7da; color: #721c24; }
 
     /* Catalog Cards */
-    .catalog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 15px; }
+    .catalog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; }
     .card { background: white; border-radius: var(--radius); border: 1px solid #e0e0e0; overflow: hidden; box-shadow: var(--card-shadow); }
-    .card-img-wrap { width: 100%; height: 180px; background: #f0f0f0; overflow: hidden; cursor: pointer; position: relative; }
+    .card-img-wrap { width: 100%; height: 160px; background: #f0f0f0; overflow: hidden; cursor: pointer; position: relative; }
     .card-img { width: 100%; height: 100%; object-fit: cover; }
     .card-body { padding: 12px; }
-    .card-title { font-size: 0.95rem; font-weight: 700; margin-bottom: 4px; }
-    .card-price { font-size: 1rem; font-weight: 700; color: var(--primary); }
+    .card-title { font-size: 0.9rem; font-weight: 700; margin-bottom: 4px; }
+    .card-price { font-size: 0.95rem; font-weight: 700; color: var(--primary); }
 
-    /* QR Code Display Box */
+    /* QR Code Display Container */
     .qr-container { display: flex; gap: 15px; overflow-x: auto; padding: 10px 0; }
     .qr-card { border: 1px solid #ddd; padding: 8px; border-radius: 6px; text-align: center; background: #fff; min-width: 120px; }
     .qr-card img { width: 100px; height: 100px; object-fit: contain; }
@@ -167,7 +169,7 @@
     .modal-content { background: white; border-radius: var(--radius); max-width: 550px; width: 100%; padding: 20px; position: relative; max-height: 90vh; overflow-y: auto; }
     .modal-close { position: absolute; top: 10px; right: 15px; font-size: 1.5rem; border: none; background: none; cursor: pointer; }
 
-    /* Receipt Print Styling */
+    /* Printable Receipt Styling */
     #receiptPrintArea { display: none; }
     @media print {
       body * { visibility: hidden; }
@@ -175,7 +177,7 @@
       #receiptPrintArea { position: absolute; left: 0; top: 0; width: 100%; display: block !important; }
       .no-print { display: none !important; }
     }
-    .receipt-box { border: 1px dashed #000; padding: 15px; max-width: 400px; margin: 0 auto; background: #fff; font-size: 0.85rem; }
+    .receipt-box { border: 1px dashed #000; padding: 15px; max-width: 380px; margin: 0 auto; background: #fff; font-size: 0.85rem; }
     .receipt-header { text-align: center; margin-bottom: 12px; border-bottom: 1px solid #ccc; padding-bottom: 8px; }
     .receipt-row { display: flex; justify-content: space-between; margin-bottom: 4px; }
 
@@ -192,11 +194,11 @@
       <img id="storeLogo" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='45' height='45' viewBox='0 0 24 24' fill='none' stroke='%23d4af37' stroke-width='2'><polygon points='12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2'/></svg>" alt="Logo" class="brand-logo">
       <div class="brand-title">
         <h1 id="hdrTitle">LAKSHMI FANCY STORE</h1>
-        <p id="hdrSub">Bridal Jewellery Rental POS</p>
+        <p id="hdrSub">Fancy Items & Bridal Jewellery POS</p>
       </div>
     </div>
     <div>
-      <button class="btn btn-secondary btn-sm" onclick="exportJSONData()">Backup Data</button>
+      <button class="btn btn-secondary btn-sm" onclick="exportJSONData()">Backup</button>
       <button class="btn btn-outline btn-sm" style="color:white; border-color:white;" onclick="document.getElementById('importFile').click()">Import</button>
       <input type="file" id="importFile" style="display:none" accept=".json" onchange="importJSONData(event)">
     </div>
@@ -204,7 +206,8 @@
 
   <!-- Main Navigation Tabs -->
   <nav class="main-nav">
-    <button class="nav-btn active" onclick="switchMainTab('rentalTab', this)">Rental Entry</button>
+    <button class="nav-btn active" onclick="switchMainTab('dailySalesTab', this)">Daily Sales</button>
+    <button class="nav-btn" onclick="switchMainTab('rentalTab', this)">Rental Entry</button>
     <button class="nav-btn" onclick="switchMainTab('catalogTab', this)">Catalog & Status</button>
     <button class="nav-btn" onclick="switchMainTab('adminTab', this)">Admin Module</button>
   </nav>
@@ -212,9 +215,68 @@
   <div class="container">
 
     <!-- ========================================== -->
-    <!-- TAB 1: RENTAL ENTRY (SALES POS) -->
+    <!-- TAB 1: DAILY SMALL ITEMS SALES -->
     <!-- ========================================== -->
-    <div id="rentalTab" class="tab-content active">
+    <div id="dailySalesTab" class="tab-content active">
+      <div class="panel">
+        <div class="panel-title">Daily Small Items Sales Terminal</div>
+        <form id="dailySaleForm" onsubmit="handleDailySaleSubmit(event)">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="dsItemSelect">Select Item *</label>
+              <select id="dsItemSelect" required onchange="populateDailySaleItemInfo()">
+                <option value="">-- Select Item --</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Available Stock</label>
+              <input type="number" id="dsAvailStock" readonly>
+            </div>
+            <div class="form-group">
+              <label for="dsPrice">Unit Selling Price (₹)</label>
+              <input type="number" id="dsPrice" readonly required>
+            </div>
+            <div class="form-group">
+              <label for="dsQty">Quantity *</label>
+              <input type="number" id="dsQty" min="1" value="1" required oninput="calculateDailySaleTotal()">
+            </div>
+            <div class="form-group">
+              <label>Total Amount (₹)</label>
+              <input type="number" id="dsTotal" readonly>
+            </div>
+            <div class="form-group">
+              <label for="dsCustomerPhone">Customer Phone (Optional)</label>
+              <input type="tel" id="dsCustomerPhone" pattern="[0-9]{10}" placeholder="10-digit number">
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary" style="width:100%;">Complete Daily Sale</button>
+        </form>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">Today's Daily Sales Log</div>
+        <div class="table-responsive">
+          <table>
+            <thead>
+              <tr>
+                <th>Date & Time</th>
+                <th>Item Code</th>
+                <th>Item Name</th>
+                <th>Qty</th>
+                <th>Unit Price</th>
+                <th>Total Paid</th>
+              </tr>
+            </thead>
+            <tbody id="dailySalesTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- TAB 2: RENTAL ENTRY (SALES POS) -->
+    <!-- ========================================== -->
+    <div id="rentalTab" class="tab-content">
       <div class="sub-nav">
         <button class="sub-btn active" onclick="switchSubTab('rentalTab', 'posSubTab', this)">New Rental POS</button>
         <button class="sub-btn" onclick="switchSubTab('rentalTab', 'historySubTab', this)">Rented Stock / Returns</button>
@@ -224,13 +286,13 @@
       <!-- POS Entry Form -->
       <div id="posSubTab" class="sub-tab-content active">
         <div class="panel">
-          <div class="panel-title">Sales POS Terminal</div>
+          <div class="panel-title">Bridal Jewellery Rental POS</div>
           <form id="posForm" onsubmit="handlePosSubmit(event)">
             <div class="form-grid">
               
               <div class="form-group">
                 <label for="posPhone">Customer Phone Number *</label>
-                <input type="tel" id="posPhone" pattern="[0-9]{10}" placeholder="10-digit Mobile Number" required onchange="lookupCustomerByPhone()">
+                <input type="tel" id="posPhone" pattern="[0-9]{10}" placeholder="10-digit Mobile Number" required oninput="lookupCustomerByPhone()">
               </div>
 
               <div class="form-group">
@@ -239,12 +301,17 @@
               </div>
 
               <div class="form-group">
-                <label for="posCustomerArea">Customer Area *</label>
+                <label for="posCustomerArea">Customer Area / Region *</label>
                 <select id="posCustomerArea" required></select>
               </div>
 
+              <div class="form-group full-width">
+                <label for="posCustomerAddress">Customer Full Address</label>
+                <input type="text" id="posCustomerAddress" placeholder="Door No, Street Name, Landmark">
+              </div>
+
               <div class="form-group">
-                <label for="posJewellery">Select Jewellery Item *</label>
+                <label for="posJewellery">Select Rental Jewellery Item *</label>
                 <select id="posJewellery" required onchange="populateJewelleryRates()"></select>
               </div>
 
@@ -270,7 +337,7 @@
               </div>
 
               <div class="form-group">
-                <label for="posStartDate">Rental Booking Date *</label>
+                <label for="posStartDate">Rental Start Date *</label>
                 <input type="date" id="posStartDate" required onchange="calculatePosTotal()">
               </div>
 
@@ -280,12 +347,15 @@
               </div>
 
               <div class="form-group">
-                <label for="posReviewDiscount">Social Review Discount (₹)</label>
-                <input type="number" id="posReviewDiscount" min="0" value="0" oninput="calculatePosTotal()">
+                <label for="posSocialReview">Social Review Discount (Google/Insta/FB)</label>
+                <select id="posSocialReview" onchange="calculatePosTotal()">
+                  <option value="NO">No Review Discount</option>
+                  <option value="YES">Review Completed (Apply Discount)</option>
+                </select>
               </div>
 
               <div class="form-group">
-                <label for="posManualDiscount">Additional / Loyalty Discount (₹)</label>
+                <label for="posManualDiscount">Additional / Loyalty / Flash Discount (₹)</label>
                 <input type="number" id="posManualDiscount" min="0" value="0" oninput="calculatePosTotal()">
               </div>
 
@@ -295,30 +365,21 @@
               </div>
 
               <div class="form-group">
-                <label>Remaining Amount Due (₹)</label>
+                <label>Remaining Balance Due (₹)</label>
                 <input type="number" id="posRemaining" readonly>
-              </div>
-
-              <div class="form-group">
-                <label for="posPaymentStatus">Payment Status *</label>
-                <select id="posPaymentStatus" required>
-                  <option value="Advance Paid">Advance Paid</option>
-                  <option value="Fully Paid">Fully Paid</option>
-                  <option value="Pending">Pending</option>
-                </select>
               </div>
 
             </div>
 
             <div id="posLoyaltyBadge" style="font-size:0.85rem; color:var(--primary); font-weight:600; margin-bottom:10px;"></div>
 
-            <button type="submit" class="btn btn-primary" style="width:100%;">Complete Rental & Generate Receipt</button>
+            <button type="submit" class="btn btn-primary" style="width:100%;">Complete Rental & Print Receipt</button>
           </form>
         </div>
 
         <!-- Dynamic Store Payment QR Display for Sales Person -->
         <div class="panel">
-          <div class="panel-title">Show Payment / Location QR Code to Customer</div>
+          <div class="panel-title">Store Payment & Location QR Codes</div>
           <div class="qr-container" id="posQrContainer"></div>
         </div>
       </div>
@@ -326,16 +387,16 @@
       <!-- Active Rentals / Stock Return Sub-tab -->
       <div id="historySubTab" class="sub-tab-content">
         <div class="panel">
-          <div class="panel-title">Rented Items & Stock Returns</div>
+          <div class="panel-title">Rented Jewellery & Returns</div>
           <div class="table-responsive">
             <table>
               <thead>
                 <tr>
                   <th>Receipt #</th>
-                  <th>Jewellery</th>
+                  <th>Jewellery Item</th>
                   <th>Customer</th>
                   <th>Phone</th>
-                  <th>Dates</th>
+                  <th>Rental Period</th>
                   <th>Balance Due</th>
                   <th>Status</th>
                   <th>Action</th>
@@ -362,15 +423,15 @@
                 <input type="tel" id="reqPhone" pattern="[0-9]{10}" required>
               </div>
               <div class="form-group full-width">
-                <label for="reqNote">Requested Jewellery Design / Requirements</label>
-                <textarea id="reqNote" rows="3" placeholder="Describe items customer requested for future rental..." required></textarea>
+                <label for="reqNote">Requested Jewellery Design / Comments</label>
+                <textarea id="reqNote" rows="3" placeholder="Describe customer requirements for future stocking..." required></textarea>
               </div>
             </div>
-            <button type="submit" class="btn btn-secondary">Save Customer Request</button>
+            <button type="submit" class="btn btn-secondary">Save Request Comments</button>
           </form>
         </div>
         <div class="panel">
-          <div class="panel-title">Customer Feature Wishlist</div>
+          <div class="panel-title">Customer Wishlist & Requested Items</div>
           <div class="table-responsive">
             <table>
               <thead>
@@ -390,12 +451,12 @@
     </div>
 
     <!-- ========================================== -->
-    <!-- TAB 2: JEWELLERY CATALOG & STATUS -->
+    <!-- TAB 3: JEWELLERY CATALOG & STATUS -->
     <!-- ========================================== -->
     <div id="catalogTab" class="tab-content">
       <div class="panel">
         <div class="panel-title">
-          <span>Jewellery Availability & Catalog</span>
+          <span>Jewellery Availability Catalog</span>
           <select id="catalogFilter" onchange="renderCatalog()" style="width:auto; font-size:0.8rem;">
             <option value="ALL">All Status</option>
             <option value="Available">Available</option>
@@ -407,23 +468,87 @@
     </div>
 
     <!-- ========================================== -->
-    <!-- TAB 3: ADMIN MANAGEMENT CONSOLE -->
+    <!-- TAB 4: ADMIN MANAGEMENT CONSOLE -->
     <!-- ========================================== -->
     <div id="adminTab" class="tab-content">
       <div class="sub-nav">
-        <button class="sub-btn active" onclick="switchSubTab('adminTab', 'admInventorySub', this)">Inventory</button>
+        <button class="sub-btn active" onclick="switchSubTab('adminTab', 'admStockSub', this)">Fancy Stock</button>
+        <button class="sub-btn" onclick="switchSubTab('adminTab', 'admRentalInvSub', this)">Rental Inventory</button>
         <button class="sub-btn" onclick="switchSubTab('adminTab', 'admStaffSub', this)">Staff & Attendance</button>
         <button class="sub-btn" onclick="switchSubTab('adminTab', 'admExpensesSub', this)">Expenses Log</button>
         <button class="sub-btn" onclick="switchSubTab('adminTab', 'admUsageSub', this)">Jewellery Usage</button>
+        <button class="sub-btn" onclick="switchSubTab('adminTab', 'admSalesSub', this)">Overall Sales</button>
         <button class="sub-btn" onclick="switchSubTab('adminTab', 'admCustomerSub', this)">Customers & Loyalty</button>
-        <button class="sub-btn" onclick="switchSubTab('adminTab', 'admBrandingSub', this)">Store Personalization</button>
+        <button class="sub-btn" onclick="switchSubTab('adminTab', 'admBrandingSub', this)">Store Branding</button>
+        <button class="sub-btn" onclick="switchSubTab('adminTab', 'admSecuritySub', this)">Security & Passwords</button>
         <button class="sub-btn" onclick="switchSubTab('adminTab', 'admExportSub', this)">CSV & Backup</button>
       </div>
 
-      <!-- ADMIN: INVENTORY MANAGEMENT -->
-      <div id="admInventorySub" class="sub-tab-content active">
+      <!-- ADMIN: FANCY SHOP STOCK MANAGEMENT -->
+      <div id="admStockSub" class="sub-tab-content active">
         <div class="panel">
-          <div class="panel-title" id="invFormTitle">Add / Edit Jewellery Master Record</div>
+          <div class="panel-title">Add / Update Fancy Item Stock</div>
+          <form id="stockForm" onsubmit="handleSaveFancyStock(event)">
+            <input type="hidden" id="stockEditId">
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="stkCode">Item Code *</label>
+                <input type="text" id="stkCode" placeholder="e.g. FNC-001" required>
+              </div>
+              <div class="form-group">
+                <label for="stkItem">Item Name *</label>
+                <select id="stkItem" required></select>
+              </div>
+              <div class="form-group">
+                <label for="stkCategory">Category *</label>
+                <select id="stkCategory" required>
+                  <option value="Imitation Jewellery">Imitation Jewellery</option>
+                  <option value="Accessories">Accessories</option>
+                  <option value="Fancy Items">Fancy Items</option>
+                  <option value="Others">Others</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="stkQty">Available Quantity *</label>
+                <input type="number" id="stkQty" min="0" required>
+              </div>
+              <div class="form-group">
+                <label for="stkPrice">Unit Selling Price (₹) *</label>
+                <input type="number" id="stkPrice" min="0" required>
+              </div>
+              <div class="form-group">
+                <label for="stkPurchaseDate">Purchase Date</label>
+                <input type="date" id="stkPurchaseDate">
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Save Fancy Stock Record</button>
+          </form>
+        </div>
+
+        <div class="panel">
+          <div class="panel-title">Fancy Items Master Stock Inventory</div>
+          <div class="table-responsive">
+            <table>
+              <thead>
+                <tr>
+                  <th>Code</th>
+                  <th>Item Name</th>
+                  <th>Category</th>
+                  <th>Available Qty</th>
+                  <th>Unit Price (₹)</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="fancyStockTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ADMIN: RENTAL INVENTORY MANAGEMENT -->
+      <div id="admRentalInvSub" class="sub-tab-content">
+        <div class="panel">
+          <div class="panel-title" id="invFormTitle">Add / Edit Rental Jewellery Master Item</div>
           <form id="invForm" onsubmit="handleSaveInventory(event)">
             <input type="hidden" id="invEditId">
             <div class="form-grid">
@@ -453,8 +578,8 @@
                 <input type="number" id="invDeposit" required>
               </div>
               <div class="form-group">
-                <label for="invPurchaseVendor">Purchased Vendor / Source</label>
-                <input type="text" id="invPurchaseVendor" placeholder="Vendor Name / City">
+                <label for="invPurchaseVendor">Purchased Vendor / City</label>
+                <input type="text" id="invPurchaseVendor" placeholder="Vendor Details">
               </div>
               <div class="form-group">
                 <label for="invPurchaseCost">Purchase Cost Price (₹)</label>
@@ -465,22 +590,22 @@
                 <input type="date" id="invPurchaseDate">
               </div>
               <div class="form-group">
-                <label for="invWarranty">Warranty Details</label>
+                <label for="invWarranty">Warranty Info</label>
                 <input type="text" id="invWarranty" placeholder="e.g., 1 Year Polish Warranty">
               </div>
               <div class="form-group">
-                <label for="invPhoto">Upload Jewellery Photo</label>
+                <label for="invPhoto">Upload Image Preview</label>
                 <input type="file" id="invPhoto" accept="image/*" onchange="convertImageToBase64(this, 'invPhotoB64')">
                 <input type="hidden" id="invPhotoB64">
               </div>
             </div>
-            <button type="submit" class="btn btn-primary">Save Jewellery Item</button>
-            <button type="button" class="btn btn-outline" onclick="resetInvForm()">Reset Form</button>
+            <button type="submit" class="btn btn-primary">Save Rental Jewellery</button>
+            <button type="button" class="btn btn-outline" onclick="resetInvForm()">Reset</button>
           </form>
         </div>
 
         <div class="panel">
-          <div class="panel-title">Existing Jewellery Inventory</div>
+          <div class="panel-title">Rental Jewellery Master Database</div>
           <div class="table-responsive">
             <table>
               <thead>
@@ -488,8 +613,8 @@
                   <th>Image</th>
                   <th>ID Code</th>
                   <th>Title</th>
-                  <th>Rental Price</th>
-                  <th>Cost Price</th>
+                  <th>Rental Rate</th>
+                  <th>Deposit</th>
                   <th>Status</th>
                   <th>Actions</th>
                 </tr>
@@ -523,12 +648,12 @@
                 <input type="number" id="stfSalary" required>
               </div>
             </div>
-            <button type="submit" class="btn btn-primary">Add Staff Member</button>
+            <button type="submit" class="btn btn-primary">Add Employee</button>
           </form>
         </div>
 
         <div class="panel">
-          <div class="panel-title">Staff Attendance & Salary Calculation (4-Day Monthly Leave Policy)</div>
+          <div class="panel-title">Staff Attendance & Automated 4-Leave Policy Calculation</div>
           <form id="leaveForm" onsubmit="handleSaveLeave(event)" style="margin-bottom:15px;">
             <div class="form-grid">
               <div class="form-group">
@@ -540,7 +665,7 @@
                 <input type="date" id="leaveDate" required>
               </div>
             </div>
-            <button type="submit" class="btn btn-secondary btn-sm">Mark Staff Leave</button>
+            <button type="submit" class="btn btn-secondary btn-sm">Mark Leave</button>
           </form>
 
           <div class="table-responsive">
@@ -548,10 +673,10 @@
               <thead>
                 <tr>
                   <th>Staff Name</th>
-                  <th>Base Salary</th>
+                  <th>Base Monthly Salary</th>
                   <th>Last Month Leaves</th>
                   <th>Current Month Leaves</th>
-                  <th>Leave Deductions (Exceeding 4 Days)</th>
+                  <th>Deductions (> 4 Leaves)</th>
                   <th>Calculated Current Net Salary</th>
                 </tr>
               </thead>
@@ -587,7 +712,7 @@
                 <input type="date" id="expDate" required>
               </div>
             </div>
-            <button type="submit" class="btn btn-primary">Log Expense</button>
+            <button type="submit" class="btn btn-primary">Log Overhead Expense</button>
           </form>
         </div>
 
@@ -597,7 +722,7 @@
         </div>
 
         <div class="panel">
-          <div class="panel-title">Recorded Expenses History</div>
+          <div class="panel-title">Recorded Overhead Expenses Log</div>
           <div class="table-responsive">
             <table>
               <thead>
@@ -616,15 +741,15 @@
       <!-- ADMIN: JEWELLERY USAGE ANALYTICS -->
       <div id="admUsageSub" class="sub-tab-content">
         <div class="panel">
-          <div class="panel-title">Jewellery Rental Usage & Revenue Metrics</div>
+          <div class="panel-title">Jewellery Rental Usage Metrics</div>
           <div class="table-responsive">
             <table>
               <thead>
                 <tr>
                   <th>Jewellery ID</th>
                   <th>Jewellery Title</th>
-                  <th>Total Times Rented</th>
-                  <th>Total Revenue Generated (₹)</th>
+                  <th>Times Rented</th>
+                  <th>Total Rental Earnings (₹)</th>
                 </tr>
               </thead>
               <tbody id="usageTableBody"></tbody>
@@ -633,10 +758,18 @@
         </div>
       </div>
 
+      <!-- ADMIN: OVERALL SALES DETAILS -->
+      <div id="admSalesSub" class="sub-tab-content">
+        <div class="panel">
+          <div class="panel-title">Overall Business Sales Performance</div>
+          <div id="overallSalesSummary" style="font-size:0.95rem; line-height:1.8; margin-bottom:15px;"></div>
+        </div>
+      </div>
+
       <!-- ADMIN: CUSTOMERS & LOYALTY MODULE -->
       <div id="admCustomerSub" class="sub-tab-content">
         <div class="panel">
-          <div class="panel-title">Loyalty Points & Program Configuration</div>
+          <div class="panel-title">Loyalty Points & Promotional Configurations</div>
           <div class="form-grid">
             <div class="form-group">
               <label for="cfgLoyaltyRate">Loyalty Points Earned per ₹100 Spent</label>
@@ -647,14 +780,18 @@
               <input type="number" id="cfgRepeatDiscount" value="100" onchange="saveConfig()">
             </div>
             <div class="form-group">
-              <label for="cfgReviewDiscount">Google/Insta Review Discount (₹)</label>
+              <label for="cfgReviewDiscount">Google/Insta/FB Review Discount (₹)</label>
               <input type="number" id="cfgReviewDiscount" value="50" onchange="saveConfig()">
+            </div>
+            <div class="form-group">
+              <label for="cfgFlashDiscount">Active Flash Sale Discount (₹)</label>
+              <input type="number" id="cfgFlashDiscount" value="0" onchange="saveConfig()">
             </div>
           </div>
         </div>
 
         <div class="panel">
-          <div class="panel-title">Registered Customer Database</div>
+          <div class="panel-title">Customer Master Directory</div>
           <div class="table-responsive">
             <table>
               <thead>
@@ -662,6 +799,7 @@
                   <th>Customer Name</th>
                   <th>Phone</th>
                   <th>Area</th>
+                  <th>Address</th>
                   <th>Total Orders</th>
                   <th>Accumulated Loyalty Points</th>
                 </tr>
@@ -687,6 +825,14 @@
                 <input type="text" id="cfgBranch">
               </div>
               <div class="form-group">
+                <label for="cfgBusinessType">Business Type</label>
+                <select id="cfgBusinessType">
+                  <option value="Fancy & Bridal Jewellery Rental">Fancy & Bridal Jewellery Rental</option>
+                  <option value="Retail & Imitation Jewellery">Retail & Imitation Jewellery</option>
+                  <option value="Gift & Novelty Shop">Gift & Novelty Shop</option>
+                </select>
+              </div>
+              <div class="form-group">
                 <label for="cfgPhone">Store Phone</label>
                 <input type="text" id="cfgPhone">
               </div>
@@ -699,12 +845,24 @@
                 <input type="text" id="cfgGst">
               </div>
               <div class="form-group">
+                <label for="cfgSocialFb">Facebook Handle</label>
+                <input type="text" id="cfgSocialFb" placeholder="e.g. @lakshmifancy">
+              </div>
+              <div class="form-group">
+                <label for="cfgSocialInsta">Instagram Handle</label>
+                <input type="text" id="cfgSocialInsta" placeholder="e.g. @lakshmifancy_official">
+              </div>
+              <div class="form-group">
                 <label for="cfgAutoBackupHours">Auto Backup Interval (Hours)</label>
                 <input type="number" id="cfgAutoBackupHours" min="1" value="2" required>
               </div>
               <div class="form-group full-width">
-                <label for="cfgAddress">Store Address</label>
+                <label for="cfgAddress">Full Store Address</label>
                 <input type="text" id="cfgAddress">
+              </div>
+              <div class="form-group full-width">
+                <label>Upload Store Logo</label>
+                <input type="file" accept="image/*" onchange="convertImageToBase64(this, 'storeLogoB64')">
               </div>
             </div>
             <button type="submit" class="btn btn-primary">Save Personalization Settings</button>
@@ -712,7 +870,7 @@
         </div>
 
         <div class="panel">
-          <div class="panel-title">Upload QR Codes for Sales Terminal</div>
+          <div class="panel-title">Upload Billing & Payment QR Codes</div>
           <div class="form-grid">
             <div class="form-group">
               <label>GPay QR Code</label>
@@ -726,17 +884,43 @@
               <label>Google Review QR Code</label>
               <input type="file" accept="image/*" onchange="convertImageToBase64(this, 'qrReview')">
             </div>
+            <div class="form-group">
+              <label>Store Location QR Code</label>
+              <input type="file" accept="image/*" onchange="convertImageToBase64(this, 'qrLocation')">
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- ADMIN: CSV EXPORTS -->
+      <!-- ADMIN: PASSWORDS & SECURITY -->
+      <div id="admSecuritySub" class="sub-tab-content">
+        <div class="panel">
+          <div class="panel-title">Change System Passwords</div>
+          <form id="passForm" onsubmit="handleSavePasswords(event)">
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="pwdSales">Sales Person Access Password</label>
+                <input type="text" id="pwdSales" required>
+              </div>
+              <div class="form-group">
+                <label for="pwdAdmin">Master Admin Password</label>
+                <input type="text" id="pwdAdmin" required>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Update Passwords</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- ADMIN: CSV EXPORTS & BACKUP -->
       <div id="admExportSub" class="sub-tab-content">
         <div class="panel">
-          <div class="panel-title">Generate & Download CSV Reports</div>
+          <div class="panel-title">Download CSV Data Reports for GST / External Software</div>
           <div style="display:flex; gap:10px; flex-wrap:wrap;">
-            <button class="btn btn-secondary" onclick="exportToCSV('rentals')">Export Rentals CSV (GST/Tax)</button>
-            <button class="btn btn-secondary" onclick="exportToCSV('inventory')">Export Inventory CSV</button>
+            <button class="btn btn-secondary" onclick="exportToCSV('rentals')">Export Rental Invoices CSV</button>
+            <button class="btn btn-secondary" onclick="exportToCSV('dailySales')">Export Daily Sales CSV</button>
+            <button class="btn btn-secondary" onclick="exportToCSV('inventory')">Export Rental Inventory CSV</button>
+            <button class="btn btn-secondary" onclick="exportToCSV('stock')">Export Fancy Stock CSV</button>
             <button class="btn btn-secondary" onclick="exportToCSV('expenses')">Export Expenses CSV</button>
           </div>
         </div>
@@ -746,7 +930,7 @@
 
   </div>
 
-  <!-- Image Preview Modal -->
+  <!-- Image Modal Popup -->
   <div id="imageModal" class="modal" onclick="closeModal('imageModal')">
     <div class="modal-content" style="text-align:center;" onclick="event.stopPropagation()">
       <button class="modal-close" onclick="closeModal('imageModal')">&times;</button>
@@ -770,18 +954,19 @@
           <div class="receipt-row"><span>Phone:</span> <span id="rPhone"></span></div>
           <div class="receipt-row"><span>Area:</span> <span id="rArea"></span></div>
           <hr style="margin:6px 0;">
-          <div class="receipt-row"><span>Item:</span> <strong id="rItem"></strong></div>
+          <div class="receipt-row"><span>Jewellery:</span> <strong id="rItem"></strong></div>
+          <div id="rImageWrap" style="text-align:center; margin:6px 0;"></div>
           <div class="receipt-row"><span>Duration:</span> <span id="rDates"></span></div>
           <div class="receipt-row"><span>Total Charge:</span> <span id="rTotal"></span></div>
           <div class="receipt-row"><span>Advance Paid:</span> <span id="rAdvance"></span></div>
-          <div class="receipt-row" style="font-weight:700;"><span>Remaining Due:</span> <span id="rBalance"></span></div>
+          <div class="receipt-row" style="font-weight:700;"><span>Remaining Balance:</span> <span id="rBalance"></span></div>
           <div style="text-align:center; margin-top:15px;">
-            <p style="font-size:0.75rem;">Thank you for renting with us!</p>
+            <p style="font-size:0.75rem;">Thank you for your business!</p>
           </div>
         </div>
       </div>
       <div style="text-align:right; margin-top:15px;" class="no-print">
-        <button class="btn btn-primary" onclick="window.print()">Print Receipt</button>
+        <button class="btn btn-primary" onclick="window.print()">Print Invoice</button>
         <button class="btn btn-outline" onclick="closeModal('receiptModal')">Close</button>
       </div>
     </div>
@@ -795,46 +980,60 @@
 
   <script>
     // ==========================================
-    // CONSTANTS & REGIONAL DATA
+    // CONSTANTS & INITIAL DATA
     // ==========================================
     const REGIONS = [
       "Rajapalayam", "Achchandavilthan", "Alagapuri RF", "Ammapatti", "Appaneri", "Arasiyarpatti", "Athikulam Sengulam", "Ayaidharmam", "Ayan Karisalkulam", "Ayan Kollankondan", "Chokkanathaputtur", "Deyvendri", "Gopalapuram", "Govindanallur", "Ilandaikulam", "Ilandiraikondan", "Kadambankulam", "Kalathur", "Keelrajakularaman", "Khansabpuram", "Kollankondan", "Kollankondan R.F.", "Kongalapuram", "Korukkampatti", "Kothankulam", "Kothankulam RF", "Kottaiyur", "Kovilur", "Kunnur", "Kuruchiyarpatti", "Kurukkalkulam", "Maharajapuram", "Malli", "Mamsapuram", "Marakalamkathan", "Melapattamkarisalkulam", "Melarajakularaman (Part)", "Mullikulam", "Muthusamipuram", "Muthuvenkatarayapuram", "Muvaraivenran", "Nachchiyarkovil", "Nallamangalam", "Nallingaperi", "Nathampatti", "Pattakkulam Sallipatti", "Pillaiyarkulam", "Pillaiyarnatham", "Pillaiyarnatham R.F.", "Ponnangani", "Pudupalaiyam", "Pudupatti R.F.", "Puthur", "Puvani", "Reghunathapuram", "Rudrappanaickenpatti", "S. Ammapatti", "Sammandapuram", "Sappaniparambu (R.F.)", "Semmanandikarisalkulam", "Settur RF", "Sholapuram", "Singammalpuram", "Sivandipatti", "Solaicheri", "Srivilliputtur", "Srivilliputtur R.F.", "Sundarapandiyam", "Sundararajapuram", "Tadagannai Managaseri", "Tenkarai", "Terku Devadanam", "Terkuvenganallur", "Thambipatti", "Thilakulam", "Thulukkapatti", "Tiruchalur", "Vadagarai", "Vadakku Venganallur", "Vadakkudevadanam", "Vadakkusrivilliputhur", "Vadugapatti", "Valaikulam RF", "Varagunaramapuram", "Vellaipottal", "Venkateswarapuram", "Viluppanur", "Watrap", "Others"
     ];
 
+    const FANCY_ITEM_TYPES = [
+      "Necklace Sets", "Earrings (Jhumkas)", "Stud Earrings", "Bangles (Set of 2/4)", "Bracelets", "Rings", "Anklets (Payal)", "Maang Tikka / Matha Patti", "Nose Pins / Nose Rings", "Hair Clips & Pins", "Hair Bands / Scrunchies", "Brooches / Pins", "Keychains", "Mobile Charms / Phone Accessories", "Handbags / Clutches (Small Fancy)", "Wallets / Coin Purses", "Photo Frames (Decorative)", "Showpieces / Figurines", "Candles & Candle Holders", "Artificial Flowers / Garlands", "Gift Boxes & Wrapping Items", "Makeup Accessories (Compact Mirrors, Brushes)", "Perfume / Attar Mini Bottles", "Beads & Craft Materials", "Imitation Pearl Sets", "Kundan / Polki Style Jewellery", "Temple Jewellery (Imitation)", "Oxidised Silver Look Jewellery", "Kids Jewellery Sets", "Waist Belts / Kamarbandh", "Others"
+    ];
+
     const DEFAULT_STORE_DATA = {
+      fancyStock: [
+        { id: 'FNC-001', code: 'FNC-001', item: 'Earrings (Jhumkas)', category: 'Imitation Jewellery', qty: 25, price: 150, purchaseDate: '2026-01-10' },
+        { id: 'FNC-002', code: 'FNC-002', item: 'Brooches / Pins', category: 'Accessories', qty: 40, price: 60, purchaseDate: '2026-01-15' }
+      ],
       inventory: [
         { id: 'LFS-J001', code: 'LFS-J001', title: 'Antique Temple Bridal Haram', category: 'Haram / Long Chain', dailyRate: 1500, deposit: 3000, vendor: 'Madurai Wholesale', costPrice: 18000, purchaseDate: '2026-01-10', warranty: '1 Year Polish', status: 'Available', photo: '' },
         { id: 'LFS-J002', code: 'LFS-J002', title: 'Kundan Choker Set', category: 'Necklace Set', dailyRate: 1200, deposit: 2500, vendor: 'Coimbatore Crafts', costPrice: 14000, purchaseDate: '2026-02-01', warranty: '6 Months', status: 'Available', photo: '' }
       ],
+      dailySales: [],
       rentals: [],
       customers: [],
       staff: [],
       leaves: [],
       expenses: [],
       customerRequests: [],
+      passwords: { sales: 'sales123', admin: 'admin123' },
       config: {
         storeTitle: 'LAKSHMI FANCY STORE',
         branch: 'Main Bazaar, Rajapalayam',
+        businessType: 'Fancy & Bridal Jewellery Rental',
         phone: '9876543210',
         email: 'info@lakshmifancystore.com',
         gst: '33AAAAA0000A1Z5',
         address: '123 South Car Street, Rajapalayam, Tamil Nadu',
+        socialFb: '@lakshmifancystore',
+        socialInsta: '@lakshmifancy_official',
         loyaltyRate: 1,
         repeatDiscount: 100,
         reviewDiscount: 50,
+        flashDiscount: 0,
         autoBackupHours: 2,
-        qrGpay: '', qrPhonepe: '', qrReview: ''
+        storeLogoB64: '', qrGpay: '', qrPhonepe: '', qrReview: '', qrLocation: ''
       }
     };
 
     let storeData = JSON.parse(localStorage.getItem('lfs_app_data')) || DEFAULT_STORE_DATA;
-    let adminAuthenticated = false;
 
     // ==========================================
     // INITIALIZATION & AUTOBACKUP
     // ==========================================
     document.addEventListener('DOMContentLoaded', () => {
       populateRegionDropdowns();
+      populateFancyItemDropdowns();
       setTodayDates();
       applyBranding();
       renderAll();
@@ -863,6 +1062,14 @@
       });
     }
 
+    function populateFancyItemDropdowns() {
+      const select = document.getElementById('stkItem');
+      select.innerHTML = '';
+      FANCY_ITEM_TYPES.forEach(item => {
+        select.innerHTML += `<option value="${item}">${item}</option>`;
+      });
+    }
+
     function setTodayDates() {
       const today = new Date().toISOString().split('T')[0];
       document.getElementById('posStartDate').value = today;
@@ -870,15 +1077,19 @@
     }
 
     // ==========================================
-    // TAB NAVIGATION & SECURITY
+    // AUTHENTICATION & NAVIGATION
     // ==========================================
     function switchMainTab(tabId, btn) {
-      if (tabId === 'adminTab' && !adminAuthenticated) {
-        const pass = prompt('Enter Password for Admin Console access:');
-        if (pass === 'admin' || pass === 'admin123') {
-          adminAuthenticated = true;
-        } else {
-          alert('Incorrect Password! Access Denied.');
+      if (tabId === 'adminTab') {
+        const pass = prompt('Enter Admin Password:');
+        if (pass !== storeData.passwords.admin) {
+          alert('Incorrect Admin Password!');
+          return;
+        }
+      } else {
+        const pass = prompt('Enter Sales Person Password:');
+        if (pass !== storeData.passwords.sales) {
+          alert('Incorrect Sales Password!');
           return;
         }
       }
@@ -900,7 +1111,55 @@
     }
 
     // ==========================================
-    // POS & RENTAL ENGINE
+    // DAILY SALES ENGINE
+    // ==========================================
+    function populateDailySaleItemInfo() {
+      const id = document.getElementById('dsItemSelect').value;
+      const item = storeData.fancyStock.find(s => s.id === id);
+      if (item) {
+        document.getElementById('dsAvailStock').value = item.qty;
+        document.getElementById('dsPrice').value = item.price;
+        calculateDailySaleTotal();
+      }
+    }
+
+    function calculateDailySaleTotal() {
+      const price = parseFloat(document.getElementById('dsPrice').value) || 0;
+      const qty = parseInt(document.getElementById('dsQty').value) || 0;
+      document.getElementById('dsTotal').value = price * qty;
+    }
+
+    function handleDailySaleSubmit(e) {
+      e.preventDefault();
+      const id = document.getElementById('dsItemSelect').value;
+      const item = storeData.fancyStock.find(s => s.id === id);
+      const qty = parseInt(document.getElementById('dsQty').value) || 0;
+
+      if (!item || item.qty < qty) {
+        alert('Insufficient stock quantity available!');
+        return;
+      }
+
+      item.qty -= qty;
+      const sale = {
+        date: new Date().toLocaleString(),
+        code: item.code,
+        name: item.item,
+        qty: qty,
+        unitPrice: item.price,
+        total: item.price * qty,
+        phone: document.getElementById('dsCustomerPhone').value || 'N/A'
+      };
+
+      storeData.dailySales.unshift(sale);
+      saveState();
+      renderAll();
+      document.getElementById('dailySaleForm').reset();
+      alert('Daily sale recorded successfully!');
+    }
+
+    // ==========================================
+    // RENTAL POS ENGINE
     // ==========================================
     function lookupCustomerByPhone() {
       const phone = document.getElementById('posPhone').value;
@@ -909,10 +1168,12 @@
         if (cust) {
           document.getElementById('posCustomerName').value = cust.name;
           document.getElementById('posCustomerArea').value = cust.area;
+          document.getElementById('posCustomerAddress').value = cust.address || '';
           
           const repeatDisc = parseFloat(storeData.config.repeatDiscount) || 0;
-          document.getElementById('posManualDiscount').value = repeatDisc;
-          document.getElementById('posLoyaltyBadge').innerText = `Repeat Customer Identified! Applied Discount: ₹${repeatDisc}. Loyalty Points: ${cust.points || 0}`;
+          const flashDisc = parseFloat(storeData.config.flashDiscount) || 0;
+          document.getElementById('posManualDiscount').value = repeatDisc + flashDisc;
+          document.getElementById('posLoyaltyBadge').innerText = `Repeat Customer Identified! Discount Applied: ₹${repeatDisc + flashDisc}. Points: ${cust.points || 0}`;
         } else {
           document.getElementById('posLoyaltyBadge').innerText = 'New Customer Account';
         }
@@ -933,7 +1194,8 @@
     function calculatePosTotal() {
       const rate = parseFloat(document.getElementById('posRate').value) || 0;
       const deposit = parseFloat(document.getElementById('posDeposit').value) || 0;
-      const reviewDisc = parseFloat(document.getElementById('posReviewDiscount').value) || 0;
+      const reviewApplied = document.getElementById('posSocialReview').value === 'YES';
+      const reviewDisc = reviewApplied ? (parseFloat(storeData.config.reviewDiscount) || 0) : 0;
       const manualDisc = parseFloat(document.getElementById('posManualDiscount').value) || 0;
       const advance = parseFloat(document.getElementById('posAdvance').value) || 0;
 
@@ -954,7 +1216,7 @@
     function handlePosSubmit(e) {
       e.preventDefault();
       const phone = document.getElementById('posPhone').value;
-      if (phone.length !== 10) { alert('Invalid 10-Digit Mobile Number'); return; }
+      if (phone.length !== 10) { alert('Strict 10-digit mobile number required!'); return; }
 
       const jewelleryId = document.getElementById('posJewellery').value;
       const item = storeData.inventory.find(i => i.id === jewelleryId);
@@ -965,8 +1227,10 @@
         phone: phone,
         customerName: document.getElementById('posCustomerName').value,
         area: document.getElementById('posCustomerArea').value,
+        address: document.getElementById('posCustomerAddress').value,
         jewelleryId: item.id,
         jewelleryTitle: item.title,
+        jewelleryPhoto: item.photo,
         event: document.getElementById('posEvent').value,
         startDate: document.getElementById('posStartDate').value,
         endDate: document.getElementById('posEndDate').value,
@@ -986,8 +1250,9 @@
       if (cust) {
         cust.orders = (cust.orders || 0) + 1;
         cust.points = (cust.points || 0) + earnedPoints;
+        cust.address = rental.address;
       } else {
-        storeData.customers.push({ name: rental.customerName, phone: phone, area: rental.area, orders: 1, points: earnedPoints });
+        storeData.customers.push({ name: rental.customerName, phone: phone, area: rental.area, address: rental.address, orders: 1, points: earnedPoints });
       }
 
       storeData.rentals.unshift(rental);
@@ -998,8 +1263,34 @@
     }
 
     // ==========================================
-    // ADMIN FUNCTIONS: INVENTORY & STAFF
+    // ADMIN MODULE FUNCTIONS
     // ==========================================
+    function handleSaveFancyStock(e) {
+      e.preventDefault();
+      const id = document.getElementById('stockEditId').value || 'FNC-' + Date.now();
+      const record = {
+        id: id,
+        code: document.getElementById('stkCode').value,
+        item: document.getElementById('stkItem').value,
+        category: document.getElementById('stkCategory').value,
+        qty: parseInt(document.getElementById('stkQty').value) || 0,
+        price: parseFloat(document.getElementById('stkPrice').value) || 0,
+        purchaseDate: document.getElementById('stkPurchaseDate').value
+      };
+
+      const existingIndex = storeData.fancyStock.findIndex(s => s.id === id);
+      if (existingIndex !== -1) {
+        storeData.fancyStock[existingIndex] = record;
+      } else {
+        storeData.fancyStock.push(record);
+      }
+
+      saveState();
+      renderAll();
+      document.getElementById('stockForm').reset();
+      document.getElementById('stockEditId').value = '';
+    }
+
     function handleSaveInventory(e) {
       e.preventDefault();
       const id = document.getElementById('invEditId').value || 'J-' + Date.now();
@@ -1085,34 +1376,74 @@
       e.preventDefault();
       storeData.config.storeTitle = document.getElementById('cfgTitle').value;
       storeData.config.branch = document.getElementById('cfgBranch').value;
+      storeData.config.businessType = document.getElementById('cfgBusinessType').value;
       storeData.config.phone = document.getElementById('cfgPhone').value;
       storeData.config.email = document.getElementById('cfgEmail').value;
       storeData.config.gst = document.getElementById('cfgGst').value;
       storeData.config.address = document.getElementById('cfgAddress').value;
+      storeData.config.socialFb = document.getElementById('cfgSocialFb').value;
+      storeData.config.socialInsta = document.getElementById('cfgSocialInsta').value;
       storeData.config.autoBackupHours = document.getElementById('cfgAutoBackupHours').value;
       saveState();
       applyBranding();
-      alert('Store settings updated.');
+      alert('Store personalization settings saved!');
+    }
+
+    function handleSavePasswords(e) {
+      e.preventDefault();
+      storeData.passwords.sales = document.getElementById('pwdSales').value;
+      storeData.passwords.admin = document.getElementById('pwdAdmin').value;
+      saveState();
+      alert('Passwords updated successfully!');
+    }
+
+    function saveConfig() {
+      storeData.config.loyaltyRate = parseFloat(document.getElementById('cfgLoyaltyRate').value) || 1;
+      storeData.config.repeatDiscount = parseFloat(document.getElementById('cfgRepeatDiscount').value) || 0;
+      storeData.config.reviewDiscount = parseFloat(document.getElementById('cfgReviewDiscount').value) || 0;
+      storeData.config.flashDiscount = parseFloat(document.getElementById('cfgFlashDiscount').value) || 0;
+      saveState();
     }
 
     // ==========================================
     // RENDERERS
     // ==========================================
     function renderAll() {
+      renderDailySalesDropdowns();
+      renderDailySalesTable();
       renderPosDropdowns();
       renderRentalsTable();
       renderCatalog();
+      renderFancyStockTable();
       renderInventoryTable();
       renderStaff();
       renderExpenses();
       renderUsage();
+      renderOverallSales();
       renderCustomers();
       renderRequests();
+      renderAdminFormValues();
+    }
+
+    function renderDailySalesDropdowns() {
+      const select = document.getElementById('dsItemSelect');
+      select.innerHTML = '<option value="">-- Select Item --</option>';
+      storeData.fancyStock.filter(s => s.qty > 0).forEach(s => {
+        select.innerHTML += `<option value="${s.id}">${s.code} - ${s.item} (In Stock: ${s.qty})</option>`;
+      });
+    }
+
+    function renderDailySalesTable() {
+      const tbody = document.getElementById('dailySalesTableBody');
+      tbody.innerHTML = '';
+      storeData.dailySales.slice(0, 20).forEach(s => {
+        tbody.innerHTML += `<tr><td>${s.date}</td><td>${s.code}</td><td>${s.name}</td><td>${s.qty}</td><td>₹${s.unitPrice}</td><td>₹${s.total}</td></tr>`;
+      });
     }
 
     function renderPosDropdowns() {
       const select = document.getElementById('posJewellery');
-      select.innerHTML = '<option value="">-- Select Jewellery --</option>';
+      select.innerHTML = '<option value="">-- Select Rental Jewellery --</option>';
       storeData.inventory.filter(i => i.status === 'Available').forEach(i => {
         select.innerHTML += `<option value="${i.id}">${i.code} - ${i.title} (₹${i.dailyRate}/day)</option>`;
       });
@@ -1121,7 +1452,8 @@
       qrBox.innerHTML = '';
       if (storeData.config.qrGpay) qrBox.innerHTML += `<div class="qr-card"><img src="${storeData.config.qrGpay}"><p>GPay</p></div>`;
       if (storeData.config.qrPhonepe) qrBox.innerHTML += `<div class="qr-card"><img src="${storeData.config.qrPhonepe}"><p>PhonePe</p></div>`;
-      if (storeData.config.qrReview) qrBox.innerHTML += `<div class="qr-card"><img src="${storeData.config.qrReview}"><p>Google Review</p></div>`;
+      if (storeData.config.qrReview) qrBox.innerHTML += `<div class="qr-card"><img src="${storeData.config.qrReview}"><p>Review QR</p></div>`;
+      if (storeData.config.qrLocation) qrBox.innerHTML += `<div class="qr-card"><img src="${storeData.config.qrLocation}"><p>Location</p></div>`;
     }
 
     function renderRentalsTable() {
@@ -1176,6 +1508,25 @@
       });
     }
 
+    function renderFancyStockTable() {
+      const tbody = document.getElementById('fancyStockTableBody');
+      tbody.innerHTML = '';
+      storeData.fancyStock.forEach(s => {
+        tbody.innerHTML += `
+          <tr>
+            <td><strong>${s.code}</strong></td>
+            <td>${s.item}</td>
+            <td>${s.category}</td>
+            <td>${s.qty}</td>
+            <td>₹${s.price}</td>
+            <td>
+              <button class="btn btn-outline btn-sm" onclick="editFancyStock('${s.id}')">Edit</button>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
     function renderInventoryTable() {
       const tbody = document.getElementById('adminInvTableBody');
       tbody.innerHTML = '';
@@ -1186,11 +1537,10 @@
             <td><strong>${i.code}</strong></td>
             <td>${i.title}</td>
             <td>₹${i.dailyRate}</td>
-            <td>₹${i.costPrice || 0}</td>
+            <td>₹${i.deposit}</td>
             <td><span class="badge ${i.status === 'Available' ? 'badge-available' : 'badge-rented'}">${i.status}</span></td>
             <td>
               <button class="btn btn-outline btn-sm" onclick="editInv('${i.id}')">Edit</button>
-              <button class="btn btn-danger btn-sm" onclick="deleteInv('${i.id}')">Delete</button>
             </td>
           </tr>
         `;
@@ -1250,8 +1600,8 @@
       });
 
       document.getElementById('upcomingExpensesBox').innerHTML = `
-        <p>Calculated Net Salary Commitments for Current Month: <strong>₹${calculatedSalaries.toFixed(2)}</strong></p>
-        <p>Total Other Logged Overheads: <strong>₹${totalExp}</strong></p>
+        <p>Calculated Current Month Staff Salary Commitments: <strong>₹${calculatedSalaries.toFixed(2)}</strong></p>
+        <p>Total Recorded Monthly Store Overheads: <strong>₹${totalExp}</strong></p>
       `;
     }
 
@@ -1266,11 +1616,21 @@
       });
     }
 
+    function renderOverallSales() {
+      const totalDailyRev = storeData.dailySales.reduce((sum, s) => sum + s.total, 0);
+      const totalRentalRev = storeData.rentals.reduce((sum, r) => sum + r.advance, 0);
+      document.getElementById('overallSalesSummary').innerHTML = `
+        <p>Total Small Items Daily Sales Earned: <strong>₹${totalDailyRev}</strong></p>
+        <p>Total Rental Advances Received: <strong>₹${totalRentalRev}</strong></p>
+        <p style="font-size:1.1rem; color:var(--primary); font-weight:700; margin-top:5px;">Combined Gross Store Revenue: ₹${totalDailyRev + totalRentalRev}</p>
+      `;
+    }
+
     function renderCustomers() {
       const tbody = document.getElementById('customerTableBody');
       tbody.innerHTML = '';
       storeData.customers.forEach(c => {
-        tbody.innerHTML += `<tr><td>${c.name}</td><td>${c.phone}</td><td>${c.area}</td><td>${c.orders}</td><td>${c.points || 0}</td></tr>`;
+        tbody.innerHTML += `<tr><td>${c.name}</td><td>${c.phone}</td><td>${c.area}</td><td>${c.address || 'N/A'}</td><td>${c.orders}</td><td>${c.points || 0}</td></tr>`;
       });
     }
 
@@ -1282,16 +1642,65 @@
       });
     }
 
-    function applyBranding() {
+    function renderAdminFormValues() {
       const cfg = storeData.config;
-      document.getElementById('hdrTitle').innerText = cfg.storeTitle || 'LAKSHMI FANCY STORE';
       document.getElementById('cfgTitle').value = cfg.storeTitle || '';
       document.getElementById('cfgBranch').value = cfg.branch || '';
+      document.getElementById('cfgBusinessType').value = cfg.businessType || 'Fancy & Bridal Jewellery Rental';
       document.getElementById('cfgPhone').value = cfg.phone || '';
       document.getElementById('cfgEmail').value = cfg.email || '';
       document.getElementById('cfgGst').value = cfg.gst || '';
       document.getElementById('cfgAddress').value = cfg.address || '';
-      document.getElementById('storeFooter').innerHTML = `<p><strong>${cfg.storeTitle}</strong> - ${cfg.branch}</p><p>Phone: ${cfg.phone} | GST: ${cfg.gst}</p>`;
+      document.getElementById('cfgSocialFb').value = cfg.socialFb || '';
+      document.getElementById('cfgSocialInsta').value = cfg.socialInsta || '';
+      document.getElementById('cfgAutoBackupHours').value = cfg.autoBackupHours || 2;
+      document.getElementById('pwdSales').value = storeData.passwords.sales;
+      document.getElementById('pwdAdmin').value = storeData.passwords.admin;
+    }
+
+    function applyBranding() {
+      const cfg = storeData.config;
+      document.getElementById('hdrTitle').innerText = cfg.storeTitle || 'LAKSHMI FANCY STORE';
+      if (cfg.storeLogoB64) document.getElementById('storeLogo').src = cfg.storeLogoB64;
+      document.getElementById('storeFooter').innerHTML = `
+        <p><strong>${cfg.storeTitle}</strong> - ${cfg.branch} (${cfg.businessType})</p>
+        <p>Phone: ${cfg.phone} | GST: ${cfg.gst} | FB: ${cfg.socialFb} | Insta: ${cfg.socialInsta}</p>
+        <p>${cfg.address}</p>
+      `;
+    }
+
+    function editFancyStock(id) {
+      const item = storeData.fancyStock.find(s => s.id === id);
+      if (item) {
+        document.getElementById('stockEditId').value = item.id;
+        document.getElementById('stkCode').value = item.code;
+        document.getElementById('stkItem').value = item.item;
+        document.getElementById('stkCategory').value = item.category;
+        document.getElementById('stkQty').value = item.qty;
+        document.getElementById('stkPrice').value = item.price;
+        document.getElementById('stkPurchaseDate').value = item.purchaseDate;
+      }
+    }
+
+    function editInv(id) {
+      const item = storeData.inventory.find(i => i.id === id);
+      if (item) {
+        document.getElementById('invEditId').value = item.id;
+        document.getElementById('invCode').value = item.code;
+        document.getElementById('invTitle').value = item.title;
+        document.getElementById('invCategory').value = item.category;
+        document.getElementById('invDailyRate').value = item.dailyRate;
+        document.getElementById('invDeposit').value = item.deposit;
+        document.getElementById('invPurchaseVendor').value = item.vendor || '';
+        document.getElementById('invPurchaseCost').value = item.costPrice || '';
+        document.getElementById('invPurchaseDate').value = item.purchaseDate || '';
+        document.getElementById('invWarranty').value = item.warranty || '';
+      }
+    }
+
+    function resetInvForm() {
+      document.getElementById('invForm').reset();
+      document.getElementById('invEditId').value = '';
     }
 
     // ==========================================
@@ -1302,6 +1711,7 @@
         const reader = new FileReader();
         reader.onload = (e) => {
           if (targetVar === 'invPhotoB64') document.getElementById('invPhotoB64').value = e.target.result;
+          else if (targetVar === 'storeLogoB64') storeData.config.storeLogoB64 = e.target.result;
           else storeData.config[targetVar] = e.target.result;
         };
         reader.readAsDataURL(input.files[0]);
@@ -1315,6 +1725,10 @@
       document.getElementById('rPhone').innerText = r.phone;
       document.getElementById('rArea').innerText = r.area;
       document.getElementById('rItem').innerText = r.jewelleryTitle;
+      
+      const imgWrap = document.getElementById('rImageWrap');
+      imgWrap.innerHTML = r.jewelleryPhoto ? `<img src="${r.jewelleryPhoto}" style="max-width:120px; height:auto; border-radius:4px;">` : '';
+
       document.getElementById('rDates').innerText = `${r.startDate} to ${r.endDate}`;
       document.getElementById('rTotal').innerText = `₹${(r.dailyRate + r.deposit)}`;
       document.getElementById('rAdvance').innerText = `₹${r.advance}`;
@@ -1346,7 +1760,7 @@
       reader.onload = (evt) => {
         try {
           const parsed = JSON.parse(evt.target.result);
-          if (parsed.inventory) {
+          if (parsed.inventory || parsed.fancyStock) {
             storeData = parsed;
             saveState();
             applyBranding();
@@ -1361,16 +1775,32 @@
     function exportToCSV(type) {
       let csv = '';
       if (type === 'rentals') {
-        csv = 'ReceiptNo,CustomerName,Phone,Area,Jewellery,StartDate,EndDate,AdvancePaid,RemainingDue\n';
+        csv = 'ReceiptNo,CustomerName,Phone,Area,Address,Jewellery,StartDate,EndDate,AdvancePaid,RemainingDue\n';
         storeData.rentals.forEach(r => {
-          csv += `"${r.receiptNo}","${r.customerName}","${r.phone}","${r.area}","${r.jewelleryTitle}","${r.startDate}","${r.endDate}",${r.advance},${r.remaining}\n`;
+          csv += `"${r.receiptNo}","${r.customerName}","${r.phone}","${r.area}","${r.address || ''}","${r.jewelleryTitle}","${r.startDate}","${r.endDate}",${r.advance},${r.remaining}\n`;
+        });
+      } else if (type === 'dailySales') {
+        csv = 'Date,ItemCode,ItemName,Qty,UnitPrice,Total\n';
+        storeData.dailySales.forEach(s => {
+          csv += `"${s.date}","${s.code}","${s.name}",${s.qty},${s.unitPrice},${s.total}\n`;
         });
       } else if (type === 'inventory') {
         csv = 'Code,Title,Category,DailyRate,Deposit,CostPrice,Status\n';
         storeData.inventory.forEach(i => {
           csv += `"${i.code}","${i.title}","${i.category}",${i.dailyRate},${i.deposit},${i.costPrice || 0},"${i.status}"\n`;
         });
+      } else if (type === 'stock') {
+        csv = 'Code,ItemName,Category,Qty,UnitPrice\n';
+        storeData.fancyStock.forEach(s => {
+          csv += `"${s.code}","${s.item}","${s.category}",${s.qty},${s.price}\n`;
+        });
+      } else if (type === 'expenses') {
+        csv = 'Date,Category,Amount\n';
+        storeData.expenses.forEach(e => {
+          csv += `"${e.date}","${e.category}",${e.amount}\n`;
+        });
       }
+
       const anchor = document.createElement('a');
       anchor.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
       anchor.download = `${type}_report.csv`;
