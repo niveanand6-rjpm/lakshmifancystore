@@ -1,307 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Console - Lakshmi Fancy Store</title>
-  <style>
-    :root { --primary: #2c3e50; --gold: #d4af37; --bg: #f4f6f9; --border: #cbd5e1; }
-    * { box-sizing: border-box; margin:0; padding:0; font-family: sans-serif; }
-    body { background: var(--bg); padding-bottom: 50px; }
-    
-    .auth-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; z-index: 9999; }
-    .auth-card { background: white; padding: 30px; border-radius: 8px; width: 350px; text-align: center; border-top: 4px solid var(--gold); }
-    .auth-card input { width: 100%; padding: 10px; margin: 15px 0; border: 1px solid var(--border); border-radius: 4px; }
-
-    header { background: var(--primary); color: white; padding: 15px; text-align: center; }
-    nav { display: flex; background: #fff; border-bottom: 1px solid var(--border); overflow-x: auto; }
-    nav button { flex: 1; padding: 12px; border: none; background: none; font-weight: bold; cursor: pointer; white-space: nowrap; }
-    nav button.active { border-bottom: 3px solid var(--gold); color: var(--primary); background: #f8fafc; }
-
-    .container { padding: 20px; max-width: 1200px; margin: 0 auto; }
-    .tab { display: none; }
-    .tab.active { display: block; }
-
-    .card { background: white; border-radius: 6px; padding: 20px; margin-bottom: 20px; border: 1px solid var(--border); }
-    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 15px; }
-    .form-group { margin-bottom: 12px; }
-    .form-group label { display: block; font-size: 0.8rem; font-weight: bold; margin-bottom: 4px; }
-    .form-group input, .form-group select { width: 100%; padding: 8px; border: 1px solid var(--border); border-radius: 4px; }
-
-    .btn { background: var(--primary); color: white; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; }
-    .btn-gold { background: var(--gold); color: black; }
-
-    table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.85rem; }
-    th, td { padding: 8px; border: 1px solid var(--border); text-align: left; }
-    th { background: #f1f5f9; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Admin - Lakshmi Fancy Store</title>
+<link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-  <!-- Admin Password Shield -->
-  <div id="adminAuthModal" class="auth-overlay">
-    <div class="auth-card">
-      <h3>Master Admin Access</h3>
-      <input type="password" id="adminPassInput" placeholder="Enter Admin Key">
-      <button class="btn btn-gold" style="width:100%;" onclick="authenticateAdmin()">Unlock Master Console</button>
-      <p id="authErr" style="color:red; font-size:0.8rem; margin-top:10px; display:none;">Invalid Master Password!</p>
-    </div>
-  </div>
-
-  <header>
-    <h2>Lakshmi Fancy Store - Admin Console</h2>
-  </header>
-
-  <nav>
-    <button class="active" onclick="switchAdminTab('stockTab', this)">Stock Mgmt</button>
-    <button onclick="switchAdminTab('rentalInvTab', this)">Rental Inventory</button>
-    <button onclick="switchAdminTab('staffTab', this)">Staff & Salary</button>
-    <button onclick="switchAdminTab('expensesTab', this)">Expenses</button>
-    <button onclick="switchAdminTab('usageTab', this)">Usage Analytics</button>
-    <button onclick="switchAdminTab('customerTab', this)">Customers & Loyalty</button>
-    <button onclick="switchAdminTab('personalizeTab', this)">Personalization & Backup</button>
-  </nav>
-
-  <div class="container">
-
-    <!-- 1. STOCK MANAGEMENT -->
-    <div id="stockTab" class="tab active">
-      <div class="card">
-        <h3>Add Fancy Shop Item</h3>
-        <form onsubmit="addStockItem(event)">
-          <div class="grid">
-            <div class="form-group"><label>Item Name</label><input type="text" id="stkName" required></div>
-            <div class="form-group"><label>Item Code</label><input type="text" id="stkCode" required></div>
-            <div class="form-group">
-              <label>Category</label>
-              <select id="stkCat"><option>Imitation Jewellery</option><option>Accessories</option><option>Fancy Items</option><option>Others</option></select>
-            </div>
-            <div class="form-group">
-              <label>Item Type</label>
-              <select id="stkType">
-                <option>Necklace Sets</option><option>Earrings (Jhumkas)</option><option>Stud Earrings</option><option>Bangles (Set of 2/4)</option><option>Bracelets</option><option>Rings</option><option>Anklets (Payal)</option><option>Maang Tikka / Matha Patti</option><option>Nose Pins / Nose Rings</option><option>Hair Clips & Pins</option><option>Hair Bands / Scrunchies</option><option>Brooches / Pins</option><option>Keychains</option><option>Mobile Charms / Phone Accessories</option><option>Handbags / Clutches (Small Fancy)</option><option>Wallets / Coin Purses</option><option>Photo Frames (Decorative)</option><option>Showpieces / Figurines</option><option>Candles & Candle Holders</option><option>Artificial Flowers / Garlands</option><option>Gift Boxes & Wrapping Items</option><option>Makeup Accessories (Compact Mirrors, Brushes)</option><option>Perfume / Attar Mini Bottles</option><option>Beads & Craft Materials</option><option>Imitation Pearl Sets</option><option>Kundan / Polki Style Jewellery</option><option>Temple Jewellery (Imitation)</option><option>Oxidised Silver Look Jewellery</option><option>Kids Jewellery Sets</option><option>Waist Belts / Kamarbandh</option><option>Others</option>
-              </select>
-            </div>
-            <div class="form-group"><label>Quantity</label><input type="number" id="stkQty" required></div>
-            <div class="form-group"><label>Purchase Price (₹)</label><input type="number" id="stkCost" required></div>
-            <div class="form-group"><label>Selling Price (₹)</label><input type="number" id="stkPrice" required></div>
-            <div class="form-group"><label>Purchase Date</label><input type="date" id="stkDate" required></div>
-          </div>
-          <button type="submit" class="btn">Save Stock Item</button>
-          <button type="button" class="btn btn-gold" onclick="exportCSV('stock')">Export Stock CSV</button>
-        </form>
-      </div>
-    </div>
-
-    <!-- 2. RENTAL INVENTORY MANAGEMENT -->
-    <div id="rentalInvTab" class="tab">
-      <div class="card">
-        <h3>Add Rental Jewellery Master Entry</h3>
-        <form onsubmit="addRentalItem(event)">
-          <div class="grid">
-            <div class="form-group"><label>Jewellery Title</label><input type="text" id="rInvName" required></div>
-            <div class="form-group"><label>Unique Code</label><input type="text" id="rInvCode" required></div>
-            <div class="form-group"><label>Daily Rental Rate (₹)</label><input type="number" id="rInvRate" required></div>
-            <div class="form-group"><label>Deposit Amount (₹)</label><input type="number" id="rInvDeposit" required></div>
-            <div class="form-group"><label>Original Purchase Cost (₹)</label><input type="number" id="rInvCost" required></div>
-            <div class="form-group"><label>Warranty Info</label><input type="text" id="rInvWarranty"></div>
-            <div class="form-group"><label>Image URL / Base64</label><input type="text" id="rInvImg"></div>
-          </div>
-          <button class="btn" type="submit">Save Rental Jewellery</button>
-        </form>
-      </div>
-    </div>
-
-    <!-- 3. STAFF & AUTOMATED SALARY MANAGEMENT -->
-    <div id="staffTab" class="tab">
-      <div class="card">
-        <h3>Employee Profiles & Salary Calculation</h3>
-        <form onsubmit="addEmployee(event)">
-          <div class="grid">
-            <div class="form-group"><label>Staff Name</label><input type="text" id="empName" required></div>
-            <div class="form-group"><label>Monthly Base Salary (₹)</label><input type="number" id="empSalary" required placeholder="e.g. 3000"></div>
-          </div>
-          <button class="btn" type="submit">Add Employee Profile</button>
-        </form>
-      </div>
-
-      <div class="card">
-        <h3>Monthly Attendance & Salary Deductions</h3>
-        <p style="font-size:0.8rem; margin-bottom:10px;">Rule: Allowed leaves per month = 4 days. Salary deduction rate = Monthly Base / 30 per excess leave day.</p>
-        <div id="staffPayrollContainer"></div>
-      </div>
-    </div>
-
-    <!-- 4. EXPENSES TRACKING -->
-    <div id="expensesTab" class="tab">
-      <div class="card">
-        <h3>Log Store Monthly Expense</h3>
-        <form onsubmit="logExpense(event)">
-          <div class="grid">
-            <div class="form-group"><label>Category</label><select id="expCat"><option>Rent</option><option>Electricity</option><option>Tax</option><option>Salaries</option><option>Others</option></select></div>
-            <div class="form-group"><label>Amount (₹)</label><input type="number" id="expAmt" required></div>
-            <div class="form-group"><label>Date</label><input type="date" id="expDate" required></div>
-            <div class="form-group"><label>Description</label><input type="text" id="expDesc"></div>
-          </div>
-          <button class="btn" type="submit">Save Expense</button>
-        </form>
-      </div>
-    </div>
-
-    <!-- 5. USAGE ANALYTICS -->
-    <div id="usageTab" class="tab">
-      <div class="card">
-        <h3>Jewellery Rental Usage & Return Performance</h3>
-        <table>
-          <thead><tr><th>Item Code</th><th>Name</th><th>Times Rented</th><th>Total Earnings (₹)</th></tr></thead>
-          <tbody id="usageTableBody"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- 6. CUSTOMER MANAGEMENT & LOYALTY -->
-    <div id="customerTab" class="tab">
-      <div class="card">
-        <h3>Customer Database & Social Review Discounts</h3>
-        <table>
-          <thead><tr><th>Phone</th><th>Name</th><th>Area</th><th>Loyalty Points</th><th>Google Review</th></tr></thead>
-          <tbody id="custTableBody"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- 7. PERSONALIZATION, BACKUP & RECOVERY -->
-    <div id="personalizeTab" class="tab">
-      <div class="card">
-        <h3>Store Details & QR Personalization</h3>
-        <form onsubmit="saveStoreDetails(event)">
-          <div class="grid">
-            <div class="form-group"><label>Store Name</label><input type="text" id="cfgName"></div>
-            <div class="form-group"><label>Branch</label><input type="text" id="cfgBranch"></div>
-            <div class="form-group"><label>GPay QR Image URL</label><input type="text" id="cfgGpay"></div>
-          </div>
-          <button class="btn" type="submit">Save Settings</button>
-        </form>
-      </div>
-
-      <div class="card">
-        <h3>GitHub / Local File Data Backup & Import</h3>
-        <button class="btn btn-gold" onclick="exportFullSystemJSON()">Export All System JSON Files</button>
-        <div style="margin-top:15px;">
-          <label>Import JSON Restore File:</label>
-          <input type="file" accept=".json" onchange="importJSON(event)">
+  <!-- ============ ADMIN LOGIN SCREEN ============ -->
+  <div class="login-screen" id="adminLoginScreen">
+    <div class="login-card">
+      <div class="emblem">L</div>
+      <h2>Admin Console</h2>
+      <p class="tag">Master access - Lakshmi Fancy Store</p>
+      <form id="adminLoginForm" onsubmit="attemptAdminLogin(event)">
+        <div class="field text-center">
+          <input type="password" id="adminLoginPassword" placeholder="Enter admin password" required autofocus style="text-align:center;">
         </div>
-      </div>
+        <div class="error-msg hidden" id="adminLoginError">Incorrect password. Please try again.</div>
+        <button class="btn btn-primary mt-16" type="submit" style="width:100%;">Unlock Admin Console</button>
+      </form>
+      <p class="text-soft mt-16" style="font-size:.72rem;"><a href="index.html">&larr; Back to Sales App</a></p>
     </div>
-
   </div>
 
-  <script>
-    let config = JSON.parse(localStorage.getItem('store_config')) || {};
+  <!-- ============ ADMIN APP SCREEN ============ -->
+  <div id="adminAppScreen" class="hidden">
+    <header class="store-header">
+      <div class="logo-fallback">A</div>
+      <div>
+        <h1 id="adminStoreName" style="font-size:1.05rem;">Admin Console</h1>
+        <div class="sub"><a href="index.html" style="color:var(--gold-light);">&larr; Sales App</a></div>
+      </div>
+      <div class="spacer"></div>
+      <button class="logout-btn" onclick="adminLogout()">Lock</button>
+    </header>
 
-    function authenticateAdmin() {
-      const input = document.getElementById('adminPassInput').value;
-      if (input === (config.passwords ? config.passwords.admin : 'admin123')) {
-        document.getElementById('adminAuthModal').style.display = 'none';
-        renderAdminDashboard();
-      } else {
-        document.getElementById('authErr').style.display = 'block';
-      }
-    }
+    <nav class="tab-nav" style="flex-wrap:wrap;position:static;box-shadow:none;">
+      <button class="tab-btn active" data-mod="stock" onclick="switchAdminModule('stock')">Stock</button>
+      <button class="tab-btn" data-mod="rentalInv" onclick="switchAdminModule('rentalInv')">Rental Inventory</button>
+      <button class="tab-btn" data-mod="staff" onclick="switchAdminModule('staff')">Staff</button>
+      <button class="tab-btn" data-mod="expenses" onclick="switchAdminModule('expenses')">Expenses</button>
+      <button class="tab-btn" data-mod="usage" onclick="switchAdminModule('usage')">Jewellery Usage</button>
+      <button class="tab-btn" data-mod="salesReport" onclick="switchAdminModule('salesReport')">Sales Report</button>
+      <button class="tab-btn" data-mod="customers" onclick="switchAdminModule('customers')">Customers</button>
+      <button class="tab-btn" data-mod="loyalty" onclick="switchAdminModule('loyalty')">Loyalty &amp; Discounts</button>
+      <button class="tab-btn" data-mod="personalization" onclick="switchAdminModule('personalization')">Store Setup</button>
+      <button class="tab-btn" data-mod="security" onclick="switchAdminModule('security')">Security</button>
+      <button class="tab-btn" data-mod="backup" onclick="switchAdminModule('backup')">Backup &amp; Export</button>
+    </nav>
 
-    function switchAdminTab(tabId, btn) {
-      document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
-      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-      btn.classList.add('active');
-      document.getElementById(tabId).classList.add('active');
-    }
+    <main id="adminMain"></main>
+  </div>
 
-    function renderAdminDashboard() {
-      // Render Usage Table
-      const rentalData = JSON.parse(localStorage.getItem('rental')) || { inventory: [], transactions: [] };
-      const usageTbody = document.getElementById('usageTableBody');
-      usageTbody.innerHTML = rentalData.inventory.map(i => {
-        const times = rentalData.transactions.filter(t => t.itemId === i.id).length;
-        const total = rentalData.transactions.filter(t => t.itemId === i.id).reduce((sum, t) => sum + parseFloat(t.advancePaid || 0), 0);
-        return `<tr><td>${i.code}</td><td>${i.name}</td><td>${times}</td><td>₹${total}</td></tr>`;
-      }).join('');
-
-      // Render Staff Payroll
-      const staffData = JSON.parse(localStorage.getItem('staff')) || { employees: [], attendance: [] };
-      const staffContainer = document.getElementById('staffPayrollContainer');
-      staffContainer.innerHTML = staffData.employees.map(e => {
-        const att = staffData.attendance.find(a => a.employeeId === e.id) || { leavesTaken: 0 };
-        const leaves = att.leavesTaken;
-        const perDay = e.monthlySalary / 30;
-        const deduction = leaves > 4 ? (leaves - 4) * perDay : 0;
-        const netSalary = e.monthlySalary - deduction;
-
-        return `
-          <div style="border-bottom:1px solid #ccc; padding:10px 0;">
-            <p><strong>${e.name}</strong> - Base Salary: ₹${e.monthlySalary}</p>
-            <label>Leaves Taken this Month: </label>
-            <input type="number" value="${leaves}" style="width:60px;" onchange="updateLeaves('${e.id}', this.value)">
-            <p style="color:var(--primary); font-size:0.9rem; margin-top:5px;">Excess Leaves: ${Math.max(0, leaves - 4)} | Deduction: ₹${deduction.toFixed(2)} | <strong>Net Salary: ₹${netSalary.toFixed(2)}</strong></p>
-          </div>
-        `;
-      }).join('');
-    }
-
-    function addStockItem(e) {
-      e.preventDefault();
-      let stock = JSON.parse(localStorage.getItem('stock')) || [];
-      stock.push({
-        id: 'SKU-' + Date.now().toString().slice(-4),
-        name: document.getElementById('stkName').value,
-        code: document.getElementById('stkCode').value,
-        category: document.getElementById('stkCat').value,
-        itemType: document.getElementById('stkType').value,
-        qty: parseInt(document.getElementById('stkQty').value),
-        purchasePrice: parseFloat(document.getElementById('stkCost').value),
-        sellingPrice: parseFloat(document.getElementById('stkPrice').value),
-        purchaseDate: document.getElementById('stkDate').value
-      });
-      localStorage.setItem('stock', JSON.stringify(stock));
-      alert('Stock item added!');
-    }
-
-    function updateLeaves(empId, val) {
-      let staffData = JSON.parse(localStorage.getItem('staff')) || { employees: [], attendance: [] };
-      let att = staffData.attendance.find(a => a.employeeId === empId);
-      if (!att) {
-        att = { employeeId: empId, leavesTaken: parseInt(val) };
-        staffData.attendance.push(att);
-      } else {
-        att.leavesTaken = parseInt(val);
-      }
-      localStorage.setItem('staff', JSON.stringify(staffData));
-      renderAdminDashboard();
-    }
-
-    function exportFullSystemJSON() {
-      const keys = ['store_config', 'stock', 'rental', 'customer', 'daily_sales', 'staff', 'expenses'];
-      keys.forEach(k => {
-        const data = localStorage.getItem(k);
-        const blob = new Blob([data], { type: 'application/json' });
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = `${k}.json`;
-        a.click();
-      });
-    }
-
-    function importJSON(e) {
-      const file = e.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = function(evt) {
-        const key = file.name.replace('.json', '');
-        localStorage.setItem(key, evt.target.result);
-        alert(`Successfully imported ${file.name}`);
-        location.reload();
-      };
-      reader.readAsText(file);
-    }
-  </script>
+  <script src="js/common.js"></script>
+  <script src="js/admin.js"></script>
 </body>
 </html>
