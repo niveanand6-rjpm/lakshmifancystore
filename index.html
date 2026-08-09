@@ -1,623 +1,659 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lakshmi Fancy Store - Sales Terminal</title>
-    <style>
-        :root {
-            --primary: #8b0000;
-            --primary-hover: #a00000;
-            --gold: #d4af37;
-            --gold-light: #fffdd0;
-            --bg: #f4f6f9;
-            --surface: #ffffff;
-            --text: #2c3e50;
-            --border: #e2e8f0;
-            --success: #27ae60;
-            --danger: #e74c3c;
-            --radius: 8px;
-            --shadow: 0 4px 12px rgba(0,0,0,0.08);
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lakshmi Fancy Store - POS Terminal</title>
+  <style>
+    :root {
+      --primary: #800020;
+      --primary-light: #a31c3f;
+      --gold: #d4af37;
+      --accent: #fff8e7;
+      --bg: #f8f9fa;
+      --text: #2c3e50;
+      --border: #e2e8f0;
+      --danger: #e53e3e;
+      --success: #38a169;
+    }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; }
-        body { background: var(--bg); color: var(--text); line-height: 1.5; padding-bottom: 60px; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background-color: var(--bg); color: var(--text); padding-bottom: 70px; }
 
-        header { background: var(--primary); color: white; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--gold); position: sticky; top: 0; z-index: 100; }
-        .brand { display: flex; align-items: center; gap: 12px; }
-        .brand img { height: 40px; width: 40px; object-fit: contain; border-radius: 50%; background: white; }
-        .brand h1 { font-size: 1.2rem; color: var(--gold); }
+    /* Login Overlay */
+    .auth-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 9999;
+    }
+    .auth-card { background: white; padding: 30px; border-radius: 12px; width: 90%; max-width: 400px; text-align: center; border-top: 5px solid var(--gold); }
+    .auth-card input { width: 100%; padding: 12px; margin: 15px 0; border: 1px solid var(--border); border-radius: 6px; font-size: 16px; text-align: center; }
 
-        nav { background: var(--surface); display: flex; border-bottom: 1px solid var(--border); box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        .nav-btn { flex: 1; padding: 12px; text-align: center; background: none; border: none; font-weight: 600; color: #64748b; cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.2s; }
-        .nav-btn.active { color: var(--primary); border-bottom-color: var(--primary); background: var(--gold-light); }
+    /* Header */
+    header { background: var(--primary); color: white; padding: 15px; text-align: center; border-bottom: 3px solid var(--gold); }
+    header h1 { font-size: 1.4rem; color: var(--gold); }
+    header p { font-size: 0.85rem; opacity: 0.9; }
 
-        .sub-nav { display: flex; gap: 8px; padding: 10px 15px; background: #eaeef4; overflow-x: auto; }
-        .sub-btn { padding: 6px 14px; background: white; border: 1px solid var(--border); border-radius: 20px; font-size: 0.85rem; cursor: pointer; white-space: nowrap; font-weight: 500; }
-        .sub-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+    /* Navigation */
+    nav.main-nav { display: flex; background: #fff; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; overflow-x: auto; }
+    nav.main-nav button { flex: 1; min-width: 100px; padding: 12px 8px; border: none; background: none; font-weight: 600; color: #666; font-size: 0.9rem; cursor: pointer; }
+    nav.main-nav button.active { color: var(--primary); border-bottom: 3px solid var(--primary); background: var(--accent); }
 
-        .container { max-width: 1100px; margin: 15px auto; padding: 0 15px; }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
+    .sub-nav { display: flex; background: #eee; padding: 8px; gap: 8px; overflow-x: auto; }
+    .sub-nav button { padding: 6px 12px; border: 1px solid #ccc; background: white; border-radius: 20px; font-size: 0.8rem; cursor: pointer; white-space: nowrap; }
+    .sub-nav button.active { background: var(--primary); color: white; border-color: var(--primary); }
 
-        .card { background: var(--surface); border-radius: var(--radius); padding: 18px; margin-bottom: 15px; box-shadow: var(--shadow); border: 1px solid var(--border); }
-        .card-title { font-size: 1.1rem; color: var(--primary); margin-bottom: 15px; border-bottom: 2px solid var(--gold-light); padding-bottom: 6px; }
+    /* Main Container */
+    .container { padding: 15px; max-width: 1200px; margin: 0 auto; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
 
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 15px; }
-        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+    /* UI Cards & Grid */
+    .card { background: white; border-radius: 8px; padding: 15px; margin-bottom: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border: 1px solid var(--border); }
+    .card-title { font-weight: bold; color: var(--primary); margin-bottom: 12px; font-size: 1.1rem; border-bottom: 2px solid var(--accent); padding-bottom: 5px; }
 
-        .form-group { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; }
-        .form-group label { font-size: 0.85rem; font-weight: 600; color: #475569; }
-        .form-group input, .form-group select, .form-group textarea { padding: 9px; border: 1px solid var(--border); border-radius: 6px; font-size: 0.95rem; outline: none; }
-        .form-group input:focus { border-color: var(--primary); }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 15px; }
+    .form-group { margin-bottom: 12px; }
+    .form-group label { display: block; font-size: 0.85rem; margin-bottom: 4px; font-weight: 600; }
+    .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 6px; font-size: 0.95rem; }
+    
+    .btn { background: var(--primary); color: white; border: none; padding: 10px 18px; border-radius: 6px; font-weight: 600; cursor: pointer; width: 100%; font-size: 0.95rem; }
+    .btn:hover { background: var(--primary-light); }
+    .btn-gold { background: var(--gold); color: black; }
+    
+    /* Catalog Cards */
+    .item-card { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; background: white; }
+    .item-img { width: 100%; height: 160px; object-fit: cover; background: #f0f0f0; cursor: pointer; }
+    .item-info { padding: 10px; }
+    .badge { display: inline-block; padding: 3px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: bold; }
+    .badge-available { background: #c6f6d5; color: #22543d; }
+    .badge-rented { background: #fed7d7; color: #742a2a; }
 
-        .btn { padding: 10px 18px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 6px; transition: opacity 0.2s; }
-        .btn-primary { background: var(--primary); color: white; }
-        .btn-success { background: var(--success); color: white; }
-        .btn-gold { background: var(--gold); color: white; }
-        .btn:hover { opacity: 0.9; }
+    /* Tables */
+    .table-container { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.85rem; }
+    th, td { padding: 10px; text-align: left; border-bottom: 1px solid var(--border); }
+    th { background: var(--accent); color: var(--primary); font-weight: bold; }
 
-        .item-card { border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; background: white; transition: transform 0.2s; }
-        .item-card:hover { transform: translateY(-2px); }
-        .item-img { width: 100%; height: 140px; object-fit: cover; background: #eee; cursor: pointer; }
-        .item-details { padding: 12px; }
-        .badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: bold; }
-        .badge-available { background: #dcfce7; color: #15803d; }
-        .badge-rented { background: #fee2e2; color: #b91c1c; }
+    /* Printable Receipt */
+    #printableReceipt { display: none; background: white; padding: 20px; border: 1px solid #ccc; max-width: 400px; margin: 20px auto; }
+    @media print {
+      body * { visibility: hidden; }
+      #printableReceipt, #printableReceipt * { visibility: visible; }
+      #printableReceipt { position: absolute; left: 0; top: 0; width: 100%; }
+    }
 
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.9rem; }
-        th, td { padding: 10px; text-align: left; border-bottom: 1px solid var(--border); }
-        th { background: #f8fafc; color: #475569; font-weight: 600; }
-
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: flex; justify-content: center; align-items: center; z-index: 1000; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
-        .modal-overlay.active { opacity: 1; pointer-events: auto; }
-        .modal { background: white; border-radius: var(--radius); padding: 20px; width: 90%; max-width: 450px; max-height: 90vh; overflow-y: auto; }
-
-        .receipt-container { display: none; background: white; padding: 20px; border: 1px dashed #000; max-width: 400px; margin: 20px auto; font-family: monospace; }
-        @media print {
-            body * { visibility: hidden; }
-            .receipt-container, .receipt-container * { visibility: visible; }
-            .receipt-container { position: absolute; left: 0; top: 0; width: 100%; border: none; }
-        }
-    </style>
+    /* Modal */
+    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; align-items: center; justify-content: center; }
+    .modal img { max-width: 90%; max-height: 80vh; border-radius: 8px; }
+  </style>
 </head>
 <body>
 
-<header>
-    <div class="brand">
-        <img id="header-logo" src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='%23d4af37'/></svg>" alt="Logo">
-        <div>
-            <h1 id="header-title">Lakshmi Fancy Store</h1>
-            <small id="header-branch" style="color: #ddd;">Main Branch</small>
-        </div>
+  <!-- Sales Login Modal -->
+  <div id="salesAuthModal" class="auth-overlay">
+    <div class="auth-card">
+      <h2 style="color: var(--primary);">Lakshmi Fancy Store</h2>
+      <p style="margin-top: 5px; font-size: 0.85rem; color: #666;">Sales Staff Authentication</p>
+      <input type="password" id="salesPassInput" placeholder="Enter Sales Password">
+      <button class="btn" onclick="authenticateSales()">Login to Terminal</button>
+      <p id="authErr" style="color: var(--danger); font-size: 0.8rem; margin-top: 10px; display: none;">Invalid Password!</p>
     </div>
-    <button class="btn btn-gold" onclick="triggerExportImport()">Sync / Backup</button>
-</header>
+  </div>
 
-<nav>
-    <button class="nav-btn active" onclick="switchMainTab('daily-sales')">Daily Sales</button>
-    <button class="nav-btn" onclick="switchMainTab('rental-entry')">Rental Terminal</button>
-    <button class="nav-btn" onclick="switchMainTab('catalog')">Jewellery Catalog</button>
-</nav>
+  <!-- Main Store Header -->
+  <header>
+    <h1 id="hdrStoreName">Lakshmi Fancy Store</h1>
+    <p id="hdrBranchAddress">Rajapalayam Main Branch</p>
+  </header>
 
-<div class="container">
-    <!-- DAILY SALES TAB -->
-    <div id="daily-sales" class="tab-content active">
+  <!-- Main Navigation Tabs -->
+  <nav class="main-nav">
+    <button class="nav-btn active" onclick="switchMainTab('dailySalesTab', this)">Daily Sales</button>
+    <button class="nav-btn" onclick="switchMainTab('rentalTab', this)">Rental Entry</button>
+    <button class="nav-btn" onclick="switchMainTab('catalogTab', this)">Jewellery Catalog</button>
+  </nav>
+
+  <div class="container">
+
+    <!-- 1. DAILY SALES TAB -->
+    <div id="dailySalesTab" class="tab-content active">
+      <div class="card">
+        <div class="card-title">Daily Fancy Item OTC Sale</div>
+        <form id="dailySaleForm" onsubmit="processDailySale(event)">
+          <div class="grid">
+            <div class="form-group">
+              <label>Customer Mobile (10-digits)*</label>
+              <input type="tel" id="dsCustomerPhone" maxlength="10" pattern="[0-9]{10}" required oninput="lookupCustomer('ds')">
+            </div>
+            <div class="form-group">
+              <label>Customer Name*</label>
+              <input type="text" id="dsCustomerName" required>
+            </div>
+            <div class="form-group">
+              <label>Select Fancy Item*</label>
+              <select id="dsItemSelect" required onchange="updateDsItemDetails()">
+                <option value="">-- Select Item --</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Quantity Available / Order</label>
+              <input type="number" id="dsQty" min="1" value="1" required oninput="calcDsTotal()">
+            </div>
+            <div class="form-group">
+              <label>Rate per Unit (₹)</label>
+              <input type="number" id="dsRate" readonly>
+            </div>
+            <div class="form-group">
+              <label>Discount (₹)</label>
+              <input type="number" id="dsDiscount" value="0" oninput="calcDsTotal()">
+            </div>
+            <div class="form-group">
+              <label>Final Total Amount (₹)</label>
+              <input type="number" id="dsFinalPrice" readonly style="font-weight: bold; color: var(--primary);">
+            </div>
+          </div>
+          <button type="submit" class="btn" style="margin-top: 10px;">Complete Sale & Print</button>
+        </form>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Today's Sales Records</div>
+        <div class="table-container">
+          <table id="dailySalesTable">
+            <thead>
+              <tr><th>Time</th><th>Customer</th><th>Item</th><th>Qty</th><th>Total</th></tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. RENTAL ENTRY TAB -->
+    <div id="rentalTab" class="tab-content">
+      <div class="sub-nav">
+        <button class="sub-btn active" onclick="switchSubTab('newRentalSubTab', this)">New Rental POS</button>
+        <button class="sub-btn" onclick="switchSubTab('rentalHistorySubTab', this)">Rental History & Return</button>
+        <button class="sub-btn" onclick="switchSubTab('customerReqSubTab', this)">Customer Requirements</button>
+      </div>
+
+      <!-- Sub Tab 1: New Rental -->
+      <div id="newRentalSubTab" class="sub-tab-content" style="margin-top: 15px;">
         <div class="card">
-            <h2 class="card-title">Daily Counter Sales (Small Items)</h2>
-            <form id="daily-sales-form" class="form-grid" onsubmit="processDailySale(event)">
-                <div class="form-group">
-                    <label>Select Item</label>
-                    <select id="ds-item" onchange="updateDSPrice()" required></select>
-                </div>
-                <div class="form-group">
-                    <label>Quantity</label>
-                    <input type="number" id="ds-qty" min="1" value="1" oninput="calculateDSTotal()" required>
-                </div>
-                <div class="form-group">
-                    <label>Unit Price (₹)</label>
-                    <input type="number" id="ds-price" readonly>
-                </div>
-                <div class="form-group">
-                    <label>Total Amount (₹)</label>
-                    <input type="number" id="ds-total" readonly>
-                </div>
-                <div class="form-group" style="grid-column: 1/-1;">
-                    <button type="submit" class="btn btn-success">Complete Daily Sale</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- RENTAL ENTRY TAB -->
-    <div id="rental-entry" class="tab-content">
-        <div class="sub-nav">
-            <button class="sub-btn active" onclick="switchSubTab('rental-new')">New Rental POS</button>
-            <button class="sub-btn" onclick="switchSubTab('rental-history')">Rented / Return</button>
-            <button class="sub-btn" onclick="switchSubTab('rental-notes')">Customer Requirements</button>
-        </div>
-
-        <!-- Sub Tab: New Rental -->
-        <div id="rental-new" class="sub-tab-content active" style="margin-top: 15px;">
-            <div class="card">
-                <h2 class="card-title">Sales POS Terminal (Rental)</h2>
-                <form id="pos-form" class="form-grid" onsubmit="processRentalPOS(event)">
-                    <div class="form-group">
-                        <label>Customer Phone (10 digits)</label>
-                        <input type="tel" id="pos-phone" pattern="[0-9]{10}" placeholder="Search / Enter Phone" oninput="autoPopulateCustomer()" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Customer Name</label>
-                        <input type="text" id="pos-name" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Regional Area</label>
-                        <select id="pos-area" required></select>
-                    </div>
-                    <div class="form-group">
-                        <label>Full Address</label>
-                        <input type="text" id="pos-address" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Event Function</label>
-                        <select id="pos-event">
-                            <option>Marriage</option>
-                            <option>Baby Shower</option>
-                            <option>Reception</option>
-                            <option>Engagement</option>
-                            <option>Naming Ceremony</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Select Rental Item</label>
-                        <select id="pos-item" onchange="calculateRentalTotals()" required></select>
-                    </div>
-                    <div class="form-group">
-                        <label>Rental Days</label>
-                        <input type="number" id="pos-days" min="1" value="1" oninput="calculateRentalTotals()" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Daily Rate (₹)</label>
-                        <input type="number" id="pos-rate" readonly>
-                    </div>
-                    <div class="form-group">
-                        <label>Caution Deposit (₹)</label>
-                        <input type="number" id="pos-deposit" readonly>
-                    </div>
-                    <div class="form-group">
-                        <label>Special / Repeat Discount (₹)</label>
-                        <input type="number" id="pos-discount" value="0" oninput="calculateRentalTotals()">
-                    </div>
-                    <div class="form-group">
-                        <label>Advance Paid (₹)</label>
-                        <input type="number" id="pos-advance" value="0" oninput="calculateRentalTotals()" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Pending Balance (₹)</label>
-                        <input type="number" id="pos-pending" readonly style="font-weight: bold; color: var(--danger);">
-                    </div>
-                    <div class="form-group" style="grid-column: 1/-1;">
-                        <button type="submit" class="btn btn-primary">Generate Receipt & Book</button>
-                    </div>
-                </form>
-            </div>
-            
-            <div id="qrs-container" class="card" style="display: flex; gap: 20px; justify-content: space-around; text-align: center;">
-                <div><h4>GPay QR</h4><img id="qr-gpay" style="max-width: 120px;"></div>
-                <div><h4>PhonePe QR</h4><img id="qr-phonepe" style="max-width: 120px;"></div>
-                <div><h4>Google Review QR</h4><img id="qr-review" style="max-width: 120px;"></div>
-            </div>
-        </div>
-
-        <!-- Sub Tab: Rented / Return -->
-        <div id="rental-history" class="sub-tab-content" style="display:none; margin-top: 15px;">
-            <div class="card">
-                <h2 class="card-title">Active Rented Jewellery</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Bill ID</th>
-                            <th>Customer</th>
-                            <th>Item</th>
-                            <th>Pending Balance</th>
-                            <th>Status</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody id="rented-table-body"></tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- Sub Tab: Notes -->
-        <div id="rental-notes" class="sub-tab-content" style="display:none; margin-top: 15px;">
-            <div class="card">
-                <h2 class="card-title">Customer Requirements / Feedback Log</h2>
-                <form onsubmit="saveCustomerRequirement(event)" class="form-group">
-                    <label>Customer Mobile</label>
-                    <input type="tel" id="note-phone" pattern="[0-9]{10}" required>
-                    <label style="margin-top: 8px;">Wishlist / Requirement Details</label>
-                    <textarea id="note-text" rows="3" required></textarea>
-                    <button type="submit" class="btn btn-gold" style="margin-top: 10px;">Save Requirement Note</button>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- CATALOG TAB -->
-    <div id="catalog" class="tab-content">
-        <div class="card">
-            <h2 class="card-title">Real-Time Inventory & Catalog</h2>
-            <div class="form-grid" style="margin-bottom: 15px;">
-                <input type="text" id="catalog-search" placeholder="Search item name or code..." oninput="renderCatalog()">
-                <select id="catalog-filter" onchange="renderCatalog()">
-                    <option value="ALL">All Categories</option>
-                    <option value="Imitation Jewellery">Imitation Jewellery</option>
-                    <option value="Accessories">Accessories</option>
-                    <option value="Fancy Items">Fancy Items</option>
-                    <option value="Others">Others</option>
+          <div class="card-title">Jewellery Rental POS Billing</div>
+          <form id="rentalForm" onsubmit="processRentalBooking(event)">
+            <div class="grid">
+              <div class="form-group">
+                <label>Customer Mobile Number*</label>
+                <input type="tel" id="rntPhone" maxlength="10" pattern="[0-9]{10}" required oninput="lookupCustomer('rnt')">
+              </div>
+              <div class="form-group">
+                <label>Customer Name*</label>
+                <input type="text" id="rntName" required>
+              </div>
+              <div class="form-group" style="grid-column: span 2;">
+                <label>Customer Address</label>
+                <input type="text" id="rntAddress">
+              </div>
+              <div class="form-group">
+                <label>Select Location / Area</label>
+                <select id="rntArea"></select>
+              </div>
+              <div class="form-group">
+                <label>Select Jewellery Item*</label>
+                <select id="rntItemSelect" required onchange="updateRntItemDetails()">
+                  <option value="">-- Choose Jewellery --</option>
                 </select>
+              </div>
+              <div class="form-group">
+                <label>Event Category</label>
+                <select id="rntEvent">
+                  <option>Marriage</option><option>Baby Shower</option><option>Reception</option><option>Engagement</option><option>Naming Ceremony</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Rental Date</label>
+                <input type="date" id="rntDate" required>
+              </div>
+              <div class="form-group">
+                <label>Number of Days</label>
+                <input type="number" id="rntDays" min="1" value="1" required oninput="calcRentalBill()">
+              </div>
+              <div class="form-group">
+                <label>Daily Rental Rate (₹)</label>
+                <input type="number" id="rntRate" readonly>
+              </div>
+              <div class="form-group">
+                <label>Security Deposit (₹)</label>
+                <input type="number" id="rntDeposit" readonly>
+              </div>
+              <div class="form-group">
+                <label>Loyalty / Repeat Customer Discount (₹)</label>
+                <input type="number" id="rntDiscount" value="0" oninput="calcRentalBill()">
+                <small id="repeatDiscountBadge" style="color: var(--success); font-weight: bold;"></small>
+              </div>
+              <div class="form-group">
+                <label>Advance Amount Paid (₹)</label>
+                <input type="number" id="rntAdvance" value="0" required oninput="calcRentalBill()">
+              </div>
+              <div class="form-group">
+                <label>Calculated Pending Balance (₹)</label>
+                <input type="number" id="rntPending" readonly style="font-weight: bold; color: var(--danger);">
+              </div>
             </div>
-            <div id="catalog-grid" class="grid"></div>
+            <button type="submit" class="btn btn-gold" style="margin-top: 10px;">Generate Rental Receipt</button>
+          </form>
         </div>
-    </div>
-</div>
+      </div>
 
-<!-- Password Modal -->
-<div id="auth-modal" class="modal-overlay">
-    <div class="modal">
-        <h3 class="card-title">Sales Terminal Security</h3>
-        <p style="margin-bottom: 10px; font-size: 0.9rem;">Please enter staff access password:</p>
-        <div class="form-group">
-            <input type="password" id="staff-pass-input">
+      <!-- Sub Tab 2: Rental History & Returns -->
+      <div id="rentalHistorySubTab" class="sub-tab-content" style="display:none; margin-top: 15px;">
+        <div class="card">
+          <div class="card-title">Active Rented Jewellery Records</div>
+          <div class="table-container">
+            <table id="rentalHistoryTable">
+              <thead>
+                <tr><th>Bill #</th><th>Customer</th><th>Item</th><th>Date/Days</th><th>Advance</th><th>Pending</th><th>Action</th></tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
         </div>
-        <button class="btn btn-primary" style="width: 100%;" onclick="verifyStaffAuth()">Authenticate</button>
-    </div>
-</div>
+      </div>
 
-<!-- Receipt Modal -->
-<div id="receipt-modal" class="modal-overlay">
-    <div class="modal" style="max-width: 480px;">
-        <div id="printable-receipt" class="receipt-container" style="display: block;">
-            <center>
-                <h2 id="rc-store-name">Lakshmi Fancy Store</h2>
-                <p id="rc-address"></p>
-                <p>Phone: <span id="rc-phone"></span> | GST: <span id="rc-gst"></span></p>
-                <hr style="margin: 10px 0;">
-                <h3>RENTAL RECEIPT</h3>
-            </center>
-            <br>
-            <p><strong>Receipt No:</strong> <span id="rc-id"></span></p>
-            <p><strong>Date:</strong> <span id="rc-date"></span></p>
-            <p><strong>Customer:</strong> <span id="rc-cust-name"></span> (<span id="rc-cust-phone"></span>)</p>
-            <p><strong>Event:</strong> <span id="rc-event"></span></p>
-            <hr style="margin: 10px 0;">
-            <div style="display:flex; gap: 10px; align-items:center;">
-                <img id="rc-img" style="width: 60px; height: 60px; object-fit: cover;">
-                <div>
-                    <p><strong>Item:</strong> <span id="rc-item-name"></span></p>
-                    <p><strong>Days:</strong> <span id="rc-days"></span> | <strong>Rate:</strong> ₹<span id="rc-rate"></span>/day</p>
-                </div>
+      <!-- Sub Tab 3: Customer Requirements -->
+      <div id="customerReqSubTab" class="sub-tab-content" style="display:none; margin-top: 15px;">
+        <div class="card">
+          <div class="card-title">Customer Feedback & Future Requirements Log</div>
+          <form onsubmit="saveCustomerRequest(event)">
+            <div class="grid">
+              <div class="form-group">
+                <label>Customer Mobile</label>
+                <input type="tel" id="reqPhone" maxlength="10">
+              </div>
+              <div class="form-group">
+                <label>Customer Name</label>
+                <input type="text" id="reqName">
+              </div>
+              <div class="form-group" style="grid-column: span 2;">
+                <label>Requested Jewellery Design / Comment</label>
+                <textarea id="reqComments" rows="3" required placeholder="e.g., Wants antique finish waist belt for next month wedding"></textarea>
+              </div>
             </div>
-            <hr style="margin: 10px 0;">
-            <p>Deposit: ₹<span id="rc-deposit"></span></p>
-            <p>Discount: ₹<span id="rc-discount"></span></p>
-            <p><strong>Advance Paid:</strong> ₹<span id="rc-advance"></span></p>
-            <p><strong>Pending Balance:</strong> ₹<span id="rc-pending"></span></p>
-            <br>
-            <center><p>Thank you for shopping with us!</p></center>
+            <button class="btn" type="submit">Save Requirement Log</button>
+          </form>
         </div>
-        <button class="btn btn-primary" style="width: 100%; margin-top: 10px;" onclick="window.print()">Print Receipt</button>
-        <button class="btn btn-gold" style="width: 100%; margin-top: 5px;" onclick="closeModal('receipt-modal')">Close</button>
+      </div>
     </div>
-</div>
 
-<script>
-    // Regional Dropdown Dataset
-    const REGIONAL_AREAS = [
-        "Achchandavilthan", "Alagapuri RF", "Ammapatti", "Appaneri", "Arasiyarpatti", "Athikulam Sengulam", "Ayaidharmam", 
-        "Ayan Karisalkulam", "Ayan Kollankondan", "Chokkanathaputtur", "Deyvendri", "Gopalapuram", "Govindanallur", 
-        "Ilandaikulam", "Ilandiraikondan", "Kadambankulam", "Kalathur", "Keelrajakularaman", "Khansabpuram (and related RF variants)", 
-        "Kollankondan", "Kollankondan R.F.", "Kongalapuram", "Korukkampatti", "Kothankulam", "Kothankulam RF", "Kottaiyur", 
-        "Kovilur", "Kunnur", "Kuruchiyarpatti", "Kurukkalkulam", "Maharajapuram", "Malli", "Mamsapuram", "Marakalamkathan", 
-        "Melapattamkarisalkulam", "Melarajakularaman (Part)", "Mullikulam", "Muthusamipuram", "Muthuvenkatarayapuram", 
-        "Muvaraivenran", "Nachchiyarkovil", "Nallamangalam", "Nallingaperi", "Nathampatti", "Pattakkulam Sallipatti", 
-        "Pillaiyarkulam", "Pillaiyarnatham", "Pillaiyarnatham R.F.", "Ponnangani", "Pudupalaiyam", "Pudupatti R.F.", "Puthur", 
-        "Puvani", "Rajapalayam", "Reghunathapuram", "Rudrappanaickenpatti", "S. Ammapatti", "Sammandapuram", 
-        "Sappaniparambu (R.F.)", "Semmanandikarisalkulam", "Settur RF", "Sholapuram", "Singammalpuram", "Sivandipatti", 
-        "Solaicheri", "Srivilliputtur", "Srivilliputtur R.F.", "Sundarapandiyam (and RF variant)", "Sundararajapuram", 
-        "Tadagannai Managaseri", "Tenkarai", "Terku Devadanam", "Terkuvenganallur", "Thambipatti", "Thilakulam", 
-        "Thulukkapatti", "Tiruchalur", "Vadagarai", "Vadakku Venganallur", "Vadakkudevadanam", "Vadakkusrivilliputhur", 
-        "Vadugapatti", "Valaikkulam R.F. / Valaikulam RF", "Varagunaramapuram", "Vellaipottal", "Venkateswarapuram (and RF variant)", 
-        "Viluppanur", "Watrap", "Others"
-    ];
+    <!-- 3. JEWELLERY STATUS & CATALOG -->
+    <div id="catalogTab" class="tab-content">
+      <div class="card">
+        <div class="card-title">Live Inventory Status & Catalog</div>
+        <div class="grid" style="margin-bottom: 15px;">
+          <div class="form-group">
+            <input type="text" id="catalogSearch" placeholder="Search item name or code..." oninput="renderCatalog()">
+          </div>
+          <div class="form-group">
+            <select id="catalogFilter" onchange="renderCatalog()">
+              <option value="ALL">All Items</option>
+              <option value="Available">Available Only</option>
+              <option value="Rented">Currently Rented</option>
+            </select>
+          </div>
+        </div>
+        <div id="catalogGrid" class="grid"></div>
+      </div>
+    </div>
 
-    // Local Storage State Management
-    let salesInv = JSON.parse(localStorage.getItem('inventory_sales')) || [
-        { code: "DS001", name: "Hair Clips & Pins", qty: 50, price: 20 },
-        { code: "DS002", name: "Stud Earrings", qty: 30, price: 50 }
-    ];
-    let rentalInv = JSON.parse(localStorage.getItem('inventory_rental')) || [
-        { code: "RJ001", name: "Kundan Bridal Necklace Set", dailyRate: 500, deposit: 2000, status: "Available", img: "", usageCount: 0, earnings: 0, category: "Imitation Jewellery" }
-    ];
-    let transactions = JSON.parse(localStorage.getItem('sales_transactions')) || [];
-    let customers = JSON.parse(localStorage.getItem('customers_loyalty')) || [];
-    let config = JSON.parse(localStorage.getItem('admin_store_config')) || {
-        storeName: "Lakshmi Fancy Store", branch: "Main Branch", address: "Rajapalayam", phone: "9876543210", gst: "33AAAAA0000A1Z5", staffPass: "1234", backupHours: 2
-    };
+  </div>
 
-    let authenticated = false;
+  <!-- Printable Receipt Modal Template -->
+  <div id="printableReceipt">
+    <div style="text-align: center; border-bottom: 2px solid #000; padding-bottom: 10px;">
+      <h2 id="rcptStoreName">LAKSHMI FANCY STORE</h2>
+      <p id="rcptAddress">Rajapalayam Main Branch</p>
+      <p id="rcptPhone">Ph: 9876543210</p>
+    </div>
+    <div style="margin: 15px 0;">
+      <p><strong>Receipt No:</strong> <span id="rcptBillId"></span></p>
+      <p><strong>Date:</strong> <span id="rcptDate"></span></p>
+      <p><strong>Customer:</strong> <span id="rcptCustName"></span> (<span id="rcptCustPhone"></span>)</p>
+    </div>
+    <table style="width: 100%; margin-bottom: 15px;">
+      <thead>
+        <tr style="border-bottom: 1px solid #000;"><th>Item Description</th><th>Rate</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span id="rcptItemName"></span><br><img id="rcptItemImg" style="width:50px; height:50px; object-fit:cover;"></td>
+          <td>₹<span id="rcptRate"></span></td>
+        </tr>
+      </tbody>
+    </table>
+    <div style="text-align: right; border-top: 1px solid #000; padding-top: 5px;">
+      <p>Total Deposit: ₹<span id="rcptDeposit"></span></p>
+      <p>Discount Applied: ₹<span id="rcptDiscount"></span></p>
+      <p><strong>Advance Paid: ₹<span id="rcptAdvance"></span></strong></p>
+      <h3 style="margin-top: 5px;">Pending Balance: ₹<span id="rcptPending"></span></h3>
+    </div>
+    <div style="margin-top: 20px; text-align: center;" id="rcptQrContainer">
+      <p style="font-size: 0.8rem;">Scan to Pay Remaining Balance:</p>
+      <img id="rcptGpayQr" style="width: 100px; height: 100px;">
+    </div>
+    <p style="text-align: center; margin-top: 15px; font-size: 0.8rem;">Thank you for your business!</p>
+  </div>
 
-    window.onload = function() {
-        if(!authenticated) openModal('auth-modal');
-        initDropdowns();
-        applyConfig();
-        setupAutoBackup();
-    };
+  <!-- Zoom Modal -->
+  <div id="imageModal" class="modal" onclick="this.style.display='none'">
+    <img id="modalImg" src="">
+  </div>
 
-    function openModal(id) { document.getElementById(id).classList.add('active'); }
-    function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+  <script>
+    // Regional Dropdown Areas List
+    const REGIONAL_AREAS = ["Achchandavilthan", "Alagapuri RF", "Ammapatti", "Appaneri", "Arasiyarpatti", "Athikulam Sengulam", "Ayaidharmam", "Ayan Karisalkulam", "Ayan Kollankondan", "Chokkanathaputtur", "Deyvendri", "Gopalapuram", "Govindanallur", "Ilandaikulam", "Ilandiraikondan", "Kadambankulam", "Kalathur", "Keelrajakularaman", "Khansabpuram", "Kollankondan", "Kongalapuram", "Korukkampatti", "Kothankulam", "Kottaiyur", "Kovilur", "Kunnur", "Kuruchiyarpatti", "Maharajapuram", "Malli", "Mamsapuram", "Muthusamipuram", "Muvaraivenran", "Nachchiyarkovil", "Nallamangalam", "Nathampatti", "Pillaiyarkulam", "Pudupatti", "Puthur", "Rajapalayam", "Sammandapuram", "Sholapuram", "Sivandipatti", "Srivilliputtur", "Sundarapandiyam", "Tenkarai", "Terku Devadanam", "Thambipatti", "Vadakarai", "Watrap", "Others"];
 
-    function verifyStaffAuth() {
-        const input = document.getElementById('staff-pass-input').value;
-        if(input === config.staffPass) {
-            authenticated = true;
-            closeModal('auth-modal');
-            renderAll();
-        } else {
-            alert('Invalid Password!');
+    // Initialize LocalStorage Data Stores if Empty
+    function initDataStores() {
+      if (!localStorage.getItem('store_config')) {
+        localStorage.setItem('store_config', JSON.stringify({
+          storeName: "Lakshmi Fancy Store",
+          branch: "Rajapalayam Main",
+          address: "123 Main Bazaar, Rajapalayam",
+          phone: "9876543210",
+          passwords: { sales: "1234", admin: "admin123" },
+          autoBackupIntervalHours: 2,
+          loyalty: { repeatCustomerDiscountPct: 5 }
+        }));
+      }
+      if (!localStorage.setItem('stock', localStorage.getItem('stock') || '[]'));
+      if (!localStorage.setItem('rental', localStorage.getItem('rental') || JSON.stringify({ inventory: [], transactions: [], customerRequests: [] })));
+      if (!localStorage.setItem('customer', localStorage.getItem('customer') || '[]'));
+      if (!localStorage.setItem('daily_sales', localStorage.getItem('daily_sales') || '[]'));
+    }
+
+    let config = {};
+    let rentalData = {};
+    let stockData = [];
+    let customerData = [];
+
+    function loadAllState() {
+      initDataStores();
+      config = JSON.parse(localStorage.getItem('store_config'));
+      rentalData = JSON.parse(localStorage.getItem('rental'));
+      stockData = JSON.parse(localStorage.getItem('stock'));
+      customerData = JSON.parse(localStorage.getItem('customer'));
+
+      document.getElementById('hdrStoreName').innerText = config.storeName;
+      document.getElementById('hdrBranchAddress').innerText = `${config.branch} - ${config.address}`;
+      
+      // Populate Regional Area Dropdown
+      const areaSelect = document.getElementById('rntArea');
+      areaSelect.innerHTML = REGIONAL_AREAS.map(a => `<option value="${a}" ${a==='Rajapalayam'?'selected':''}>${a}</option>`).join('');
+
+      populateItemDropdowns();
+      renderCatalog();
+      renderRentalHistory();
+      renderDailySalesTable();
+    }
+
+    // Authentication
+    function authenticateSales() {
+      const input = document.getElementById('salesPassInput').value;
+      if (input === config.passwords.sales) {
+        document.getElementById('salesAuthModal').style.display = 'none';
+      } else {
+        document.getElementById('authErr').style.display = 'block';
+      }
+    }
+
+    // Navigation Switches
+    function switchMainTab(tabId, btn) {
+      document.querySelectorAll('.main-nav .nav-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(tabId).classList.add('active');
+    }
+
+    function switchSubTab(subTabId, btn) {
+      document.querySelectorAll('.sub-nav .sub-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.sub-tab-content').forEach(t => t.style.display = 'none');
+      btn.classList.add('active');
+      document.getElementById(subTabId).style.display = 'block';
+    }
+
+    // Customer Auto-Lookup Logic
+    function lookupCustomer(prefix) {
+      const phoneInput = document.getElementById(`${prefix}CustomerPhone`) || document.getElementById(`${prefix}Phone`);
+      const nameInput = document.getElementById(`${prefix}CustomerName`) || document.getElementById(`${prefix}Name`);
+      const addrInput = document.getElementById(`${prefix}Address`);
+      const discountBadge = document.getElementById('repeatDiscountBadge');
+
+      if (phoneInput.value.length === 10) {
+        const found = customerData.find(c => c.phone === phoneInput.value);
+        if (found) {
+          nameInput.value = found.name;
+          if (addrInput) addrInput.value = found.address || '';
+          if (discountBadge) {
+            discountBadge.innerText = `Repeat Customer! ${config.loyalty.repeatCustomerDiscountPct}% Discount Eligible`;
+            calcRentalBill();
+          }
         }
+      }
     }
 
-    function initDropdowns() {
-        const areaSelect = document.getElementById('pos-area');
-        areaSelect.innerHTML = REGIONAL_AREAS.map(a => `<option value="${a}" ${a==='Rajapalayam'?'selected':''}>${a}</option>`).join('');
-    }
+    // Dropdown population
+    function populateItemDropdowns() {
+      // Daily Sales Fancy Items Select
+      const dsSelect = document.getElementById('dsItemSelect');
+      dsSelect.innerHTML = '<option value="">-- Select Item --</option>' + 
+        stockData.map(i => `<option value="${i.id}">${i.name} (Qty: ${i.qty})</option>`).join('');
 
-    function applyConfig() {
-        document.getElementById('header-title').innerText = config.storeName;
-        document.getElementById('header-branch').innerText = config.branch;
-        if(config.logo) document.getElementById('header-logo').src = config.logo;
-        if(config.qrGpay) document.getElementById('qr-gpay').src = config.qrGpay;
-        if(config.qrPhonepe) document.getElementById('qr-phonepe').src = config.qrPhonepe;
-        if(config.qrReview) document.getElementById('qr-review').src = config.qrReview;
-    }
-
-    function renderAll() {
-        renderDSItems();
-        renderPOSRentalItems();
-        renderCatalog();
-        renderRentedTable();
-    }
-
-    function switchMainTab(tabId) {
-        if(!authenticated) return openModal('auth-modal');
-        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-        document.querySelectorAll('nav .nav-btn').forEach(el => el.classList.remove('active'));
-        document.getElementById(tabId).classList.add('active');
-        event.target.classList.add('active');
-    }
-
-    function switchSubTab(subId) {
-        document.querySelectorAll('.sub-tab-content').forEach(el => el.style.display = 'none');
-        document.querySelectorAll('.sub-btn').forEach(el => el.classList.remove('active'));
-        document.getElementById(subId).style.display = 'block';
-        event.target.classList.add('active');
+      // Rental Select
+      const rntSelect = document.getElementById('rntItemSelect');
+      rntSelect.innerHTML = '<option value="">-- Choose Jewellery --</option>' + 
+        rentalData.inventory.map(i => `<option value="${i.id}">${i.name} - ₹${i.dailyRate}/day</option>`).join('');
     }
 
     // Daily Sales Logic
-    function renderDSItems() {
-        const sel = document.getElementById('ds-item');
-        sel.innerHTML = salesInv.map(i => `<option value="${i.code}">${i.name} (Stock: ${i.qty})</option>`).join('');
-        updateDSPrice();
+    function updateDsItemDetails() {
+      const id = document.getElementById('dsItemSelect').value;
+      const item = stockData.find(i => i.id === id);
+      if (item) {
+        document.getElementById('dsRate').value = item.sellingPrice;
+        calcDsTotal();
+      }
     }
-    function updateDSPrice() {
-        const code = document.getElementById('ds-item').value;
-        const item = salesInv.find(i => i.code === code);
-        if(item) {
-            document.getElementById('ds-price').value = item.price;
-            calculateDSTotal();
-        }
+
+    function calcDsTotal() {
+      const qty = parseInt(document.getElementById('dsQty').value) || 0;
+      const rate = parseFloat(document.getElementById('dsRate').value) || 0;
+      const disc = parseFloat(document.getElementById('dsDiscount').value) || 0;
+      document.getElementById('dsFinalPrice').value = Math.max(0, (qty * rate) - disc);
     }
-    function calculateDSTotal() {
-        const qty = parseInt(document.getElementById('ds-qty').value) || 0;
-        const price = parseFloat(document.getElementById('ds-price').value) || 0;
-        document.getElementById('ds-total').value = qty * price;
-    }
+
     function processDailySale(e) {
-        e.preventDefault();
-        const code = document.getElementById('ds-item').value;
-        const qty = parseInt(document.getElementById('ds-qty').value);
-        const item = salesInv.find(i => i.code === code);
-        if(item.qty < qty) return alert('Insufficient Stock!');
-        item.qty -= qty;
-        transactions.push({ type: 'DAILY_SALE', code, qty, total: qty * item.price, date: new Date().toISOString() });
-        localStorage.setItem('inventory_sales', JSON.stringify(salesInv));
-        localStorage.setItem('sales_transactions', JSON.stringify(transactions));
-        alert('Sale Completed!');
-        renderDSItems();
+      e.preventDefault();
+      const itemId = document.getElementById('dsItemSelect').value;
+      const item = stockData.find(i => i.id === itemId);
+      const qty = parseInt(document.getElementById('dsQty').value);
+
+      if (item.qty < qty) { alert('Insufficient Stock!'); return; }
+      item.qty -= qty; // Deduct quantity
+
+      const sale = {
+        saleId: 'LFS-SL-' + Date.now().toString().slice(-4),
+        date: new Date().toISOString(),
+        customerPhone: document.getElementById('dsCustomerPhone').value,
+        customerName: document.getElementById('dsCustomerName').value,
+        itemId: itemId,
+        qty: qty,
+        finalPrice: parseFloat(document.getElementById('dsFinalPrice').value)
+      };
+
+      let salesHistory = JSON.parse(localStorage.getItem('daily_sales'));
+      salesHistory.push(sale);
+      
+      localStorage.setItem('daily_sales', JSON.stringify(salesHistory));
+      localStorage.setItem('stock', JSON.stringify(stockData));
+      
+      alert('Sale Completed Successfully!');
+      loadAllState();
     }
 
     // Rental POS Logic
-    function autoPopulateCustomer() {
-        const phone = document.getElementById('pos-phone').value;
-        if(phone.length === 10) {
-            const cust = customers.find(c => c.phone === phone);
-            if(cust) {
-                document.getElementById('pos-name').value = cust.name;
-                document.getElementById('pos-area').value = cust.area;
-                document.getElementById('pos-address').value = cust.address;
-                // Auto calculate repeat discount if applicable
-                document.getElementById('pos-discount').value = cust.repeatDiscount || 50;
-                calculateRentalTotals();
-            }
-        }
+    function updateRntItemDetails() {
+      const id = document.getElementById('rntItemSelect').value;
+      const item = rentalData.inventory.find(i => i.id === id);
+      if (item) {
+        document.getElementById('rntRate').value = item.dailyRate;
+        document.getElementById('rntDeposit').value = item.deposit;
+        calcRentalBill();
+      }
     }
 
-    function renderPOSRentalItems() {
-        const sel = document.getElementById('pos-item');
-        sel.innerHTML = rentalInv.filter(r => r.status === 'Available').map(r => `<option value="${r.code}">${r.name}</option>`).join('');
-        calculateRentalTotals();
+    function calcRentalBill() {
+      const days = parseInt(document.getElementById('rntDays').value) || 1;
+      const rate = parseFloat(document.getElementById('rntRate').value) || 0;
+      const deposit = parseFloat(document.getElementById('rntDeposit').value) || 0;
+      const disc = parseFloat(document.getElementById('rntDiscount').value) || 0;
+      const advance = parseFloat(document.getElementById('rntAdvance').value) || 0;
+
+      const total = (rate * days) + deposit - disc;
+      const pending = total - advance;
+      document.getElementById('rntPending').value = Math.max(0, pending);
     }
 
-    function calculateRentalTotals() {
-        const code = document.getElementById('pos-item').value;
-        const item = rentalInv.find(r => r.code === code);
-        if(!item) return;
-        
-        const days = parseInt(document.getElementById('pos-days').value) || 1;
-        const discount = parseFloat(document.getElementById('pos-discount').value) || 0;
-        const advance = parseFloat(document.getElementById('pos-advance').value) || 0;
+    function processRentalBooking(e) {
+      e.preventDefault();
+      const itemId = document.getElementById('rntItemSelect').value;
+      const billId = 'LFS-RNT-' + Math.floor(1000 + Math.random() * 9000);
+      const phone = document.getElementById('rntPhone').value;
+      const name = document.getElementById('rntName').value;
 
-        document.getElementById('pos-rate').value = item.dailyRate;
-        document.getElementById('pos-deposit').value = item.deposit;
+      const tx = {
+        billId: billId,
+        customerPhone: phone,
+        customerName: name,
+        itemId: itemId,
+        rentalDate: document.getElementById('rntDate').value,
+        days: document.getElementById('rntDays').value,
+        advancePaid: document.getElementById('rntAdvance').value,
+        pendingBalance: document.getElementById('rntPending').value,
+        deposit: document.getElementById('rntDeposit').value,
+        discount: document.getElementById('rntDiscount').value,
+        status: 'Rented'
+      };
 
-        const total = (item.dailyRate * days) + item.deposit - discount - advance;
-        document.getElementById('pos-pending').value = total > 0 ? total : 0;
+      rentalData.transactions.push(tx);
+      localStorage.setItem('rental', JSON.stringify(rentalData));
+
+      // Auto update customer DB
+      if (!customerData.find(c => c.phone === phone)) {
+        customerData.push({ phone: phone, name: name, address: document.getElementById('rntAddress').value, area: document.getElementById('rntArea').value });
+        localStorage.setItem('customer', JSON.stringify(customerData));
+      }
+
+      // Populate Receipt
+      const item = rentalData.inventory.find(i => i.id === itemId);
+      document.getElementById('rcptBillId').innerText = billId;
+      document.getElementById('rcptDate').innerText = tx.rentalDate;
+      document.getElementById('rcptCustName').innerText = name;
+      document.getElementById('rcptCustPhone').innerText = phone;
+      document.getElementById('rcptItemName').innerText = item ? item.name : 'Jewellery Item';
+      document.getElementById('rcptItemImg').src = item ? item.imageUrl : '';
+      document.getElementById('rcptRate').innerText = item ? item.dailyRate : 0;
+      document.getElementById('rcptDeposit').innerText = tx.deposit;
+      document.getElementById('rcptDiscount').innerText = tx.discount;
+      document.getElementById('rcptAdvance').innerText = tx.advancePaid;
+      document.getElementById('rcptPending').innerText = tx.pendingBalance;
+      if (config.qrGPay) document.getElementById('rcptGpayQr').src = config.qrGPay;
+
+      window.print();
+      loadAllState();
     }
 
-    function processRentalPOS(e) {
-        e.preventDefault();
-        const phone = document.getElementById('pos-phone').value;
-        const name = document.getElementById('pos-name').value;
-        const area = document.getElementById('pos-area').value;
-        const address = document.getElementById('pos-address').value;
-        const code = document.getElementById('pos-item').value;
-        const days = parseInt(document.getElementById('pos-days').value);
-        const advance = parseFloat(document.getElementById('pos-advance').value);
-        const discount = parseFloat(document.getElementById('pos-discount').value);
-        const pending = parseFloat(document.getElementById('pos-pending').value);
-
-        // Update Customer DB
-        let cust = customers.find(c => c.phone === phone);
-        if(!cust) {
-            cust = { phone, name, area, address, points: 0 };
-            customers.push(cust);
-        }
-        cust.points += Math.floor((advance + pending) / 100) * 5; // Loyalty logic
-
-        // Update Rental Status
-        const item = rentalInv.find(r => r.code === code);
-        item.status = 'Rented';
-        item.usageCount = (item.usageCount || 0) + 1;
-        item.earnings = (item.earnings || 0) + (item.dailyRate * days);
-
-        const billId = "RENT-" + Date.now();
-        const tx = { billId, type: 'RENTAL', phone, name, code, days, advance, discount, pending, status: 'Active', date: new Date().toLocaleDateString() };
-        transactions.push(tx);
-
-        localStorage.setItem('customers_loyalty', JSON.stringify(customers));
-        localStorage.setItem('inventory_rental', JSON.stringify(rentalInv));
-        localStorage.setItem('sales_transactions', JSON.stringify(transactions));
-
-        // Populate Receipt
-        document.getElementById('rc-store-name').innerText = config.storeName;
-        document.getElementById('rc-address').innerText = config.address;
-        document.getElementById('rc-phone').innerText = config.phone;
-        document.getElementById('rc-gst').innerText = config.gst;
-        document.getElementById('rc-id').innerText = billId;
-        document.getElementById('rc-date').innerText = tx.date;
-        document.getElementById('rc-cust-name').innerText = name;
-        document.getElementById('rc-cust-phone').innerText = phone;
-        document.getElementById('rc-event').innerText = document.getElementById('pos-event').value;
-        document.getElementById('rc-item-name').innerText = item.name;
-        document.getElementById('rc-img').src = item.img || '';
-        document.getElementById('rc-days').innerText = days;
-        document.getElementById('rc-rate').innerText = item.dailyRate;
-        document.getElementById('rc-deposit').innerText = item.deposit;
-        document.getElementById('rc-discount').innerText = discount;
-        document.getElementById('rc-advance').innerText = advance;
-        document.getElementById('rc-pending').innerText = pending;
-
-        openModal('receipt-modal');
-        renderPOSRentalItems();
-        renderRentedTable();
-    }
-
-    function renderRentedTable() {
-        const tbody = document.getElementById('rented-table-body');
-        const activeRentals = transactions.filter(t => t.type === 'RENTAL' && t.status === 'Active');
-        tbody.innerHTML = activeRentals.map(r => `
-            <tr>
-                <td>${r.billId}</td>
-                <td>${r.name}<br><small>${r.phone}</small></td>
-                <td>${r.code}</td>
-                <td>₹${r.pending}</td>
-                <td><span class="badge badge-rented">Rented</span></td>
-                <td><button class="btn btn-success" onclick="returnRental('${r.billId}')">Return Item</button></td>
-            </tr>
-        `).join('');
-    }
-
-    function returnRental(billId) {
-        const tx = transactions.find(t => t.billId === billId);
-        tx.status = 'Returned';
-        const item = rentalInv.find(r => r.code === tx.code);
-        item.status = 'Available';
-
-        localStorage.setItem('inventory_rental', JSON.stringify(rentalInv));
-        localStorage.setItem('sales_transactions', JSON.stringify(transactions));
-        alert('Item Returned to Stock!');
-        renderPOSRentalItems();
-        renderRentedTable();
-        renderCatalog();
-    }
-
-    function saveCustomerRequirement(e) {
-        e.preventDefault();
-        const phone = document.getElementById('note-phone').value;
-        const text = document.getElementById('note-text').value;
-        let cust = customers.find(c => c.phone === phone);
-        if(cust) {
-            cust.notes = cust.notes || [];
-            cust.notes.push({ date: new Date().toLocaleDateString(), text });
-            localStorage.setItem('customers_loyalty', JSON.stringify(customers));
-            alert('Requirement saved under customer profile!');
-        } else {
-            alert('Customer phone not found! Please register customer during POS entry.');
-        }
-    }
-
-    // Catalog Rendering
     function renderCatalog() {
-        const grid = document.getElementById('catalog-grid');
-        const search = document.getElementById('catalog-search').value.toLowerCase();
-        const cat = document.getElementById('catalog-filter').value;
+      const grid = document.getElementById('catalogGrid');
+      const search = document.getElementById('catalogSearch').value.toLowerCase();
+      const filter = document.getElementById('catalogFilter').value;
 
-        const filtered = rentalInv.filter(i => {
-            const matchesSearch = i.name.toLowerCase().includes(search) || i.code.toLowerCase().includes(search);
-            const matchesCat = cat === 'ALL' || i.category === cat;
-            return matchesSearch && matchesCat;
-        });
-
-        grid.innerHTML = filtered.map(i => `
-            <div class="item-card">
-                <img class="item-img" src="${i.img || 'https://via.placeholder.com/150'}" onclick="alert('Zoom view: ${i.name}')">
-                <div class="item-details">
-                    <span class="badge ${i.status==='Available'?'badge-available':'badge-rented'}">${i.status}</span>
-                    <h4 style="margin-top:5px;">${i.name}</h4>
-                    <p style="font-size:0.8rem; color:#666;">Code: ${i.code}</p>
-                    <p style="font-size:0.9rem; font-weight:bold; margin-top:5px;">Rate: ₹${i.dailyRate}/day | Dep: ₹${i.deposit}</p>
-                </div>
+      grid.innerHTML = rentalData.inventory.filter(i => {
+        const matchesSearch = i.name.toLowerCase().includes(search) || i.code.toLowerCase().includes(search);
+        const isRented = rentalData.transactions.some(t => t.itemId === i.id && t.status === 'Rented');
+        const matchesFilter = filter === 'ALL' || (filter === 'Available' && !isRented) || (filter === 'Rented' && isRented);
+        return matchesSearch && matchesFilter;
+      }).map(i => {
+        const isRented = rentalData.transactions.some(t => t.itemId === i.id && t.status === 'Rented');
+        return `
+          <div class="item-card">
+            <img src="${i.imageUrl || 'https://via.placeholder.com/200'}" class="item-img" onclick="zoomImg(this.src)">
+            <div class="item-info">
+              <h4>${i.name}</h4>
+              <p style="font-size:0.8rem; color:#666;">Code: ${i.code}</p>
+              <p style="margin: 5px 0;"><strong>₹${i.dailyRate}</strong> / day</p>
+              <span class="badge ${isRented ? 'badge-rented' : 'badge-available'}">${isRented ? 'Rented' : 'Available'}</span>
             </div>
-        `).join('');
+          </div>
+        `;
+      }).join('');
     }
 
-    function triggerExportImport() {
-        const exportData = { salesInv, rentalInv, transactions, customers, config };
-        const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = `LakshmiStore_Backup_${new Date().toISOString().slice(0,10)}.json`;
-        a.click();
+    function renderRentalHistory() {
+      const tbody = document.querySelector('#rentalHistoryTable tbody');
+      tbody.innerHTML = rentalData.transactions.map(t => {
+        const item = rentalData.inventory.find(i => i.id === t.itemId);
+        return `
+          <tr>
+            <td>${t.billId}</td>
+            <td>${t.customerName}<br><small>${t.customerPhone}</small></td>
+            <td>${item ? item.name : 'Unknown'}</td>
+            <td>${t.rentalDate} (${t.days} Days)</td>
+            <td>₹${t.advancePaid}</td>
+            <td style="color:red; font-weight:bold;">₹${t.pendingBalance}</td>
+            <td>${t.status === 'Rented' ? `<button class="btn" style="padding:4px 8px; font-size:0.75rem;" onclick="returnStock('${t.billId}')">Return Item</button>` : 'Returned'}</td>
+          </tr>
+        `;
+      }).join('');
     }
 
-    function setupAutoBackup() {
-        const intervalMs = (config.backupHours || 2) * 60 * 60 * 1000;
-        setInterval(() => {
-            triggerExportImport();
-        }, intervalMs);
+    function renderDailySalesTable() {
+      const sales = JSON.parse(localStorage.getItem('daily_sales') || '[]');
+      const tbody = document.querySelector('#dailySalesTable tbody');
+      tbody.innerHTML = sales.map(s => {
+        const item = stockData.find(i => i.id === s.itemId);
+        return `<tr><td>${new Date(s.date).toLocaleTimeString([])}</td><td>${s.customerName}</td><td>${item?item.name:''}</td><td>${s.qty}</td><td>₹${s.finalPrice}</td></tr>`;
+      }).join('');
     }
-</script>
+
+    function returnStock(billId) {
+      const tx = rentalData.transactions.find(t => t.billId === billId);
+      if (tx) {
+        tx.status = 'Returned';
+        localStorage.setItem('rental', JSON.stringify(rentalData));
+        alert('Jewellery Item Returned to Stock!');
+        loadAllState();
+      }
+    }
+
+    function saveCustomerRequest(e) {
+      e.preventDefault();
+      rentalData.customerRequests.push({
+        phone: document.getElementById('reqPhone').value,
+        name: document.getElementById('reqName').value,
+        comment: document.getElementById('reqComments').value,
+        date: new Date().toLocaleDateString()
+      });
+      localStorage.setItem('rental', JSON.stringify(rentalData));
+      alert('Requirement logged!');
+    }
+
+    function zoomImg(src) {
+      document.getElementById('modalImg').src = src;
+      document.getElementById('imageModal').style.display = 'flex';
+    }
+
+    window.onload = loadAllState;
+  </script>
 </body>
 </html>
